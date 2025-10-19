@@ -1,28 +1,36 @@
-import * as SibApiV3Sdk from "sib-api-v3-sdk";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-if (!process.env.SENDINBLUE_API_KEY) {
-  throw new Error("SENDINBLUE_API_KEY is not defined in .env");
-}
-
-const client = new SibApiV3Sdk.TransactionalEmailsApi(
-  new SibApiV3Sdk.ApiClient()
-);
-client.apiClient.authentications["api-key"].apiKey = process.env.SENDINBLUE_API_KEY;
+import nodemailer from "nodemailer";
 
 export const sendOtpEmail = async (email: string, otp: string) => {
   try {
-    const response = await client.sendTransacEmail({
-      sender: { name: "QubitX", email: "qubit143@gmail.com" },
-      to: [{ email }],
-      subject: "Your OTP Code",
-      htmlContent: `<h2>Your OTP Code: ${otp}</h2><p>Expires in 10 minutes</p>`,
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT),
+      secure: true, // true for port 465
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
     });
-    console.log("OTP sent:", response);
-  } catch (err) {
-    console.error(" OTP email failed:", err);
+
+    const info = await transporter.sendMail({
+      from: `"QubitX" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Your OTP Code",
+      html: `
+        <div style="font-family: Arial, sans-serif; text-align: center;">
+          <h2>Your OTP Code: <strong>${otp}</strong></h2>
+          <p>This code will expire in <b>10 minutes</b>.</p>
+          <br/>
+          <p style="font-size: 12px; color: #888;">
+            If you didn’t request this, please ignore this email.
+          </p>
+        </div>
+      `,
+    });
+
+    console.log("✅ OTP sent successfully:", info.messageId);
+  } catch (error) {
+    console.error("❌ Error sending OTP:", error);
     throw new Error("Failed to send OTP email");
   }
 };
