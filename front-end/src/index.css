@@ -1,0 +1,59 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
+
+
+
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --link-color: #1a0dab;
+  --link-hover-color: #551a8b;
+  --Primary:#140b5b;
+  --Secondary:#102362;
+  /* background-color: #e6ebff; */
+  background-color:rgb(251, 252, 255);
+
+}
+.logo {
+  background: linear-gradient(45deg, #2563eb, #4f46e5);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+ @keyframes shimmer {
+          0% {
+            transform: translateX(-100%);
+          }
+          100% {
+            transform: translateX(100%);
+          }
+        }
+
+        @keyframes arrowSlide {
+          0%, 100% {
+            transform: translateX(0);
+          }
+          50% {
+            transform: translateX(4px);
+          }
+        }
+
+        .animate-shimmer {
+          animation: shimmer 3s infinite;
+        }
+
+        .animate-arrowSlide {
+          animation: arrowSlide 1.5s ease-in-out infinite;
+        }
+
+        .animation-delay-75 {
+          animation-delay: 0.075s;
+        }
