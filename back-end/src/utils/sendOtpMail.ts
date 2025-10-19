@@ -15,7 +15,7 @@ client.apiClient.authentications["api-key"].apiKey = process.env.SENDINBLUE_API_
 export const sendOtpEmail = async (email: string, otp: string) => {
   try {
     const response = await client.sendTransacEmail({
-      sender: { name: "QubitX", email: "no-reply@onresend.dev" },
+      sender: { name: "QubitX", email: "nived4148@gmail.com" },
       to: [{ email }],
       subject: "Your OTP Code",
       htmlContent: `<h2>Your OTP Code: ${otp}</h2><p>Expires in 10 minutes</p>`,
