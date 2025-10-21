@@ -20,7 +20,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       className="toaster group"
       icons={{
         success: <CheckCircle2 className="h-6 w-6 text-green-700" />,
-        info: <InfoIcon className="h-6 w-6 text-yellow-900" />,
+        info: <InfoIcon className="h-6 w-6 text-blue-700" />,
         warning: <AlertTriangle className="h-6 w-6 text-orange-700" />,
         error: <XCircle className="h-6 w-6 text-red-700" />,
         loading: <Loader2 className="h-6 w-6 animate-spin text-blue-900" />,

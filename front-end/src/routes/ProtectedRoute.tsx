@@ -1,11 +1,11 @@
-import { useSelector } from "react-redux";
-import { Navigate, Outlet } from "react-router-dom";
-import type { RootState } from "../store";
+  import { useSelector } from "react-redux";
+  import { Navigate, Outlet } from "react-router-dom";
+  import type { RootState } from "../store";
 
-const ProtectedRoute = () => {
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const ProtectedRoute = () => {
+    const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
-};
+    return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+  };
 
-export default ProtectedRoute;
+  export default ProtectedRoute;

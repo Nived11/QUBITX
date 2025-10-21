@@ -2,7 +2,8 @@ import { Route } from "react-router-dom";
 import PublicLayout from "../layouts/PublicLayout";
 import ProfileLayout from "../layouts/ProfileLayout";
 import ProtectedRoute from "./ProtectedRoute";
-import { SignUp,Login, Home, ProductDetails, NotFound, Cart, ProfileInfo, Orders, UserAddress, SellProducts } from "../pages/user";
+import AuthProtectRoute from "./AuthprotectRoute";
+import { SignUp, Login, Home, ProductDetails, NotFound, Cart, ProfileInfo, Orders, UserAddress, SellProducts,} from "../pages/user";
 
 const PublicRoutes = () => {
   return (
@@ -26,9 +27,10 @@ const PublicRoutes = () => {
       </Route>
 
       {/* Login is outside PublicLayout */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<SignUp />} />
-
+      <Route element={<AuthProtectRoute />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+      </Route>
     </>
   );
 };
