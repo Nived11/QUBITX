@@ -14,6 +14,7 @@ export const useForgotPassword = () => {
   const [loading, setLoading] = useState(false);
   const [otpExpiresAt, setOtpExpiresAt] = useState<string | null>(null);
   const [errors, setErrors] = useState<PasswordErrors>({});
+  const [testOtp, setTestOtp] = useState<string | null>(null); // 👈 new state to store OTP for testing
 
   // Send OTP
   const sendOtp = async () => {
@@ -32,8 +33,12 @@ export const useForgotPassword = () => {
       if (response.data.expiresAt) {
         setOtpExpiresAt(response.data.expiresAt);
       }
-      
       toast.success("OTP sent to your email!");
+
+      if (response.data.otp) {
+        setTestOtp(response.data.otp); // display OTP for testing
+      }
+      
       setStep("otp");
       return true;
     } catch (err: unknown) {
@@ -99,6 +104,8 @@ export const useForgotPassword = () => {
     loading,
     errors,
     otpExpiresAt,
+    setTestOtp,
+    testOtp, // 👈 expose OTP for testing
     sendOtp,
     handleOtpVerified,
     changePassword,

@@ -26,7 +26,7 @@ export const generateOtp = async (req: Request, res: Response) => {
 
       const hashedPassword = await bcrypt.hash(password, 10);
       const otp = crypto.randomInt(100000, 999999).toString();
-      const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+      const expiresAt = new Date(Date.now() + 1 * 60 * 1000); // 1 minute expiration
 
       const otpDoc = new Otp({
         name,
@@ -57,13 +57,13 @@ export const generateOtp = async (req: Request, res: Response) => {
       if (!user) return res.status(404).json({ message: "User not found" });
 
       const otp = crypto.randomInt(100000, 999999).toString();
-      const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+      const expiresAt = new Date(Date.now() + 1 * 60 * 1000); // 1 minute expiration
 
       const otpDoc = new Otp({ email, otp, purpose, expiresAt });
       await otpDoc.save();
       await sendOtpEmail(email, otp);
 
-      return res.status(200).json({ message: "OTP sent to email", expiresAt });
+      return res.status(200).json({ message: "OTP sent to email", expiresAt, otp });
     }
 
     return res.status(400).json({ message: "Invalid purpose" });

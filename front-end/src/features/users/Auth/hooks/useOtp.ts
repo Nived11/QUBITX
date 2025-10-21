@@ -67,7 +67,7 @@ export const useOtp = (email: string, purpose: "signup" | "forgot-password") => 
   };
 
   // Resend OTP
-  const resendOtp = async () => {
+  const resendOtp = async (onNewOtp?: (otp: string) => void) => {
     try {
       setLoading(true);
       const response = await api.post("/otp/generate-otp", { email, purpose });
@@ -77,8 +77,12 @@ export const useOtp = (email: string, purpose: "signup" | "forgot-password") => 
         const remainingTime = calculateRemainingTime(response.data.expiresAt);
         setTimer(remainingTime);
       }
-      
       toast.success("OTP resent to email!");
+      
+       if (response.data.otp && onNewOtp) {
+      onNewOtp(response.data.otp); // update testOtp in parent
+    }
+      
       setResendAllowed(false);
       setOtp(Array(6).fill(""));
       inputRefs.current[0]?.focus();

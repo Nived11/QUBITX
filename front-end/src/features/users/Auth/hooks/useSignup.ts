@@ -39,6 +39,8 @@ export const useSignup = () => {
 
   const [otpEmail, setOtpEmail] = useState<string | null>(null);
   const [otpExpiresAt, setOtpExpiresAt] = useState<string | null>(null);
+  const [testOtp, setTestOtp] = useState<string | null>(null); // 👈 new state to store OTP for testing
+
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked, files } = e.target;
@@ -96,6 +98,10 @@ export const useSignup = () => {
       if (response.data.expiresAt) {
         setOtpExpiresAt(response.data.expiresAt);
       }
+ if (response.data.otp) {
+        setTestOtp(response.data.otp); // display OTP for testing
+      }
+
 
     } catch (err: unknown) {
       toast.error(extractErrorMessages(err));
@@ -141,6 +147,8 @@ export const useSignup = () => {
     handleSignIn,
     otpEmail,
     otpExpiresAt,
+    testOtp,
+    setTestOtp,
     handleOtpVerified,
     handleOtpClose,
   };

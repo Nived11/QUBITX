@@ -16,6 +16,7 @@ import TermsAndConditions from "./TermsAndConditions";
 import { useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import OtpShowModal from "./OtpShowModal";
 
 const SignupForm = () => {
   const {
@@ -34,6 +35,8 @@ const SignupForm = () => {
     handleSignIn,
     otpEmail,
     otpExpiresAt,
+    testOtp,
+    setTestOtp,
     handleOtpVerified,
     handleOtpClose,
   } = useSignup();
@@ -352,7 +355,11 @@ const SignupForm = () => {
       {showTermsModal && (
         <TermsAndConditions onClose={() => setShowTermsModal(false)} />
       )}
+      {testOtp && (
+  <OtpShowModal otp={testOtp} onClose={() => setTestOtp(null)} />
+)}
       {otpEmail && (
+        
         <OTPModal
           email={otpEmail}
           purpose="signup"

@@ -10,7 +10,7 @@ const otpSchema = new mongoose.Schema({
   companyName: { type: String },
   companyProof: { type: String },
   purpose: { type: String, enum: ["signup", "forgot-password"], required: true },
-  expiresAt: { type: Date, default: () => Date.now() + 10 * 60 * 1000 }
+  expiresAt: { type: Date, default: () => Date.now() + 1 * 60 * 1000 } // 1 minute expiration
 },{ timestamps: true });
 
 export const Otp = mongoose.model("Otp", otpSchema);
