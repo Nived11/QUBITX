@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { toast } from "sonner"
+import { toast } from "sonner";
 import api from "../../../../api/axios";
 import { extractErrorMessages } from "../../../../utils/helpers/extractErrorMessages";
-import { validatePassword ,type PasswordErrors} from "../utils/Validators";
+import { validatePassword, type PasswordErrors } from "../utils/Validators";
 
 export const useForgotPassword = () => {
   const [step, setStep] = useState<"email" | "otp" | "password">("email");
@@ -14,7 +14,6 @@ export const useForgotPassword = () => {
   const [loading, setLoading] = useState(false);
   const [otpExpiresAt, setOtpExpiresAt] = useState<string | null>(null);
   const [errors, setErrors] = useState<PasswordErrors>({});
-  const [testOtp, setTestOtp] = useState<string | null>(null); // 👈 new state to store OTP for testing
 
   // Send OTP
   const sendOtp = async () => {
@@ -25,20 +24,16 @@ export const useForgotPassword = () => {
 
     try {
       setLoading(true);
-      const response = await api.post("/otp/generate-otp", { 
-        email, 
-        purpose: "forgot-password" 
+      const response = await api.post("/otp/generate-otp", {
+        email,
+        purpose: "forgot-password",
       });
-      
+
       if (response.data.expiresAt) {
         setOtpExpiresAt(response.data.expiresAt);
       }
       toast.success("OTP sent to your email!");
 
-      if (response.data.otp) {
-        setTestOtp(response.data.otp); // display OTP for testing
-      }
-      
       setStep("otp");
       return true;
     } catch (err: unknown) {
@@ -57,13 +52,13 @@ export const useForgotPassword = () => {
   // Change Password
   const changePassword = async () => {
     const validationErrors = validatePassword(newPassword, confirmPassword);
-     if (Object.keys(validationErrors).length > 0) {
-       setErrors(validationErrors);
-       toast.error("Please fix the errors ");
-       return;
-     }
-   
-     setErrors({}); 
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      toast.error("Please fix the errors ");
+      return;
+    }
+
+    setErrors({});
 
     try {
       setLoading(true);
@@ -104,8 +99,6 @@ export const useForgotPassword = () => {
     loading,
     errors,
     otpExpiresAt,
-    setTestOtp,
-    testOtp, // 👈 expose OTP for testing
     sendOtp,
     handleOtpVerified,
     changePassword,

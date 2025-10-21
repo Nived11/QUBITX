@@ -4,7 +4,6 @@ import { useForgotPassword } from "../hooks/useForgotPassword";
 import { useOtp } from "../hooks/useOtp";
 import { useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
-import OtpShowModal from "./OtpShowModal";
 
 interface ForgotPasswordModalProps {
   isOpen: boolean;
@@ -27,8 +26,6 @@ const ForgotPasswordModal = ({ isOpen, onClose }: ForgotPasswordModalProps) => {
     loading,
     errors,
     otpExpiresAt,
-    testOtp,
-    setTestOtp,
     sendOtp,
     handleOtpVerified,
     changePassword,
@@ -47,8 +44,6 @@ const ForgotPasswordModal = ({ isOpen, onClose }: ForgotPasswordModalProps) => {
     resendOtp,
     setInitialTimer,
   } = useOtp(email, "forgot-password");
-
-
 
   // Set initial timer when OTP is sent
   useEffect(() => {
@@ -139,87 +134,88 @@ const ForgotPasswordModal = ({ isOpen, onClose }: ForgotPasswordModalProps) => {
           )}
 
           {/* Step 2: OTP Verification */}
-         {step === "otp" && (
-          <>
-          <OtpShowModal otp={testOtp} onClose={() => setTestOtp(null)} />
-            <div className="space-y-4">
-              <p className="text-xs sm:text-sm text-gray-600 mb-4 text-center">
-                We've sent an OTP to{"  "}
-                <span className="font-semibold text-blue-900   mt-1 sm:mt-0">
-                  {email}
-                </span>
-              </p>
+          {step === "otp" && (
+            <>
+              <div className="space-y-4">
+                <p className="text-xs sm:text-sm text-gray-600 mb-4 text-center">
+                  We've sent an OTP to{"  "}
+                  <span className="font-semibold text-blue-900   mt-1 sm:mt-0">
+                    {email}
+                  </span>
+                </p>
 
-              {/* OTP Input - Responsive Grid */}
-              <div className="flex justify-between gap-2 mb-4">
-                {otp.map((digit, index) => (
-                  <input
-                    key={index}
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={1}
-                    value={digit}
-                    ref={(el) => {
-                      inputRefs.current[index] = el;
-                    }}
-                    onChange={(e) => handleChange(e.target.value, index)}
-                    onKeyDown={(e) => handleKeyDown(e, index)}
-                    className="w-10 h-12 sm:w-12 sm:h-14 text-center border border-gray-400 rounded-md focus:ring-2 focus:ring-blue-500 text-lg sm:text-xl font-semibold outline-none transition-all"
-                  />
-                ))}
+                {/* OTP Input - Responsive Grid */}
+                <div className="flex justify-between gap-2 mb-4">
+                  {otp.map((digit, index) => (
+                    <input
+                      key={index}
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={1}
+                      value={digit}
+                      ref={(el) => {
+                        inputRefs.current[index] = el;
+                      }}
+                      onChange={(e) => handleChange(e.target.value, index)}
+                      onKeyDown={(e) => handleKeyDown(e, index)}
+                      className="w-10 h-12 sm:w-12 sm:h-14 text-center border border-gray-400 rounded-md focus:ring-2 focus:ring-blue-500 text-lg sm:text-xl font-semibold outline-none transition-all"
+                    />
+                  ))}
+                </div>
+
+                {/* Timer */}
+                <div className="text-center mb-4">
+                  {timer > 0 ? (
+                    <p className="text-xs sm:text-sm text-gray-800">
+                      OTP expires in{" "}
+                      <span className="font-semibold text-blue-900">
+                        {formatTime(timer)}
+                      </span>
+                    </p>
+                  ) : (
+                    <p className="text-xs sm:text-sm text-red-600 font-medium">
+                      OTP expired
+                    </p>
+                  )}
+                </div>
+
+                {/* Verify Button */}
+                <button
+                  onClick={() => verifyOtp(handleOtpVerified, () => {})}
+                  disabled={loading || timer === 0}
+                  className={`w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2.5 sm:py-3 rounded-lg transition-colors shadow-sm text-sm sm:text-base flex items-center justify-center gap-2 ${
+                    loading || timer === 0
+                      ? "opacity-70 cursor-not-allowed"
+                      : ""
+                  }`}
+                >
+                  {loading ? (
+                    <>
+                      <Spinner />
+                      <span>Verifying</span>
+                    </>
+                  ) : (
+                    "Verify OTP"
+                  )}
+                </button>
+
+                {/* Resend Button */}
+                <button
+                  onClick={resendOtp}
+                  disabled={!resendAllowed || otpLoading}
+                  className="w-full py-2 text-xs sm:text-sm text-blue-600 hover:text-blue-700 font-medium hover:underline disabled:text-gray-400 disabled:no-underline transition-colors"
+                >
+                  Resend OTP
+                </button>
+
+                {/* Cancel Button */}
+                <button
+                  onClick={handleClose}
+                  className="w-full text-xs sm:text-sm text-gray-600 hover:text-gray-800 hover:underline transition-colors"
+                >
+                  Cancel
+                </button>
               </div>
-
-              {/* Timer */}
-              <div className="text-center mb-4">
-                {timer > 0 ? (
-                  <p className="text-xs sm:text-sm text-gray-800">
-                    OTP expires in{" "}
-                    <span className="font-semibold text-blue-900">
-                      {formatTime(timer)}
-                    </span>
-                  </p>
-                ) : (
-                  <p className="text-xs sm:text-sm text-red-600 font-medium">
-                    OTP expired
-                  </p>
-                )}
-              </div>
-
-              {/* Verify Button */}
-              <button
-                onClick={() => verifyOtp(handleOtpVerified, () => {})}
-                disabled={loading || timer === 0}
-                className={`w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2.5 sm:py-3 rounded-lg transition-colors shadow-sm text-sm sm:text-base flex items-center justify-center gap-2 ${
-                  loading || timer === 0 ? "opacity-70 cursor-not-allowed" : ""
-                }`}
-              >
-                {loading ? (
-                  <>
-                    <Spinner />
-                    <span>Verifying</span>
-                  </>
-                ) : (
-                  "Verify OTP"
-                )}
-              </button>
-
-              {/* Resend Button */}
-              <button
-                onClick={() => resendOtp((newOtp) => setTestOtp(newOtp))}
-  disabled={!resendAllowed || otpLoading}
-                className="w-full py-2 text-xs sm:text-sm text-blue-600 hover:text-blue-700 font-medium hover:underline disabled:text-gray-400 disabled:no-underline transition-colors"
-              >
-                Resend OTP
-              </button>
-
-              {/* Cancel Button */}
-              <button
-                onClick={handleClose}
-                className="w-full text-xs sm:text-sm text-gray-600 hover:text-gray-800 hover:underline transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
             </>
           )}
 

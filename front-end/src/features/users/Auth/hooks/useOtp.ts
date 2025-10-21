@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { toast } from "sonner"
+import { toast } from "sonner";
 import api from "../../../../api/axios";
 
-export const useOtp = (email: string, purpose: "signup" | "forgot-password") => {
+export const useOtp = (
+  email: string,
+  purpose: "signup" | "forgot-password"
+) => {
   const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(0);
@@ -42,7 +45,10 @@ export const useOtp = (email: string, purpose: "signup" | "forgot-password") => 
   };
 
   // Handle backspace focus
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    index: number
+  ) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
     }
@@ -67,22 +73,18 @@ export const useOtp = (email: string, purpose: "signup" | "forgot-password") => 
   };
 
   // Resend OTP
-  const resendOtp = async (onNewOtp?: (otp: string) => void) => {
+  const resendOtp = async () => {
     try {
       setLoading(true);
       const response = await api.post("/otp/generate-otp", { email, purpose });
-      
+
       // Use backend expiresAt to set timer
       if (response.data.expiresAt) {
         const remainingTime = calculateRemainingTime(response.data.expiresAt);
         setTimer(remainingTime);
       }
       toast.success("OTP resent to email!");
-      
-       if (response.data.otp && onNewOtp) {
-      onNewOtp(response.data.otp); // update testOtp in parent
-    }
-      
+
       setResendAllowed(false);
       setOtp(Array(6).fill(""));
       inputRefs.current[0]?.focus();

@@ -1,4 +1,3 @@
-// Install Brevo client: npm install @sendinblue/client
 import * as SibApiV3Sdk from '@sendinblue/client';
 import dotenv from "dotenv";
 dotenv.config();
@@ -14,47 +13,49 @@ apiInstance.setApiKey(
   process.env.BREVO_API_KEY
 );
 
-export const sendOtpEmail = async (email: string, otp: string) => {
+export const sendOtpEmail = async (email: string, otp: string, purpose: "signup" | "forgot-password") => {
   try {
-    console.log(`📧 Sending OTP to: ${email}`);
+    console.log(`📧 Sending OTP to: ${email} for ${purpose}`);
 
-    // Create email object
     const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
-
-    // Sender (verified Gmail)
     sendSmtpEmail.sender = { 
       name: "QubitX Team", 
-      email: "nived4148@gmail.com" // Make sure this Gmail is verified in Brevo
+      email: "nived4148@gmail.com" // Verified sender
     };
-
-    // Recipient
     sendSmtpEmail.to = [{ email }];
 
-    // Subject
-    sendSmtpEmail.subject = "QubitX: Your OTP Code 🔐";
+    if (purpose === "signup") {
+      sendSmtpEmail.subject = "QubitX: Complete Your Signup 🔐";
+      sendSmtpEmail.textContent = `Hello! Your QubitX signup OTP is: ${otp}. It is valid for 2 minutes.`;
+      sendSmtpEmail.htmlContent = `
+        <div style="font-family: Arial, sans-serif; text-align: center; padding: 15px;">
+          <h2 style="color: #333;">Welcome to QubitX!</h2>
+          <p>Your signup OTP is:</p>
+          <h1 style="color:#007BFF; font-size: 36px; letter-spacing: 5px;">${otp}</h1>
+          <p style="font-size: 14px; color: #555;">This OTP is valid for <b>2 minutes</b>.</p>
+          <p style="font-size: 12px; color: #888;">If you didn't request this, please ignore this email.</p>
+        </div>
+      `;
+    } else if (purpose === "forgot-password") {
+      sendSmtpEmail.subject = "QubitX: Reset Your Password 🔐";
+      sendSmtpEmail.textContent = `Hello! Your password reset OTP is: ${otp}. It is valid for 10 minutes.`;
+      sendSmtpEmail.htmlContent = `
+        <div style="font-family: Arial, sans-serif; text-align: center; padding: 15px;">
+          <h2 style="color: #333;">Password Reset Request</h2>
+          <p>Your OTP to reset password is:</p>
+          <h1 style="color:#FF5733; font-size: 36px; letter-spacing: 5px;">${otp}</h1>
+          <p style="font-size: 14px; color: #555;">This OTP is valid for <b>2 minutes</b>.</p>
+          <p style="font-size: 12px; color: #888;">If you didn't request this, please ignore this email.</p>
+        </div>
+      `;
+    }
 
-    // Plain text fallback
-    sendSmtpEmail.textContent = `Hello! Your QubitX OTP is: ${otp}. It is valid for 10 minutes.`;
-
-    // Simple, clean HTML content (minimalistic for Inbox)
-    sendSmtpEmail.htmlContent = `
-      <div style="font-family: Arial, sans-serif; text-align: center; padding: 15px;">
-        <h2 style="color: #333;">QubitX Verification</h2>
-        <p>Your OTP code is:</p>
-        <h1 style="color:#007BFF; font-size: 36px; letter-spacing: 5px;">${otp}</h1>
-        <p style="font-size: 14px; color: #555;">This OTP is valid for <b>10 minutes</b>.</p>
-        <p style="font-size: 12px; color: #888;">If you didn't request this, please ignore this email.</p>
-      </div>
-    `;
-
-    // Send email
     const response = await apiInstance.sendTransacEmail(sendSmtpEmail);
-
-    console.log("✅ Email sent successfully:", response);
+    console.log("Email sent successfully:", response);
     return response;
 
   } catch (error: any) {
-    console.error("❌ Error sending OTP:", error);
+    console.error("Error sending OTP:", error);
     throw new Error(`Failed to send OTP: ${error.message}`);
   }
 };

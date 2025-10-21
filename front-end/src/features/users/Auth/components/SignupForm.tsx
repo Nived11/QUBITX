@@ -16,7 +16,6 @@ import TermsAndConditions from "./TermsAndConditions";
 import { useState } from "react";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import OtpShowModal from "./OtpShowModal";
 
 const SignupForm = () => {
   const {
@@ -35,8 +34,6 @@ const SignupForm = () => {
     handleSignIn,
     otpEmail,
     otpExpiresAt,
-    testOtp,
-    setTestOtp,
     handleOtpVerified,
     handleOtpClose,
   } = useSignup();
@@ -117,18 +114,18 @@ const SignupForm = () => {
 
               {/* Email */}
               <div className="mb-3">
-              <div className="relative">
-                <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-900" />
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="Email"
-                  className="w-full pl-10 pr-3 py-2.5 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm outline-none placeholder:text-gray-500"
-                />
-              </div>
-              {errors.email && (
+                <div className="relative">
+                  <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-900" />
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="Email"
+                    className="w-full pl-10 pr-3 py-2.5 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm outline-none placeholder:text-gray-500"
+                  />
+                </div>
+                {errors.email && (
                   <span className="text-red-600 text-xs mt-1 block">
                     {errors.email}
                   </span>
@@ -136,38 +133,38 @@ const SignupForm = () => {
               </div>
 
               {/* Phone */}
- <div className="mb-3">
-              <div className="relative">
-                <PhoneInput
-                  country={"in"}
-                  value={formData.phone}
-                  onChange={handlePhoneChange}
-                  inputProps={{
-                    name: "phone",
-                    required: true,
-                    autoFocus: false,
-                  }}
-                  containerClass="w-full"
-                  inputClass="w-full !pl-12 pr-3 py-2.5 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm outline-none placeholder:text-gray-500"
-                  buttonClass="!border !border-gray-400 !bg-white !rounded-l-md "
-                  dropdownClass="!z-50"
-                  enableSearch={true}
-                  searchPlaceholder="Search country"
-                  containerStyle={{ width: "100%" }}
-                  inputStyle={{
-                    width: "100%",
-                    height: "42px",
-                    fontSize: "14px",
-                    paddingLeft: "48px",
-                  }}
-                  buttonStyle={{
-                    border: "1px solid rgb(156, 163, 175)",
-                    borderRadius: "0.5rem 0 0 0.5rem",
-                    backgroundColor: "white",
-                  }}
-                />
-              </div>
-              {errors.phone && (
+              <div className="mb-3">
+                <div className="relative">
+                  <PhoneInput
+                    country={"in"}
+                    value={formData.phone}
+                    onChange={handlePhoneChange}
+                    inputProps={{
+                      name: "phone",
+                      required: true,
+                      autoFocus: false,
+                    }}
+                    containerClass="w-full"
+                    inputClass="w-full !pl-12 pr-3 py-2.5 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm outline-none placeholder:text-gray-500"
+                    buttonClass="!border !border-gray-400 !bg-white !rounded-l-md "
+                    dropdownClass="!z-50"
+                    enableSearch={true}
+                    searchPlaceholder="Search country"
+                    containerStyle={{ width: "100%" }}
+                    inputStyle={{
+                      width: "100%",
+                      height: "42px",
+                      fontSize: "14px",
+                      paddingLeft: "48px",
+                    }}
+                    buttonStyle={{
+                      border: "1px solid rgb(156, 163, 175)",
+                      borderRadius: "0.5rem 0 0 0.5rem",
+                      backgroundColor: "white",
+                    }}
+                  />
+                </div>
+                {errors.phone && (
                   <span className="text-red-600 text-xs mt-1 block">
                     {errors.phone}
                   </span>
@@ -176,120 +173,121 @@ const SignupForm = () => {
 
               {/* Passwords */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                 <div className="mb-3">
-                <div className="relative">
-                  <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-900" />
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    placeholder="Password"
-                    className="w-full pl-10 pr-10 py-2.5 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm outline-none placeholder:text-gray-500"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-900"
-                  >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                  </button>
-                </div>
-                {errors.password && (
-                  <span className="text-red-600 text-xs mt-1 block">
-                    {errors.password}
-                  </span>
-                )}
+                <div className="mb-3">
+                  <div className="relative">
+                    <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-900" />
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      placeholder="Password"
+                      className="w-full pl-10 pr-10 py-2.5 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm outline-none placeholder:text-gray-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-900"
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                  {errors.password && (
+                    <span className="text-red-600 text-xs mt-1 block">
+                      {errors.password}
+                    </span>
+                  )}
                 </div>
 
                 <div className="mb-3">
-                <div className="relative">
-                  <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-900" />
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                    placeholder="Confirm password"
-                    className="w-full pl-10 pr-10 py-2.5 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm outline-none placeholder:text-gray-500"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-900"
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff size={18} />
-                    ) : (
-                      <Eye size={18} />
-                    )}
-                  </button>
+                  <div className="relative">
+                    <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-900" />
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      name="confirmPassword"
+                      value={formData.confirmPassword}
+                      onChange={handleChange}
+                      placeholder="Confirm password"
+                      className="w-full pl-10 pr-10 py-2.5 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm outline-none placeholder:text-gray-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-blue-900"
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff size={18} />
+                      ) : (
+                        <Eye size={18} />
+                      )}
+                    </button>
+                  </div>
+                  {errors.confirmPassword && (
+                    <span className="text-red-600 text-xs mt-1 block">
+                      {errors.confirmPassword}
+                    </span>
+                  )}
                 </div>
-                {errors.confirmPassword && (
-                  <span className="text-red-600 text-xs mt-1 block">
-                    {errors.confirmPassword}
-                  </span>
-                )}
-              </div>
-              
               </div>
 
               {/* Seller Fields */}
               {accountType === "seller" && (
                 <>
-                <div className="mb-3">
-                  <div className="relative">
-                    <FaBuilding className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-900" />
-                    <input
-                      type="text"
-                      name="companyName"
-                      value={formData.companyName}
-                      onChange={handleChange}
-                      placeholder="Company Name"
-                      className="w-full pl-10 pr-3 py-2.5 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm outline-none placeholder:text-gray-500"
-                    />
-                  </div>
-                  {errors.companyName && (
-                  <span className="text-red-600 text-xs mt-1 block">
-                    {errors.companyName}
-                  </span>
-                )}
+                  <div className="mb-3">
+                    <div className="relative">
+                      <FaBuilding className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-900" />
+                      <input
+                        type="text"
+                        name="companyName"
+                        value={formData.companyName}
+                        onChange={handleChange}
+                        placeholder="Company Name"
+                        className="w-full pl-10 pr-3 py-2.5 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm outline-none placeholder:text-gray-500"
+                      />
+                    </div>
+                    {errors.companyName && (
+                      <span className="text-red-600 text-xs mt-1 block">
+                        {errors.companyName}
+                      </span>
+                    )}
                   </div>
                   <div className="mb-3">
-                  <div className="relative">
-                    <FaFileAlt className="absolute left-3 top-3 text-blue-900" />
-                    <label
-                      htmlFor="proofDocument"
-                      className="w-full pl-10 pr-3 py-2 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm outline-none flex items-center justify-between cursor-pointer bg-white hover:bg-blue-50"
-                    >
-                      <span
-                        className={`${
-                          formData.proofDocument
-                            ? "text-gray-900"
-                            : "text-gray-500"
-                        }`}
+                    <div className="relative">
+                      <FaFileAlt className="absolute left-3 top-3 text-blue-900" />
+                      <label
+                        htmlFor="proofDocument"
+                        className="w-full pl-10 pr-3 py-2 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm outline-none flex items-center justify-between cursor-pointer bg-white hover:bg-blue-50"
                       >
-                        {formData.proofDocument?.name ||
-                          "Upload proof document"}
+                        <span
+                          className={`${
+                            formData.proofDocument
+                              ? "text-gray-900"
+                              : "text-gray-500"
+                          }`}
+                        >
+                          {formData.proofDocument?.name ||
+                            "Upload proof document"}
+                        </span>
+                        <span className="text-blue-700 font-semibold text-sm">
+                          Browse
+                        </span>
+                      </label>
+                      <input
+                        type="file"
+                        id="proofDocument"
+                        name="proofDocument"
+                        accept="image/*,.pdf"
+                        onChange={handleChange}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      />
+                    </div>
+                    {errors.proofDocument && (
+                      <span className="text-red-600 text-xs mt-1 block">
+                        {errors.proofDocument}
                       </span>
-                      <span className="text-blue-700 font-semibold text-sm">
-                        Browse
-                      </span>
-                    </label>
-                    <input
-                      type="file"
-                      id="proofDocument"
-                      name="proofDocument"
-                      accept="image/*,.pdf"
-                      onChange={handleChange}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    />
-                  </div>
-                  {errors.proofDocument && (
-                  <span className="text-red-600 text-xs mt-1 block">
-                    {errors.proofDocument}
-                  </span>
-                )}
+                    )}
                   </div>
                 </>
               )}
@@ -355,18 +353,14 @@ const SignupForm = () => {
       {showTermsModal && (
         <TermsAndConditions onClose={() => setShowTermsModal(false)} />
       )}
-      {testOtp && (
-  <OtpShowModal otp={testOtp} onClose={() => setTestOtp(null)} />
-)}
+
       {otpEmail && (
-        
         <OTPModal
           email={otpEmail}
           purpose="signup"
           expiresAt={otpExpiresAt}
           onVerified={handleOtpVerified}
           onClose={handleOtpClose}
-          setTestOtp={setTestOtp}
         />
       )}
     </>

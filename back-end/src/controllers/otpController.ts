@@ -5,7 +5,8 @@ import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import { sendOtpEmail } from "../utils/sendOtpMail";
 
-// Generate OTP (signup / forgot-password)
+/////////////////////////////////////// Generate OTP (signup / forgot-password)///////////////////////////////////////////////////
+
 export const generateOtp = async (req: Request, res: Response) => {
   try {
     const { name, email, phone, password, userType, companyName, purpose } = req.body;
@@ -15,9 +16,39 @@ export const generateOtp = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
+    // FORGOT PASSWORD OTP
+    if (purpose === "forgot-password") {
+      const user = await User.findOne({ email });
+      if (!user) return res.status(404).json({ message: "User not found" });
+
+      const otp = crypto.randomInt(100000, 999999).toString();
+      const expiresAt = new Date(Date.now() + 2 * 60 * 1000);
+
+      const otpDoc = new Otp({ email, otp, purpose, expiresAt });
+      await otpDoc.save();
+      await sendOtpEmail(email, otp,"forgot-password");
+
+      return res.status(200).json({ message: "OTP sent to email", expiresAt, otp });
+    }
+
     // SIGNUP OTP
     if (purpose === "signup") {
-      if (!password || !userType) {
+      // Check if this is a resend request (existing OTP)
+      const existingOtp = await Otp.findOne({ email, purpose }).sort({ createdAt: -1 }).exec();
+
+      if (existingOtp) {
+        // Resend OTP using previous data
+        const otp = crypto.randomInt(100000, 999999).toString();
+        existingOtp.otp = otp;
+        existingOtp.expiresAt = new Date(Date.now() + 2 * 60 * 1000);
+        await existingOtp.save();
+        await sendOtpEmail(email, otp ,"signup");
+
+        return res.status(200).json({ message: "OTP resent to email", expiresAt: existingOtp.expiresAt, otp });
+      }
+
+      // First time signup OTP
+      if (!name || !password || !userType) {
         return res.status(400).json({ message: "Missing required fields for signup" });
       }
 
@@ -26,7 +57,7 @@ export const generateOtp = async (req: Request, res: Response) => {
 
       const hashedPassword = await bcrypt.hash(password, 10);
       const otp = crypto.randomInt(100000, 999999).toString();
-      const expiresAt = new Date(Date.now() + 1 * 60 * 1000); // 1 minute expiration
+      const expiresAt = new Date(Date.now() + 2 * 60 * 1000);
 
       const otpDoc = new Otp({
         name,
@@ -42,28 +73,9 @@ export const generateOtp = async (req: Request, res: Response) => {
       });
 
       await otpDoc.save();
-      await sendOtpEmail(email, otp);
+      await sendOtpEmail(email, otp,"signup");
 
-      return res.status(200).json({
-        message: "OTP sent to email",
-        expiresAt,
-        companyProofUrl: companyProof,
-      });
-    }
-
-    // FORGOT PASSWORD OTP
-    if (purpose === "forgot-password") {
-      const user = await User.findOne({ email });
-      if (!user) return res.status(404).json({ message: "User not found" });
-
-      const otp = crypto.randomInt(100000, 999999).toString();
-      const expiresAt = new Date(Date.now() + 1 * 60 * 1000); // 1 minute expiration
-
-      const otpDoc = new Otp({ email, otp, purpose, expiresAt });
-      await otpDoc.save();
-      await sendOtpEmail(email, otp);
-
-      return res.status(200).json({ message: "OTP sent to email", expiresAt, otp });
+      return res.status(200).json({ message: "OTP sent to email", expiresAt,});
     }
 
     return res.status(400).json({ message: "Invalid purpose" });
@@ -73,7 +85,9 @@ export const generateOtp = async (req: Request, res: Response) => {
   }
 };
 
-// Verify OTP (signup / forgot-password)
+
+/////////////////////////////////////// Verify OTP (signup / forgot-password)////////////////////////////////////////////////////
+
 export const verifyOtp = async (req: Request, res: Response) => {
   try {
     const { email, otp, purpose } = req.body;

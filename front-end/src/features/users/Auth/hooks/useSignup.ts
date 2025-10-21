@@ -1,8 +1,8 @@
-import { useState, type ChangeEvent } from 'react';
-import { toast } from "sonner"
-import api from '../../../../api/axios';
-import { useNavigate } from 'react-router-dom';
-import { extractErrorMessages } from '../../../../utils/helpers/extractErrorMessages';
+import { useState, type ChangeEvent } from "react";
+import { toast } from "sonner";
+import api from "../../../../api/axios";
+import { useNavigate } from "react-router-dom";
+import { extractErrorMessages } from "../../../../utils/helpers/extractErrorMessages";
 import { validateSignup, type FormErrors } from "../utils/Validators";
 
 interface FormData {
@@ -17,18 +17,18 @@ interface FormData {
 }
 
 const initialFormData: FormData = {
-  name: '',
-  email: '',
-  phone: '',
-  password: '',
-  confirmPassword: '',
-  companyName: '',
+  name: "",
+  email: "",
+  phone: "",
+  password: "",
+  confirmPassword: "",
+  companyName: "",
   proofDocument: null,
   termsAccepted: false,
 };
 
 export const useSignup = () => {
-  const [accountType, setAccountType] = useState<'buyer' | 'seller'>('buyer');
+  const [accountType, setAccountType] = useState<"buyer" | "seller">("buyer");
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -39,45 +39,42 @@ export const useSignup = () => {
 
   const [otpEmail, setOtpEmail] = useState<string | null>(null);
   const [otpExpiresAt, setOtpExpiresAt] = useState<string | null>(null);
-  const [testOtp, setTestOtp] = useState<string | null>(null); // 👈 new state to store OTP for testing
-
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked, files } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]:
-        type === 'checkbox'
+        type === "checkbox"
           ? checked
-          : type === 'file'
+          : type === "file"
           ? files?.[0] ?? null
           : value,
     }));
   };
   const handlePhoneChange = (phone: string) => {
-  setFormData((prev) => ({ ...prev, phone }));
-};
-
+    setFormData((prev) => ({ ...prev, phone }));
+  };
 
   const handleSubmit = async () => {
     const validationErrors = validateSignup(formData, accountType);
-  if (Object.keys(validationErrors).length > 0) {
-    setErrors(validationErrors);
-    toast.error("Please fix the errors in the form");
-    return;
-  }
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      toast.error("Please fix the errors in the form");
+      return;
+    }
 
-  setErrors({}); 
+    setErrors({});
 
     try {
       setLoading(true);
 
       const payload = new FormData();
-      payload.append('name', formData.name);
-      payload.append('email', formData.email);
-      payload.append('phone', formData.phone);
-      payload.append('password', formData.password);
-      payload.append('userType', accountType);
+      payload.append("name", formData.name);
+      payload.append("email", formData.email);
+      payload.append("phone", formData.phone);
+      payload.append("password", formData.password);
+      payload.append("userType", accountType);
       if (accountType === "seller") {
         payload.append("companyName", formData.companyName);
         if (formData.proofDocument) {
@@ -85,24 +82,19 @@ export const useSignup = () => {
         }
       }
 
-      payload.append('purpose', 'signup');
+      payload.append("purpose", "signup");
 
-      const response = await api.post('/otp/generate-otp', payload, {
-        headers: { 'Content-Type': 'multipart/form-data' },
+      const response = await api.post("/otp/generate-otp", payload, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
-      toast.success('OTP sent to email. Please verify.');
-      
+      toast.success("OTP sent to email. Please verify.");
+
       setOtpEmail(formData.email);
       // Store the expiresAt from backend response
       if (response.data.expiresAt) {
         setOtpExpiresAt(response.data.expiresAt);
       }
- if (response.data.otp) {
-        setTestOtp(response.data.otp); // display OTP for testing
-      }
-
-
     } catch (err: unknown) {
       toast.error(extractErrorMessages(err));
     } finally {
@@ -111,7 +103,7 @@ export const useSignup = () => {
   };
 
   const handleSignIn = () => {
-    navigate('/login');
+    navigate("/login");
   };
 
   const handleOtpVerified = () => {
@@ -119,9 +111,9 @@ export const useSignup = () => {
     setFormData(initialFormData);
     setOtpEmail(null);
     setOtpExpiresAt(null);
-    setAccountType('buyer');
+    setAccountType("buyer");
     setTimeout(() => {
-      navigate('/login');
+      navigate("/login");
     }, 500);
   };
 
@@ -147,8 +139,6 @@ export const useSignup = () => {
     handleSignIn,
     otpEmail,
     otpExpiresAt,
-    testOtp,
-    setTestOtp,
     handleOtpVerified,
     handleOtpClose,
   };

@@ -20,7 +20,10 @@ export interface FormErrors {
   termsAccepted?: string;
 }
 
-export const validateSignup = (data: FormData, accountType: "buyer" | "seller"): FormErrors => {
+export const validateSignup = (
+  data: FormData,
+  accountType: "buyer" | "seller"
+): FormErrors => {
   const errors: FormErrors = {};
 
   // Name
@@ -75,7 +78,10 @@ export interface PasswordErrors {
   confirmPassword?: string;
 }
 
-export const validatePassword = (password: string, confirmPassword: string): PasswordErrors => {
+export const validatePassword = (
+  password: string,
+  confirmPassword: string
+): PasswordErrors => {
   const errors: PasswordErrors = {};
 
   // Password validation (same regex as signup)

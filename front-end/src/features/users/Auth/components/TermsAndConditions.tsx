@@ -1,5 +1,16 @@
 import React from "react";
-import { X, Shield, ShoppingCart, CreditCard, Truck, CheckCircle2, UserCheck, Lock, FileText, Mail } from "lucide-react";
+import {
+  X,
+  Shield,
+  ShoppingCart,
+  CreditCard,
+  Truck,
+  CheckCircle2,
+  UserCheck,
+  Lock,
+  FileText,
+  Mail,
+} from "lucide-react";
 
 interface TermsAndConditionsProps {
   onClose: () => void;
@@ -17,7 +28,9 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ onClose }) => {
                 <FileText className="text-white" size={24} />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-white">Terms & Conditions</h2>
+                <h2 className="text-2xl font-bold text-white">
+                  Terms & Conditions
+                </h2>
                 <p className="text-blue-100 text-sm mt-1">Qubitx</p>
               </div>
             </div>
@@ -45,9 +58,14 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ onClose }) => {
                 <Shield className="text-blue-700" size={20} />
               </div>
               <div>
-                <h3 className="text-base font-bold text-gray-900 mb-2"> Introduction & Account</h3>
+                <h3 className="text-base font-bold text-gray-900 mb-2">
+                  {" "}
+                  Introduction & Account
+                </h3>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  By using Qubitx, you agree to these terms. You must be 18+ years old and provide accurate information during registration. Keep your account credentials secure.
+                  By using Qubitx, you agree to these terms. You must be 18+
+                  years old and provide accurate information during
+                  registration. Keep your account credentials secure.
                 </p>
               </div>
             </div>
@@ -60,9 +78,14 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ onClose }) => {
                 <ShoppingCart className="text-blue-700" size={20} />
               </div>
               <div>
-                <h3 className="text-base font-bold text-gray-900 mb-2"> Products & Pricing</h3>
+                <h3 className="text-base font-bold text-gray-900 mb-2">
+                  {" "}
+                  Products & Pricing
+                </h3>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  We strive for accurate product information. Prices and availability are subject to change. We reserve the right to limit quantities and discontinue products at any time.
+                  We strive for accurate product information. Prices and
+                  availability are subject to change. We reserve the right to
+                  limit quantities and discontinue products at any time.
                 </p>
               </div>
             </div>
@@ -75,9 +98,14 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ onClose }) => {
                 <CreditCard className="text-blue-700" size={20} />
               </div>
               <div>
-                <h3 className="text-base font-bold text-gray-900 mb-2"> Orders & Payment</h3>
+                <h3 className="text-base font-bold text-gray-900 mb-2">
+                  {" "}
+                  Orders & Payment
+                </h3>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  Payment required before processing. We accept major credit/debit cards through secure channels. Orders are subject to acceptance and we may refuse or cancel any order.
+                  Payment required before processing. We accept major
+                  credit/debit cards through secure channels. Orders are subject
+                  to acceptance and we may refuse or cancel any order.
                 </p>
               </div>
             </div>
@@ -90,9 +118,14 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ onClose }) => {
                 <Truck className="text-blue-700" size={20} />
               </div>
               <div>
-                <h3 className="text-base font-bold text-gray-900 mb-2"> Shipping & Delivery</h3>
+                <h3 className="text-base font-bold text-gray-900 mb-2">
+                  {" "}
+                  Shipping & Delivery
+                </h3>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  Delivery times are estimates. You're responsible for accurate shipping information. International orders may incur customs fees. We're not liable for carrier delays.
+                  Delivery times are estimates. You're responsible for accurate
+                  shipping information. International orders may incur customs
+                  fees. We're not liable for carrier delays.
                 </p>
               </div>
             </div>
@@ -105,9 +138,14 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ onClose }) => {
                 <CheckCircle2 className="text-blue-700" size={20} />
               </div>
               <div>
-                <h3 className="text-base font-bold text-gray-900 mb-2"> Returns & Refunds</h3>
+                <h3 className="text-base font-bold text-gray-900 mb-2">
+                  {" "}
+                  Returns & Refunds
+                </h3>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  30-day return policy for unused items in original packaging. Return shipping costs are your responsibility unless defective. Refunds processed within 5-10 business days.
+                  30-day return policy for unused items in original packaging.
+                  Return shipping costs are your responsibility unless
+                  defective. Refunds processed within 5-10 business days.
                 </p>
               </div>
             </div>
@@ -120,9 +158,14 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ onClose }) => {
                 <UserCheck className="text-blue-700" size={20} />
               </div>
               <div>
-                <h3 className="text-base font-bold text-gray-900 mb-2"> User Conduct</h3>
+                <h3 className="text-base font-bold text-gray-900 mb-2">
+                  {" "}
+                  User Conduct
+                </h3>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  Do not use our platform for illegal activities, attempt unauthorized access, post harmful content, or violate applicable laws. We reserve the right to terminate accounts.
+                  Do not use our platform for illegal activities, attempt
+                  unauthorized access, post harmful content, or violate
+                  applicable laws. We reserve the right to terminate accounts.
                 </p>
               </div>
             </div>
@@ -135,9 +178,14 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ onClose }) => {
                 <Shield className="text-blue-700" size={20} />
               </div>
               <div>
-                <h3 className="text-base font-bold text-gray-900 mb-2"> Limitation of Liability</h3>
+                <h3 className="text-base font-bold text-gray-900 mb-2">
+                  {" "}
+                  Limitation of Liability
+                </h3>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  Qubitx is not liable for indirect or consequential damages. Our total liability is limited to the amount you paid for the product or service.
+                  Qubitx is not liable for indirect or consequential damages.
+                  Our total liability is limited to the amount you paid for the
+                  product or service.
                 </p>
               </div>
             </div>
@@ -151,7 +199,10 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ onClose }) => {
                   <Lock className="text-blue-700" size={18} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-gray-900 mb-2"> Privacy</h3>
+                  <h3 className="text-sm font-bold text-gray-900 mb-2">
+                    {" "}
+                    Privacy
+                  </h3>
                   <p className="text-xs text-gray-600 leading-relaxed">
                     Your data is protected per our Privacy Policy.
                   </p>
@@ -165,7 +216,10 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ onClose }) => {
                   <FileText className="text-blue-700" size={18} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-gray-900 mb-2"> Changes</h3>
+                  <h3 className="text-sm font-bold text-gray-900 mb-2">
+                    {" "}
+                    Changes
+                  </h3>
                   <p className="text-xs text-gray-600 leading-relaxed">
                     Terms may be modified. Continued use means acceptance.
                   </p>
@@ -181,9 +235,13 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({ onClose }) => {
                 <Mail className="text-white" size={20} />
               </div>
               <div>
-                <h3 className="text-base font-bold text-gray-900 mb-2">. Contact Us</h3>
+                <h3 className="text-base font-bold text-gray-900 mb-2">
+                  . Contact Us
+                </h3>
                 <div className="space-y-1 text-sm text-gray-700">
-                  <p><strong>Email:</strong> support@qubitx.com</p>
+                  <p>
+                    <strong>Email:</strong> support@qubitx.com
+                  </p>
                 </div>
               </div>
             </div>

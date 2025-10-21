@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { loginSuccess } from "../../../../slices/authSlice";
 import api from "../../../../api/axios";
-import { toast } from "sonner"
+import { toast } from "sonner";
 import { extractErrorMessages } from "../../../../utils/helpers/extractErrorMessages";
 
 interface FormData {
@@ -12,7 +12,10 @@ interface FormData {
 }
 
 export const useLogin = () => {
-  const [formData, setFormData] = useState<FormData>({ email: "", password: "" });
+  const [formData, setFormData] = useState<FormData>({
+    email: "",
+    password: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -31,7 +34,9 @@ export const useLogin = () => {
 
     setLoading(true);
     try {
-      const res = await api.post("/auth/login", formData, { withCredentials: true });
+      const res = await api.post("/auth/login", formData, {
+        withCredentials: true,
+      });
       dispatch(loginSuccess(res.data.user));
       toast.success("Login successful");
       navigate("/");
@@ -43,8 +48,6 @@ export const useLogin = () => {
   };
 
   const handleSignUp = () => navigate("/signup");
-
- 
 
   return {
     formData,

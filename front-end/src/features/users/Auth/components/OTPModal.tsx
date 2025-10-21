@@ -2,17 +2,22 @@ import { useEffect } from "react";
 import { useOtp } from "../hooks/useOtp";
 import { Spinner } from "@/components/ui/spinner";
 
-
 interface OTPModalProps {
   email: string;
   purpose: "signup" | "forgot-password";
   expiresAt?: string | null;
   onClose: () => void;
   onVerified: () => void;
-   setTestOtp?: (otp: string) => void;
+  setTestOtp?: (otp: string) => void;
 }
 
-const OTPModal = ({ email, purpose, expiresAt, onClose, onVerified, setTestOtp }: OTPModalProps) => {
+const OTPModal = ({
+  email,
+  purpose,
+  expiresAt,
+  onClose,
+  onVerified,
+}: OTPModalProps) => {
   const {
     otp,
     loading,
@@ -23,7 +28,7 @@ const OTPModal = ({ email, purpose, expiresAt, onClose, onVerified, setTestOtp }
     handleKeyDown,
     verifyOtp,
     resendOtp,
-    
+
     setInitialTimer,
   } = useOtp(email, purpose);
 
@@ -40,7 +45,6 @@ const OTPModal = ({ email, purpose, expiresAt, onClose, onVerified, setTestOtp }
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg w-100 sm:w-96 text-center">
@@ -56,7 +60,9 @@ const OTPModal = ({ email, purpose, expiresAt, onClose, onVerified, setTestOtp }
               type="text"
               maxLength={1}
               value={digit}
-              ref={(el) => { inputRefs.current[index] = el; }}
+              ref={(el) => {
+                inputRefs.current[index] = el;
+              }}
               onChange={(e) => handleChange(e.target.value, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               className="w-10 h-12 text-center border border-gray-400 rounded-md focus:ring-1 focus:ring-blue-500 text-lg outline-none"
@@ -66,7 +72,12 @@ const OTPModal = ({ email, purpose, expiresAt, onClose, onVerified, setTestOtp }
 
         <div className="mb-4 text-sm text-gray-800">
           {timer > 0 ? (
-            <>OTP expires in <span className="font-semibold text-blue-900">{formatTime(timer)}</span></>
+            <>
+              OTP expires in{" "}
+              <span className="font-semibold text-blue-900">
+                {formatTime(timer)}
+              </span>
+            </>
           ) : (
             <span className="text-red-600 font-medium">OTP expired</span>
           )}
@@ -74,22 +85,23 @@ const OTPModal = ({ email, purpose, expiresAt, onClose, onVerified, setTestOtp }
 
         <button
           onClick={() => verifyOtp(onVerified, onClose)}
-          disabled={loading}
-              className={`w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2.5 sm:py-3 rounded-lg transition-colors shadow-sm text-sm sm:text-base flex items-center justify-center gap-2 ${
-                loading ? "opacity-70 cursor-not-allowed" : ""
+          disabled={loading || timer === 0}
+          className={`w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-2.5 sm:py-3 rounded-lg transition-colors shadow-sm text-sm sm:text-base flex items-center justify-center gap-2 ${
+            loading ? "opacity-70 cursor-not-allowed" : ""
           }`}
         >
-          {loading ?
-          <>
-                  <Spinner />
-                  <span>Verifying</span>
-                </>:
-          "Verify OTP"
-        }
+          {loading ? (
+            <>
+              <Spinner />
+              <span>Verifying</span>
+            </>
+          ) : (
+            "Verify OTP"
+          )}
         </button>
 
         <button
-         onClick={() => resendOtp((newOtp) => setTestOtp?.(newOtp))}
+          onClick={resendOtp}
           disabled={!resendAllowed || loading}
           className="mt-2 w-full py-2 text-sm text-blue-600 hover:underline disabled:text-gray-400"
         >
