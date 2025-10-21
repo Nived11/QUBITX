@@ -366,6 +366,7 @@ const SignupForm = () => {
           expiresAt={otpExpiresAt}
           onVerified={handleOtpVerified}
           onClose={handleOtpClose}
+          setTestOtp={setTestOtp}
         />
       )}
     </>

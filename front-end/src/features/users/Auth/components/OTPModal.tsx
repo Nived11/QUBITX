@@ -9,9 +9,10 @@ interface OTPModalProps {
   expiresAt?: string | null;
   onClose: () => void;
   onVerified: () => void;
+   setTestOtp?: (otp: string) => void;
 }
 
-const OTPModal = ({ email, purpose, expiresAt, onClose, onVerified }: OTPModalProps) => {
+const OTPModal = ({ email, purpose, expiresAt, onClose, onVerified, setTestOtp }: OTPModalProps) => {
   const {
     otp,
     loading,
@@ -22,6 +23,7 @@ const OTPModal = ({ email, purpose, expiresAt, onClose, onVerified }: OTPModalPr
     handleKeyDown,
     verifyOtp,
     resendOtp,
+    
     setInitialTimer,
   } = useOtp(email, purpose);
 
@@ -37,6 +39,7 @@ const OTPModal = ({ email, purpose, expiresAt, onClose, onVerified }: OTPModalPr
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
+
 
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
@@ -86,7 +89,7 @@ const OTPModal = ({ email, purpose, expiresAt, onClose, onVerified }: OTPModalPr
         </button>
 
         <button
-          onClick={resendOtp}
+         onClick={() => resendOtp((newOtp) => setTestOtp?.(newOtp))}
           disabled={!resendAllowed || loading}
           className="mt-2 w-full py-2 text-sm text-blue-600 hover:underline disabled:text-gray-400"
         >
