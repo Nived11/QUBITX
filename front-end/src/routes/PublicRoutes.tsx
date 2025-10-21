@@ -1,7 +1,7 @@
 import { Route } from "react-router-dom";
 import PublicLayout from "../layouts/PublicLayout";
 import ProfileLayout from "../layouts/ProfileLayout";
-// import ProtectedRoute from "./ProtectedRoute";
+import ProtectedRoute from "./ProtectedRoute";
 import { SignUp,Login, Home, ProductDetails, NotFound, Cart, ProfileInfo, Orders, UserAddress, SellProducts } from "../pages/user";
 
 const PublicRoutes = () => {
@@ -14,7 +14,7 @@ const PublicRoutes = () => {
         <Route path="/product/:id" element={<ProductDetails />} />
 
         {/* Protected section */}
-        {/* <Route element={<ProtectedRoute />}> */}
+        <Route element={<ProtectedRoute />}>
           <Route path="/cart" element={<Cart />} />
           <Route path="/profile" element={<ProfileLayout />}>
             <Route index element={<ProfileInfo />} />
@@ -23,7 +23,7 @@ const PublicRoutes = () => {
             <Route path="sell-products" element={<SellProducts />} />
           </Route>
         </Route>
-      {/* </Route> */}
+      </Route>
 
       {/* Login is outside PublicLayout */}
       <Route path="/login" element={<Login />} />
