@@ -65,7 +65,9 @@ const SidebarContent = ({ setIsMobileMenuOpen }: SidebarContentProps) => {
             className="w-24 h-24 rounded-full"
           />
         </div>
-        <h2 className="text-white text-xl font-bold">Hello {user?.name} !</h2>
+        <h2 className="text-white text-xl font-bold"> 
+          Hello {user?.name ? user.name.split(" ")[0].charAt(0).toUpperCase() + user.name.split(" ")[0].slice(1) : ""}{" "}!
+          </h2>
       </div>
 
       {/* sidebar nav */}

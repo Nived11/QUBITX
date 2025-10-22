@@ -66,7 +66,7 @@ const Banners = () => {
   const sliderRef = useRef<Slider | null>(null);
 
   return (
-    <div className="relative mt-6 overflow-hidden rounded-lg">
+    <div className="relative mb-2 overflow-hidden rounded-lg">
       <NextArrow onClick={() => sliderRef.current?.slickNext()} />
       <PrevArrow onClick={() => sliderRef.current?.slickPrev()} />
 

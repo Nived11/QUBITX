@@ -4,6 +4,9 @@ interface User {
   email: string;
   name: string;
   userType: string;
+  phone?: string;
+  companyName?: string;
+  companyProof?: string;
 }
 
 interface AuthState {
