@@ -9,6 +9,7 @@ import {
   FiShoppingBag,
   FiHeart,
 } from "react-icons/fi";
+
 import { useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -73,7 +74,7 @@ const Header = () => {
                   onClick={() => navigate("/wishlist")}
                   className="relative p-2 sm:p-2.5 md:p-3 rounded-full hover:bg-red-100 transform transition hover:scale-105"
                 >
-                  <FiHeart className="text-red-600 text-xl sm:text-xl md:text-xl" />
+                  <FiHeart className="text-gray-800 text-xl sm:text-xl md:text-xl" />
                   <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
                     3
                   </span>
@@ -82,8 +83,8 @@ const Header = () => {
                   onClick={() => navigate("/cart")}
                   className="relative p-2 sm:p-2.5 md:p-3 rounded-full hover:bg-blue-100 transform transition hover:scale-105"
                 >
-                  <FiShoppingCart className="text-blue-800 text-xl sm:text-xl md:text-xl" />
-                  <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                  <FiShoppingCart className="text-gray-900 text-xl sm:text-xl md:text-xl" />
+                  <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-700 text-xs text-white">
                     2
                   </span>
                 </button>

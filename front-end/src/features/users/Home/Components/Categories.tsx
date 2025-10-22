@@ -38,10 +38,10 @@ const Categories = () => {
         <img
           src={cat.image}
           alt={cat.name}
-          className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-12 lg:h-12 object-contain hover:scale-[1.4] transition-transform duration-300"
+          className="w-12 h-12 sm:w-12 sm:h-12 md:w-12 md:h-12 lg:w-12 lg:h-12  object-contain hover:scale-[1.4] transition-transform duration-300"
         />
       </div>
-      <p className="text-xs sm:text-sm md:text-sm lg:text-sm font-semibold text-blue-900 mt-2 ml-1 truncate">
+      <p className="text-xs sm:text-sm md:text-sm lg:text-sm font-semibold text-gray-700 mt-2 ml-1 truncate">
         {cat.name}
       </p>
     </div>
