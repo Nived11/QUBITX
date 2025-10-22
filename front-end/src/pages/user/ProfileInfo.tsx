@@ -63,10 +63,9 @@ const ProfileInfo = () => {
           {/* Form */}
           <div className="space-y-4 sm:space-y-6">
             {/* First Name & Last Name */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
                 <label className="block text-sm sm:text-base text-gray-700 font-semibold mb-2">
-                  First Name
+                  Full Name
                 </label>
                 <input
                   type="text"
@@ -77,20 +76,7 @@ const ProfileInfo = () => {
                   className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border-2 border-black/30 rounded-lg sm:rounded-xl focus:outline-none focus:border-blue-700 transition-all disabled:bg-gray-50 disabled:text-gray-600"
                 />
               </div>
-              <div>
-                <label className="block text-sm sm:text-base text-gray-700 font-semibold mb-2">
-                  Last Name
-                </label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  disabled={!isEditing}
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border-2 border-black/30 rounded-lg sm:rounded-xl focus:outline-none focus:border-blue-700 transition-all disabled:bg-gray-50 disabled:text-gray-600"
-                />
-              </div>
-            </div>
+              
 
             {/* Phone Number */}
             <div>

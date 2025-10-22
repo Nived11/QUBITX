@@ -51,19 +51,19 @@ const Header = () => {
         <div className="flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 sm:gap-4">
           <div
             onClick={() => navigate("/")}
-            className="logo text-3xl sm:text-3xl md:text-3xl font-bold text-blue-800 cursor-pointer"
+            className="logo text-3xl sm:text-3xl md:text-3xl bg-gradient-to-r from-blue-700 to-blue-900 bg-clip-text font-bold text-blue-900 cursor-pointer"
           >
             {AppName}
           </div>
           <div className="relative w-full sm:w-auto sm:flex-1 sm:max-w-md order-3 sm:order-2">
             <FiSearch
               size={16}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-800"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-900"
             />
             <input
               type="text"
               placeholder="Search..."
-              className="placeholder:text-blue-800 w-full rounded-full border-2 border-blue-800 text-blue-800 py-2 pl-10 pr-4 focus:outline-none focus:ring-1 focus:ring-blue-300 text-sm sm:text-base md:text-base md:py-1.5"
+              className="placeholder:text-gray-900 w-full rounded-full border-2 border-blue-800 text-gray-900 py-2 pl-10 pr-4 focus:outline-none focus:ring-1 focus:ring-blue-300 text-sm sm:text-base md:text-base md:py-1.5"
             />
           </div>
 

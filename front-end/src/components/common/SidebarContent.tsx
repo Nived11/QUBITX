@@ -1,7 +1,16 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { FiHome, FiShoppingBag, FiUser, FiMapPin, FiPackage, FiLogOut,} from "react-icons/fi";
+import {
+  FiHome,
+  FiShoppingBag,
+  FiUser,
+  FiMapPin,
+  FiPackage,
+  FiLogOut,
+} from "react-icons/fi";
 import { useDispatch } from "react-redux";
 import { handleLogoutUser } from "@/utils/logout";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store";
 
 interface SidebarContentProps {
   setIsMobileMenuOpen?: (open: boolean) => void;
@@ -9,10 +18,14 @@ interface SidebarContentProps {
 
 const SidebarContent = ({ setIsMobileMenuOpen }: SidebarContentProps) => {
   const navigate = useNavigate();
-   const dispatch = useDispatch();
+  const dispatch = useDispatch();
+
+  const { user, isAuthenticated } = useSelector(
+    (state: RootState) => state.auth
+  );
 
   const handleLogout = async () => {
-     await handleLogoutUser(dispatch, navigate);
+    await handleLogoutUser(dispatch, navigate);
     setIsMobileMenuOpen?.(false);
   };
 
@@ -52,7 +65,7 @@ const SidebarContent = ({ setIsMobileMenuOpen }: SidebarContentProps) => {
             className="w-24 h-24 rounded-full"
           />
         </div>
-        <h2 className="text-white text-xl font-bold">Hello User!</h2>
+        <h2 className="text-white text-xl font-bold">Hello {user?.name} !</h2>
       </div>
 
       {/* sidebar nav */}
@@ -62,7 +75,12 @@ const SidebarContent = ({ setIsMobileMenuOpen }: SidebarContentProps) => {
           <span className="font-medium">Home</span>
         </NavLink>
 
-        <NavLink to="/profile" end onClick={handleNavClick} className={navLinkClass}>
+        <NavLink
+          to="/profile"
+          end
+          onClick={handleNavClick}
+          className={navLinkClass}
+        >
           <FiUser className="text-xl" />
           <span className="font-medium">Profile Info</span>
         </NavLink>
@@ -72,16 +90,25 @@ const SidebarContent = ({ setIsMobileMenuOpen }: SidebarContentProps) => {
           <span className="font-medium">My Orders</span>
         </NavLink>
 
-
-        <NavLink to="user-address" onClick={handleNavClick} className={navLinkClass}>
+        <NavLink
+          to="user-address"
+          onClick={handleNavClick}
+          className={navLinkClass}
+        >
           <FiMapPin className="text-xl" />
           <span className="font-medium">Address</span>
         </NavLink>
 
-        <NavLink to="sell-products" onClick={handleNavClick} className={navLinkClass}>
-          <FiPackage className="text-xl" />
-          <span className="font-medium">My Products</span>
-        </NavLink>
+        {isAuthenticated && user?.userType === "seller" && (
+          <NavLink
+            to="sell-products"
+            onClick={handleNavClick}
+            className={navLinkClass}
+          >
+            <FiPackage className="text-xl" />
+            <span className="font-medium">My Products</span>
+          </NavLink>
+        )}
 
         <button
           onClick={handleLogout}

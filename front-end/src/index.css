@@ -3,6 +3,7 @@
 @import "tailwindcss/utilities";
 @import "slick-carousel/slick/slick.css";
 @import "slick-carousel/slick/slick-theme.css";
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Sansation:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
 
 
 
@@ -15,14 +16,18 @@
   --Secondary:#102362;
   /* background-color: #e6ebff; */
   background-color:rgb(251, 252, 255);
+  font-family: "Sansation", sans-serif;
+  font-style: normal;
 
 }
 .logo {
-  background: linear-gradient(45deg, #2563eb, #4f46e5);
+  /* background: linear-gradient(50deg, #4668ff, #0f088f); */
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
   transition: transform 0.3s ease;
+   font-family: "Audiowide", sans-serif;
+  font-style: normal;
 }
 
 .logo:hover {

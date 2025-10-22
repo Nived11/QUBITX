@@ -2,15 +2,19 @@ import AppName from "./AppName";
 import { Link } from "react-router-dom";
 import { FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
+  const navigate = useNavigate();
   return (
     <footer className="bg-gradient-to-r from-[#140b5b] to-[#102362] text-white  pt-10 pb-6">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="transition-transform duration-300 hover:-translate-y-1">
-            <h3 className="text-xl font-bold pb-2 mb-3 border-b-2 border-blue-400 inline-block">
+            <h3
+            onClick={() => navigate(`/`)}
+            className="font-['Audiowide'] text-xl font-bold pb-2 mb-3 border-b-2 border-blue-400 inline-block cursor-pointer">
               {AppName}
             </h3>
             <p className="text-gray-300">
