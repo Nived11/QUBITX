@@ -1,5 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { FiHome, FiShoppingBag, FiUser, FiMapPin, FiPackage, FiLogOut,} from "react-icons/fi";
+import { useDispatch } from "react-redux";
+import { handleLogoutUser } from "@/utils/logout";
 
 interface SidebarContentProps {
   setIsMobileMenuOpen?: (open: boolean) => void;
@@ -7,10 +9,10 @@ interface SidebarContentProps {
 
 const SidebarContent = ({ setIsMobileMenuOpen }: SidebarContentProps) => {
   const navigate = useNavigate();
+   const dispatch = useDispatch();
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/");
+  const handleLogout = async () => {
+     await handleLogoutUser(dispatch, navigate);
     setIsMobileMenuOpen?.(false);
   };
 
