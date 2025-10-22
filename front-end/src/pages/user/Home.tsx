@@ -2,13 +2,13 @@ import {Categories,Banners ,ProductList,ProductCategories} from "../../features/
 
 export default function Home() {
   return (
+    <>
+    <Categories />
     <div className="w-full px-4 py-4">
-      
-      <Categories />
       <Banners />
       <ProductList />
       <ProductCategories/>
-      
     </div>
+    </>
   );
 }

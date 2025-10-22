@@ -21,14 +21,14 @@ const categories = [
     { name: "Gaming", image: gaming },
     { name: "Tablets", image: tablet },
     { name: "Smart Home", image: smarthome },
-    { name: "Accessories", image: cpu },
-    { name: "Earbuds", image: earbuds },
     { name: "Printers", image: printers },
+    { name: "Earbuds", image: earbuds },
+    { name: "Accessories", image: cpu },
   ];
 
 const Categories = () => {
   return (
-    <div className="  flex items-center gap-3 sm:gap-4 md:gap-6 lg:gap-10 xl:gap-12 overflow-x-auto scrollbar-hide">
+    <div className=" px-2 py-4  flex items-center gap-5 sm:gap-4 md:gap-6 lg:gap-10 xl:gap-12 overflow-x-auto scrollbar-hide">
   {categories.map((cat, idx) => (
     <div
       key={idx}
