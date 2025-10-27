@@ -20,7 +20,7 @@ const SidebarContent = ({ setIsMobileMenuOpen }: SidebarContentProps) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { user, isAuthenticated } = useSelector(
+  const { user } = useSelector(
     (state: RootState) => state.auth
   );
 
@@ -101,7 +101,6 @@ const SidebarContent = ({ setIsMobileMenuOpen }: SidebarContentProps) => {
           <span className="font-medium">Address</span>
         </NavLink>
 
-        {isAuthenticated && user?.userType === "seller" && (
           <NavLink
             to="sell-products"
             onClick={handleNavClick}
@@ -110,7 +109,6 @@ const SidebarContent = ({ setIsMobileMenuOpen }: SidebarContentProps) => {
             <FiPackage className="text-xl" />
             <span className="font-medium">My Products</span>
           </NavLink>
-        )}
 
         <button
           onClick={handleLogout}

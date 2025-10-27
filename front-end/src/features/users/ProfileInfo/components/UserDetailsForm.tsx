@@ -1,5 +1,8 @@
-import { User, Phone, Mail, Edit2 } from "lucide-react";
+import { User, Mail, Edit2 } from "lucide-react";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 import { useProfile } from "../hooks/useProfile";
+import { Spinner } from "@/components/ui/spinner";
 
 const UserDetailsForm = () => {
   const {
@@ -10,6 +13,7 @@ const UserDetailsForm = () => {
     handleEdit,
     handleSave,
     handleCancel,
+    handlePhoneChange,
   } = useProfile();
 
   return (
@@ -43,6 +47,7 @@ const UserDetailsForm = () => {
 
           {/* Form */}
           <div className="space-y-4 sm:space-y-6">
+            {/* Full Name */}
             <div>
               <label className="block text-sm sm:text-base text-gray-700 font-semibold mb-2">
                 Full Name
@@ -57,21 +62,36 @@ const UserDetailsForm = () => {
               />
             </div>
 
+            {/* Phone Number with country code */}
             <div>
-              <label className="flex items-center gap-2 text-sm sm:text-base text-gray-700 font-semibold mb-2">
-                <Phone className="text-blue-700 w-4 h-4 sm:w-5 sm:h-5" />
+              <label className="block text-sm sm:text-base text-gray-700 font-semibold mb-2">
                 Phone Number
               </label>
-              <input
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className="w-full px-3 py-2.5 border-2 border-black/30 rounded-lg focus:outline-none focus:border-blue-700 disabled:bg-gray-50 disabled:text-gray-600"
-              />
+              <div className={isEditing ? "opacity-100" : "opacity-80 pointer-events-none"}>
+                <PhoneInput
+                  country={"in"}
+                  value={formData.phone}
+                  onChange={handlePhoneChange}
+                  inputProps={{
+                    name: "phone",
+                    disabled: !isEditing,
+                  }}
+                  containerClass="w-full"
+                  inputClass="!w-full !pl-12 pr-3 py-2.5 !border-2 !border-black/30 !rounded-lg focus:!border-blue-700 disabled:!bg-gray-50 disabled:!text-gray-600"
+                  buttonClass="!border !border-gray-400 !bg-white !rounded-l-md"
+                  dropdownClass="!z-50"
+                  enableSearch
+                  searchPlaceholder="Search country"
+                  inputStyle={{
+                    width: "100%",
+                    height: "42px",
+                    fontSize: "14px",
+                  }}
+                />
+              </div>
             </div>
 
+            {/* Email Address */}
             <div>
               <label className="flex items-center gap-2 text-sm sm:text-base text-gray-700 font-semibold mb-2">
                 <Mail className="text-blue-700 w-4 h-4 sm:w-5 sm:h-5" />
@@ -102,9 +122,19 @@ const UserDetailsForm = () => {
               <button
                 onClick={handleSave}
                 disabled={loading}
-                className="w-full sm:w-auto px-7 py-3 bg-gradient-to-r from-blue-800 to-blue-900 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all"
+                className={`w-full sm:w-auto px-7 py-3 font-semibold rounded-xl transition-all text-white 
+                ${loading
+                  ? "bg-blue-500 cursor-not-allowed flex items-center justify-center gap-2"
+                  : "bg-gradient-to-r from-blue-800 to-blue-900 hover:from-blue-700 hover:to-blue-800"}`}
               >
-                {loading ? "Saving..." : "Save Changes"}
+                {loading ? (
+                  <>
+                    <Spinner className="w-5 h-5 border-white border-t-transparent" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save Changes"
+                )}
               </button>
               <button
                 onClick={handleCancel}

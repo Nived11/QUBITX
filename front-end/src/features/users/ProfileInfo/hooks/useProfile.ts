@@ -25,6 +25,10 @@ export const useProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const handlePhoneChange = (value: string) => {
+  setFormData((prev) => ({ ...prev, phone: value }));
+};
+
   // Fetch user info
   useEffect(() => {
     const fetchUser = async () => {
@@ -137,5 +141,6 @@ export const useProfile = () => {
     handleEdit,
     handleCancel,
     handleSave,
+    handlePhoneChange
   };
 };

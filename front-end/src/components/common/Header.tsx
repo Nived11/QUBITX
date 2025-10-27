@@ -154,7 +154,6 @@ const Header = () => {
                         </span>
                       </button>
 
-                      {isAuthenticated && user?.userType === "seller" && (
                         <button
                            onClick={() => { navigate("/profile/sell-products"); setIsDropdownOpen(false); }}
                           className="group relative w-full px-4 py-2 mb-1  border border-l-[4px] border-r-[4px] text-left overflow-hidden"
@@ -165,7 +164,6 @@ const Header = () => {
                             <span>Sell Items</span>
                           </span>
                         </button>
-                      )}
                       <button
                         onClick={handleLogout}
                         className="group relative w-full px-4 py-2 rounded-br-[30px] border border-l-[4px] border-r-[4px] text-left overflow-hidden"
