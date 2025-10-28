@@ -63,10 +63,17 @@ export const useProfile = () => {
           email: userData.email || "",
         });
       } catch (error: any) {
-        console.error("Failed to load user info:", error);
-        const errorMessage = error.response?.data?.message || "Failed to load user info";
-        toast.error(errorMessage);
+         if (
+        error.response?.status === 401 &&
+        error.response?.data?.message === "Access token expired. Please refresh."
+      ) {
+        return; // do nothing, interceptor will refresh and retry
       }
+
+      console.error("Failed to load user info:", error);
+      const errorMessage = error.response?.data?.message || "Failed to load user info";
+      toast.error(errorMessage);
+    }
     };
     
     // Only fetch if user is authenticated

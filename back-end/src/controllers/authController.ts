@@ -20,18 +20,20 @@ export const loginUser = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Password is incorrect" });
 
     const { accessToken, refreshToken } = generateTokens(user._id.toString());
+    const isProduction = process.env.NODE_ENV === "production";
+
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
       maxAge: 15 * 60 * 1000, // 15 min
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      secure: isProduction ,
+      sameSite: isProduction ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
@@ -70,18 +72,19 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
     const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET!) as { id: string };
 
     const { accessToken, refreshToken: newRefresh } = generateTokens(decoded.id);
+    const isProduction = process.env.NODE_ENV === "production";
 
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
       maxAge: 15 * 60 * 1000,
     });
 
     res.cookie("refreshToken", newRefresh, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
