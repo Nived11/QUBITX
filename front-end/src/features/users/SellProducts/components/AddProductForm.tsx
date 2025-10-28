@@ -513,7 +513,7 @@ const AddProductForm = ({ onClose }: { onClose: () => void }) => {
                 type="button"
                 onClick={handleSubmit}
                 disabled={loading}
-                className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 sm:px-14 py-2.5 sm:py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all font-semibold text-sm sm:text-base disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
+                className="flex items-center justify-center gap-2 bg-gradient-to-br from-blue-600 to-blue-900 text-white px-8 sm:px-14 py-2.5 sm:py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all font-semibold text-sm sm:text-base disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
               >
                 {loading ? (
                   <>
