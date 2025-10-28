@@ -6,15 +6,15 @@ import { getUserDetails, updateUser, deleteUser, becomeSeller } from "../control
 const router = express.Router();
 
 // Get current user
-router.get("/me", authenticateUser, getUserDetails);
+router.get("/me", getUserDetails);
 
 // Update user profile
-router.put("/update", authenticateUser, updateUser);
+router.put("/update", updateUser);
 
 // Delete user account
-router.delete("/delete", authenticateUser, deleteUser);
+router.delete("/delete", deleteUser);
 
 // Become a seller (upload proof)
-router.patch("/become-seller", authenticateUser, upload.single("companyProof"), becomeSeller);
+router.patch("/become-seller", upload.single("companyProof"), becomeSeller);
 
 export default router;
