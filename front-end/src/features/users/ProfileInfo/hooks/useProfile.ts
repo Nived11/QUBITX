@@ -66,8 +66,9 @@ export const useProfile = () => {
          if (
         error.response?.status === 401 &&
         error.response?.data?.message === "Access token expired. Please refresh."
+        
       ) {
-        return; // do nothing, interceptor will refresh and retry
+        return; 
       }
 
       console.error("Failed to load user info:", error);
