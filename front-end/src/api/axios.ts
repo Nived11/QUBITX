@@ -20,42 +20,40 @@ api.interceptors.response.use(
     const originalRequest = error.config;
 
     // Token expired
-    if (
-      error.response?.status === 401 &&
-      error.response?.data?.message === "Access token expired. Please refresh." &&
-      !originalRequest._retry
-    ) {
-      originalRequest._retry = true;
-      try {
-        // Try refresh from localStorage
-        const refreshToken =
-          localStorage.getItem("refreshToken");
+   if (
+  error.response?.status === 401 &&
+  error.response?.data?.message === "Access token expired. Please refresh." &&
+  !originalRequest._retry
+) {
+  originalRequest._retry = true;
+  try {
+    // Check for refresh token from localStorage (fallback)
+    const localRefresh = localStorage.getItem("refreshToken");
 
-        const res = await api.post(
-          "/auth/refresh-token",
-          {},
-          {
-            headers: { Authorization: `Bearer ${refreshToken}` },
-            withCredentials: true,
-          }
-        );
-
-        // ✅ Update localStorage with new tokens
-        if (res.data.accessToken) {
-          localStorage.setItem("accessToken", res.data.accessToken);
-          localStorage.setItem("refreshToken", res.data.refreshToken);
-        }
-
-        // Retry original request
-        return api(originalRequest);
-      } catch (refreshError) {
-        console.error("Token refresh failed:", refreshError);
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        window.location.href = "/login";
-        return Promise.reject(refreshError);
+    const refreshRes = await api.post(
+      "/auth/refresh-token",
+      {},
+      {
+        withCredentials: true,
+        headers: localRefresh ? { Authorization: `Bearer ${localRefresh}` } : {},
       }
+    );
+
+    // Save new tokens to localStorage (backup)
+    if (refreshRes.data?.accessToken) {
+      localStorage.setItem("accessToken", refreshRes.data.accessToken);
+      localStorage.setItem("refreshToken", refreshRes.data.refreshToken);
     }
+
+    return api(originalRequest);
+  } catch (refreshError) {
+    console.error("Token refresh failed:", refreshError);
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    window.location.href = "/login";
+    return Promise.reject(refreshError);
+  }
+}
 
     return Promise.reject(error);
   }
