@@ -64,18 +64,26 @@ export const logoutUser = async (_: Request, res: Response) => {
   res.status(200).json({ message: "Logged out successfully" });
 };
 
-// Refresh Access Token
+// ====================== REFRESH TOKEN ======================
 export const refreshAccessToken = async (req: Request, res: Response) => {
-  const refreshToken = req.cookies.refreshToken;
+  // Try to get refresh token from cookies first, then from headers
+  const refreshToken =
+    req.cookies.refreshToken ||
+    req.headers["authorization"]?.replace("Bearer ", "");
+
   if (!refreshToken)
     return res.status(401).json({ message: "No refresh token found" });
 
   try {
-    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET!) as { id: string };
+    const decoded = jwt.verify(
+      refreshToken,
+      process.env.JWT_REFRESH_SECRET!
+    ) as { id: string };
 
     const { accessToken, refreshToken: newRefresh } = generateTokens(decoded.id);
     const isProduction = process.env.NODE_ENV === "production";
 
+    // Always set cookies if possible
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: isProduction,
@@ -90,17 +98,18 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-   res.status(200).json({
-  message: "Access token refreshed",
-  accessToken,
-  refreshToken: newRefresh,
-});
-
+    // Also return them in body (so frontend can save to localStorage)
+    res.status(200).json({
+      message: "Access token refreshed",
+      accessToken,
+      refreshToken: newRefresh,
+    });
   } catch (error) {
     console.error("Refresh token error:", error);
     res.status(403).json({ message: "Invalid refresh token" });
   }
 };
+
 
 // Change Password after Forgot OTP
 export const changePassword = async (req: Request, res: Response) => {
