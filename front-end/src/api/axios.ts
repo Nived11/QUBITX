@@ -5,13 +5,21 @@ const api = axios.create({
   withCredentials: true,
 });
 
+// ✅ Add accessToken from localStorage if cookies are blocked
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("accessToken");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // Handle token expiry case
+    // Token expired
     if (
       error.response?.status === 401 &&
       error.response?.data?.message === "Access token expired. Please refresh." &&
@@ -19,22 +27,38 @@ api.interceptors.response.use(
     ) {
       originalRequest._retry = true;
       try {
-        // Attempt token refresh
-        await api.post("/auth/refresh-token", {}, { withCredentials: true });
+        // Try refresh from localStorage
+        const refreshToken =
+          localStorage.getItem("refreshToken");
 
-        // Retry the original request
+        const res = await api.post(
+          "/auth/refresh-token",
+          {},
+          {
+            headers: { Authorization: `Bearer ${refreshToken}` },
+            withCredentials: true,
+          }
+        );
+
+        // ✅ Update localStorage with new tokens
+        if (res.data.accessToken) {
+          localStorage.setItem("accessToken", res.data.accessToken);
+          localStorage.setItem("refreshToken", res.data.refreshToken);
+        }
+
+        // Retry original request
         return api(originalRequest);
       } catch (refreshError) {
         console.error("Token refresh failed:", refreshError);
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
         window.location.href = "/login";
         return Promise.reject(refreshError);
       }
     }
 
-    // For any other error, propagate it normally
     return Promise.reject(error);
   }
 );
-
 
 export default api;

@@ -11,6 +11,8 @@ export const handleLogoutUser = async (dispatch: AppDispatch, navigate: any) => 
     toast.error("Logout failed");
     console.error("Logout error:", error);
   } finally {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
     dispatch(logout());
     navigate("/login");
   }

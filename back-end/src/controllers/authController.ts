@@ -48,6 +48,8 @@ export const loginUser = async (req: Request, res: Response) => {
         companyName: user.companyName,
         companyProof: user.companyProof,
       },
+    accessToken,
+    refreshToken,
     });
   } catch (error) {
     console.error("Login error:", error);
@@ -88,7 +90,12 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    res.status(200).json({ message: "Access token refreshed" });
+   res.status(200).json({
+  message: "Access token refreshed",
+  accessToken,
+  refreshToken: newRefresh,
+});
+
   } catch (error) {
     console.error("Refresh token error:", error);
     res.status(403).json({ message: "Invalid refresh token" });

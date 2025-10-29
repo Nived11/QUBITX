@@ -37,6 +37,10 @@ export const useLogin = () => {
       const res = await api.post("/auth/login", formData, {
         withCredentials: true,
       });
+        if (res.data.accessToken && res.data.refreshToken) {
+    localStorage.setItem("accessToken", res.data.accessToken);
+    localStorage.setItem("refreshToken", res.data.refreshToken);
+  }
       dispatch(loginSuccess(res.data.user));
       toast.success("Login successful");
       navigate("/");
