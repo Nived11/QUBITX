@@ -39,12 +39,15 @@ export const addProduct = async (req: Request, res: Response) => {
         .map((f) => (f as any).path);
       return { colorName, images: colorImages };
     });
+    const discountAmount = (actualPrice * discountPercentage) / 100;
+    const discountedPrice = actualPrice - discountAmount;
 
     const newProduct = new Product({
       seller: sellerId, // ✅ Save which seller added it
       name,
       actualPrice,
       discountPercentage,
+      discountedPrice,
       category,
       brand,
       warranty,
@@ -71,26 +74,51 @@ export const updateProduct = async (req: Request, res: Response) => {
     const updates = req.body;
     const sellerId = (req as any).userId;
 
-    // ✅ Ensure only the product’s seller can edit
+    // Validate seller
     const existing = await Product.findById(productId);
     if (!existing) return res.status(404).json({ message: "Product not found" });
     if (existing.seller.toString() !== sellerId)
       return res.status(403).json({ message: "Access denied: not your product" });
 
-    // Parse JSON fields
-    if (updates.specifications && typeof updates.specifications === "string")
-      updates.specifications = JSON.parse(updates.specifications);
-    if (updates.whychoose && typeof updates.whychoose === "string")
-      updates.whychoose = JSON.parse(updates.whychoose);
-    if (updates.colorVariants && typeof updates.colorVariants === "string")
-      updates.colorVariants = JSON.parse(updates.colorVariants);
+    // ✅ Parse JSON fields (for form-data requests)
+    const jsonFields = ["specifications", "whychoose", "colorVariants"];
+    for (const field of jsonFields) {
+      if (updates[field] && typeof updates[field] === "string") {
+        try {
+          updates[field] = JSON.parse(updates[field]);
+        } catch {
+          console.warn(`Invalid JSON for ${field}, skipping parse`);
+          updates[field] = [];
+        }
+      }
+    }
+
+    if (
+      Array.isArray(updates.colorVariants) &&
+      updates.colorVariants.length &&
+      typeof updates.colorVariants[0] === "string"
+    ) {
+      // If user accidentally sent ["Blue", "Red"], convert to proper structure
+      updates.colorVariants = updates.colorVariants.map((colorName: string) => ({
+        colorName,
+        images: [],
+      }));
+    }
 
     const files = req.files as Express.Multer.File[];
+
+    // Handle main images if provided
     const mainImages =
       files?.filter((f) => f.fieldname === "mainImages")?.map((f) => (f as any).path) || [];
-
     if (mainImages.length) updates.$push = { images: { $each: mainImages } };
 
+    // ✅ NEW: Recalculate discounted price if price or discount changed
+    const actualPrice = updates.actualPrice ?? existing.actualPrice;
+    const discountPercentage = updates.discountPercentage ?? existing.discountPercentage;
+    const discountAmount = (actualPrice * discountPercentage) / 100;
+    updates.discountedPrice = actualPrice - discountAmount;
+
+    // Update product
     const updatedProduct = await Product.findByIdAndUpdate(productId, updates, { new: true });
 
     res.status(200).json({ message: "Product updated successfully", updatedProduct });
@@ -99,6 +127,7 @@ export const updateProduct = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error", error: (error as Error).message });
   }
 };
+
 
 // ====================== DELETE PRODUCT ======================
 export const deleteProduct = async (req: Request, res: Response) => {
@@ -142,14 +171,41 @@ export const getProductById = async (req: Request, res: Response) => {
   }
 };
 
-// ====================== GET SELLER'S PRODUCTS ======================
+// ====================== GET SELLER'S PRODUCTS (backend-controlled pagination) ======================
 export const getSellerProducts = async (req: Request, res: Response) => {
   try {
     const sellerId = (req as any).userId;
-    const products = await Product.find({ seller: sellerId }).sort({ createdAt: -1 });
-    res.status(200).json(products);
+    if (!sellerId) return res.status(401).json({ message: "Unauthorized" });
+
+    // Only allow frontend to send page number (default = 1)
+    const page = Number(req.query.page) || 1;
+
+    // Backend-controlled pagination constants
+    const LIMIT = 12; // ✅ Backend decides page size
+    const skip = (page - 1) * LIMIT;
+
+    // Count total seller products
+    const totalProducts = await Product.countDocuments({ seller: sellerId });
+
+    // Fetch paginated, sorted products
+    const products = await Product.find({ seller: sellerId })
+      .sort({ createdAt: -1 }) // ✅ latest first
+      .skip(skip)
+      .limit(LIMIT);
+
+    // Return professional pagination response
+    res.status(200).json({
+      currentPage: page,
+      totalPages: Math.ceil(totalProducts / LIMIT),
+      totalProducts,
+      pageSize: LIMIT,
+      hasNextPage: page * LIMIT < totalProducts,
+      hasPrevPage: page > 1,
+      products,
+    });
   } catch (error) {
     console.error("Get seller products error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
+

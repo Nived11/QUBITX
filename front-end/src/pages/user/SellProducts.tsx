@@ -9,16 +9,25 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 
 const SellProducts = () => {
-  const { user } = useSelector((state: RootState) => state.auth);
+   const { user } = useSelector((state: RootState) => state.auth);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingProductId, setEditingProductId] = useState<string | undefined>(undefined);
 
-  const handleAddProductClick = () => {
+   const handleAddProductClick = () => {
+    setEditingProductId(undefined);
+    setShowAddForm(true);
+  };
+
+  const handleEditProduct = (productId: string) => {
+    setEditingProductId(productId);
     setShowAddForm(true);
   };
 
   const handleCloseForm = () => {
     setShowAddForm(false);
+    setEditingProductId(undefined);
   };
+
 
   if (!user) {
     return (
@@ -31,7 +40,7 @@ const SellProducts = () => {
   return (
     <>
       {showAddForm ? (
-        <AddProductForm onClose={handleCloseForm} />
+       <AddProductForm onClose={handleCloseForm} productId={editingProductId} />
       ) : (
         <div className="min-h-screen bg-gray-50 p-4 md:p-8">
           <div className="max-w-7xl mx-auto">
@@ -51,7 +60,7 @@ const SellProducts = () => {
                   </button>
                 </div>
 
-                <ProductList />
+                  <ProductList onEditProduct={handleEditProduct} />
               </>
             )}
           </div>

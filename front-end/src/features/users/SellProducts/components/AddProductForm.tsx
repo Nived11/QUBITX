@@ -2,8 +2,9 @@ import { useAddProduct } from "../hooks/useAddProduct";
 import { Plus, Upload, Trash2, Package } from "lucide-react";
 import { getSpecificationsByCategory } from "@/constants/categorySpecifications";
 import { Spinner } from "@/components/ui/spinner";
+import ProductFormSkeleton from "./ProductFormSkeleton";
 
-const AddProductForm = ({ onClose }: { onClose: () => void }) => {
+const AddProductForm = ({ onClose, productId }: { onClose: () => void; productId?: string }) => {
   const {
     formData,
     loading,
@@ -24,9 +25,12 @@ const AddProductForm = ({ onClose }: { onClose: () => void }) => {
     handleColorImagesChange,
     removeColorVariantImage,
     handleSubmit,
-  } = useAddProduct(onClose);
+    isEditMode,
+  } = useAddProduct(onClose, productId);
 
   const availableSpecs = getSpecificationsByCategory(formData.category);
+   const title = isEditMode ? "Edit Product" : "Add New Product";
+  const buttonText = isEditMode ? (loading ? "Updating..." : "Update Product") : (loading ? "Adding..." : "Add Product");
 
   return (
     <div className="max-h-[100vh] bg-gray-50 p-2 sm:p-4 overflow-y-auto scrollbar-hide">
@@ -55,7 +59,7 @@ const AddProductForm = ({ onClose }: { onClose: () => void }) => {
             </div>
             <div>
               <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">
-                Add New Product
+               {title}
               </h1>
               <p className="text-xs sm:text-sm mt-0.5 sm:mt-1">
                 Fill in the details below to list your product
@@ -66,6 +70,11 @@ const AddProductForm = ({ onClose }: { onClose: () => void }) => {
       </div>
 
       {/* Form Content */}
+     {
+      loading ? (
+         < ProductFormSkeleton />
+      ) : (
+       
       <div className="mt-4 sm:mt-6">
         <div className="space-y-4 sm:space-y-6">
           {/* Basic Information */}
@@ -518,10 +527,10 @@ const AddProductForm = ({ onClose }: { onClose: () => void }) => {
                 {loading ? (
                   <>
                     <Spinner />
-                    <span>Adding...</span>
+                   <span>{isEditMode ? "Updating..." : "Adding..."}</span>
                   </>
                 ) : (
-                  "Add Product"
+                buttonText
                 )}
               </button>
               <button
@@ -535,6 +544,8 @@ const AddProductForm = ({ onClose }: { onClose: () => void }) => {
           </div>
         </div>
       </div>
+       )
+     }
     </div>
   );
 };

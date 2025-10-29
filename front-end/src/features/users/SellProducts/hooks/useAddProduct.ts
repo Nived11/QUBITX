@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent } from "react";
+import { useState, useEffect, type ChangeEvent } from "react";
 import { toast } from "sonner";
 import api from "../../../../api/axios";
 
@@ -27,7 +27,7 @@ interface ProductFormData {
   colorVariants: ColorVariant[];
 }
 
-export const useAddProduct = (onSuccess?: () => void) => {
+export const useAddProduct = (onSuccess?: () => void, productId?: string) => {
   const [formData, setFormData] = useState<ProductFormData>({
     name: "",
     actualPrice: "",
@@ -46,6 +46,64 @@ export const useAddProduct = (onSuccess?: () => void) => {
   const [loading, setLoading] = useState(false);
   const [mainImagePreviews, setMainImagePreviews] = useState<string[]>([]);
   const [colorVariantPreviews, setColorVariantPreviews] = useState<string[][]>([]);
+  const [existingMainImages, setExistingMainImages] = useState<string[]>([]);
+  const [existingColorImages, setExistingColorImages] = useState<{[key: string]: string[]}>({});
+
+  // Fetch product details if editing
+  useEffect(() => {
+    if (productId) {
+      fetchProductDetails();
+    }
+  }, [productId]);
+
+  const fetchProductDetails = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get(`/products/${productId}`, { withCredentials: true });
+      const product = res.data;
+
+      setFormData({
+        name: product.name || "",
+        actualPrice: product.actualPrice?.toString() || "",
+        discountPercentage: product.discountPercentage?.toString() || "",
+        category: product.category || "",
+        brand: product.brand || "",
+        warranty: product.warranty?.toString() || "",
+        description: product.description || "",
+        whychoose: product.whychoose?.length > 0 ? product.whychoose : [""],
+        stock: product.stock?.toString() || "",
+        specifications: product.specifications?.length > 0 ? product.specifications : [{ label: "", value: "" }],
+        mainImages: [],
+        colorVariants: product.colorVariants?.map((cv: any) => ({
+          colorName: cv.colorName,
+          images: []
+        })) || [],
+      });
+
+      // Set existing image URLs for preview
+      setExistingMainImages(product.images || []);
+      setMainImagePreviews(product.images || []);
+
+      // Set color variant images
+      if (product.colorVariants) {
+        const colorImgs: {[key: string]: string[]} = {};
+        const colorPreviews: string[][] = [];
+        
+        product.colorVariants.forEach((cv: any) => {
+          colorImgs[cv.colorName] = cv.images || [];
+          colorPreviews.push(cv.images || []);
+        });
+        
+        setExistingColorImages(colorImgs);
+        setColorVariantPreviews(colorPreviews);
+      }
+    } catch (error: any) {
+      console.error("Failed to fetch product:", error);
+      toast.error("Failed to load product details");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -90,7 +148,8 @@ export const useAddProduct = (onSuccess?: () => void) => {
   // Handle main images
   const handleMainImagesChange = (e: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    const remainingSlots = 5 - formData.mainImages.length;
+    const totalImages = formData.mainImages.length + existingMainImages.length;
+    const remainingSlots = 5 - totalImages;
     
     if (files.length > remainingSlots) {
       toast.error(`You can only add ${remainingSlots} more image(s)`);
@@ -110,10 +169,18 @@ export const useAddProduct = (onSuccess?: () => void) => {
   };
 
   const removeMainImage = (index: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      mainImages: prev.mainImages.filter((_, i) => i !== index),
-    }));
+    // Check if it's an existing image or new upload
+    if (index < existingMainImages.length) {
+      // Remove from existing images
+      setExistingMainImages(prev => prev.filter((_, i) => i !== index));
+    } else {
+      // Remove from new uploads
+      const newIndex = index - existingMainImages.length;
+      setFormData((prev) => ({
+        ...prev,
+        mainImages: prev.mainImages.filter((_, i) => i !== newIndex),
+      }));
+    }
     setMainImagePreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
@@ -127,11 +194,19 @@ export const useAddProduct = (onSuccess?: () => void) => {
   };
 
   const removeColorVariant = (index: number) => {
+    const colorName = formData.colorVariants[index].colorName;
     setFormData((prev) => ({
       ...prev,
       colorVariants: prev.colorVariants.filter((_, i) => i !== index),
     }));
     setColorVariantPreviews((prev) => prev.filter((_, i) => i !== index));
+    
+    // Remove from existing color images if it exists
+    if (existingColorImages[colorName]) {
+      const newExisting = { ...existingColorImages };
+      delete newExisting[colorName];
+      setExistingColorImages(newExisting);
+    }
   };
 
   const handleColorNameChange = (index: number, value: string) => {
@@ -143,8 +218,10 @@ export const useAddProduct = (onSuccess?: () => void) => {
   const handleColorImagesChange = (index: number, files: FileList | null) => {
     if (!files) return;
     const fileArray = Array.from(files);
+    const colorName = formData.colorVariants[index].colorName;
+    const existingCount = existingColorImages[colorName]?.length || 0;
     const currentImages = formData.colorVariants[index].images;
-    const remainingSlots = 5 - currentImages.length;
+    const remainingSlots = 5 - currentImages.length - existingCount;
     
     if (fileArray.length > remainingSlots) {
       toast.error(`You can only add ${remainingSlots} more image(s) for this color`);
@@ -171,11 +248,23 @@ export const useAddProduct = (onSuccess?: () => void) => {
   };
 
   const removeColorVariantImage = (variantIndex: number, imageIndex: number) => {
-    const newVariants = [...formData.colorVariants];
-    newVariants[variantIndex].images = newVariants[variantIndex].images.filter(
-      (_, i) => i !== imageIndex
-    );
-    setFormData((prev) => ({ ...prev, colorVariants: newVariants }));
+    const colorName = formData.colorVariants[variantIndex].colorName;
+    const existingCount = existingColorImages[colorName]?.length || 0;
+
+    if (imageIndex < existingCount) {
+      // Remove from existing images
+      const newExisting = { ...existingColorImages };
+      newExisting[colorName] = newExisting[colorName].filter((_, i) => i !== imageIndex);
+      setExistingColorImages(newExisting);
+    } else {
+      // Remove from new uploads
+      const newIndex = imageIndex - existingCount;
+      const newVariants = [...formData.colorVariants];
+      newVariants[variantIndex].images = newVariants[variantIndex].images.filter(
+        (_, i) => i !== newIndex
+      );
+      setFormData((prev) => ({ ...prev, colorVariants: newVariants }));
+    }
 
     setColorVariantPreviews((prev) => {
       const newPreviews = [...prev];
@@ -198,7 +287,7 @@ export const useAddProduct = (onSuccess?: () => void) => {
         return;
       }
 
-      if (formData.mainImages.length === 0) {
+      if (formData.mainImages.length === 0 && existingMainImages.length === 0) {
         toast.error("Please upload at least one main image");
         return;
       }
@@ -217,6 +306,12 @@ export const useAddProduct = (onSuccess?: () => void) => {
       // Append arrays as JSON strings
       data.append("whychoose", JSON.stringify(formData.whychoose.filter(h => h.trim() !== "")));
       data.append("specifications", JSON.stringify(formData.specifications.filter(s => s.label && s.value)));
+
+      // Append existing images (for edit mode)
+      if (productId) {
+        data.append("existingMainImages", JSON.stringify(existingMainImages));
+        data.append("existingColorImages", JSON.stringify(existingColorImages));
+      }
 
       // Append main images
       formData.mainImages.forEach((file) => {
@@ -238,35 +333,20 @@ export const useAddProduct = (onSuccess?: () => void) => {
         }
       });
 
-      const res = await api.post("/products/add", data, {
+      const endpoint = productId ? `/products/update/${productId}` : "/products/add";
+      const method = productId ? "put" : "post";
+
+      const res = await api[method](endpoint, data, {
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,
       });
 
-      toast.success(res.data.message || "Product added successfully");
+      toast.success(res.data.message || `Product ${productId ? 'updated' : 'added'} successfully`);
       
-      // Reset form
-      setFormData({
-        name: "",
-        actualPrice: "",
-        discountPercentage: "",
-        category: "",
-        brand: "",
-        warranty: "",
-        description: "",
-        whychoose: [""],
-        stock: "",
-        specifications: [{ label: "", value: "" }],
-        mainImages: [],
-        colorVariants: [],
-      });
-      setMainImagePreviews([]);
-      setColorVariantPreviews([]);
-
       if (onSuccess) onSuccess();
     } catch (error: any) {
-      console.error("Failed to add product:", error);
-      const errorMessage = error.response?.data?.message || "Failed to add product";
+      console.error(`Failed to ${productId ? 'update' : 'add'} product:`, error);
+      const errorMessage = error.response?.data?.message || `Failed to ${productId ? 'update' : 'add'} product`;
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -293,5 +373,6 @@ export const useAddProduct = (onSuccess?: () => void) => {
     handleColorImagesChange,
     removeColorVariantImage,
     handleSubmit,
+    isEditMode: !!productId,
   };
 };

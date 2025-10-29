@@ -15,6 +15,7 @@ export interface IProduct extends Document {
   name: string;
   actualPrice: number;
   discountPercentage?: number;
+  discountedPrice: number;
   category: string;
   brand: string;
   warranty?: string;
@@ -49,6 +50,7 @@ const productSchema = new Schema<IProduct>(
     name: { type: String, required: true },
     actualPrice: { type: Number, required: true },
     discountPercentage: { type: Number, default: 0 },
+    discountedPrice: { type: Number, required: true },
     category: { type: String, required: true },
     brand: { type: String, required: true },
     warranty: { type: String },
