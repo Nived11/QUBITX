@@ -1,11 +1,14 @@
 import { Link } from "react-router-dom";
-import { products } from "../datas/DummyProducts";
 import ProductCard from "./ProductCard";
+import { useProducts } from "../hooks/useProducts";
+import ProductCardSkeleton from "./ProductCardSkeleton";
 
 const ProductCategories = () => {
   // filter dummy data (you can replace these with API calls later)
-  const laptops = products.filter((p) => p.category === "Laptops").slice(0, 4);
-  const mobiles = products.filter((p) => p.category === "Mobiles").slice(0, 4);
+  const { products, loading, error } = useProducts();
+
+  const laptops = products.filter((p) => p.category === "aptops").slice(0, 4);
+  const mobiles = products.filter((p) => p.category === "martphones").slice(0, 4);
   const earphones = products
     .filter((p) => p.category === "earphones")
     .slice(0, 4);
@@ -35,13 +38,16 @@ const ProductCategories = () => {
               </span>
             </Link>
           </div>
+           {error && <div className="text-center py-8 text-red-600">{error} </div>}
           <div className="lg:grid lg:grid-cols-2 lg:gap-4 p-4 flex lg:flex-none overflow-x-auto gap-4 scrollbar-hide snap-x snap-mandatory">
-            {laptops.map((laptop) => (
+            {laptops.map(() => (
               <div
-                key={laptop.id}
+              
                 className="min-w-[48%]  sm:min-w-[160px] lg:min-w-0 snap-start "
               >
-                <ProductCard product={laptop} />
+                 {loading
+        ? Array.from({ length: 4 }).map((_, i) => <ProductCardSkeleton key={i} />)
+        : products.map((p) => <ProductCard key={p._id} product={p} />)}
               </div>
             ))}
           </div>
@@ -69,13 +75,16 @@ const ProductCategories = () => {
                 </span>
               </Link>
             </div>
+             {error && <div className="text-center py-8 text-red-600">{error} </div>}
             <div className="md:grid md:grid-cols-4 md:gap-4 p-4 flex md:flex-none overflow-x-auto gap-4 scrollbar-hide snap-x snap-mandatory">
-              {mobiles.map((mobile) => (
+              {mobiles.map(() => (
                 <div
-                  key={mobile.id}
+                  
                   className="min-w-[140px] sm:min-w-[160px] md:min-w-0 snap-start"
                 >
-                  <ProductCard product={mobile} />
+                  {loading
+        ? Array.from({ length: 4 }).map((_, i) => <ProductCardSkeleton key={i} />)
+        : products.map((p) => <ProductCard key={p._id} product={p} />)}
                 </div>
               ))}
             </div>
@@ -102,13 +111,16 @@ const ProductCategories = () => {
                 </span>
               </Link>
             </div>
+             {error && <div className="text-center py-8 text-red-600">{error} </div>}
             <div className="md:grid md:grid-cols-4 md:gap-4 p-4 flex md:flex-none overflow-x-auto gap-4 scrollbar-hide snap-x snap-mandatory">
-              {earphones.map((earphone) => (
+              {earphones.map(() => (
                 <div
-                  key={earphone.id}
+               
                   className="min-w-[140px] sm:min-w-[160px] md:min-w-0 snap-start"
                 >
-                  <ProductCard product={earphone} />
+                  {loading
+        ? Array.from({ length: 4 }).map((_, i) => <ProductCardSkeleton key={i} />)
+        : products.map((p) => <ProductCard key={p._id} product={p} />)}
                 </div>
               ))}
             </div>

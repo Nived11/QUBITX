@@ -149,15 +149,24 @@ export const deleteProduct = async (req: Request, res: Response) => {
 };
 
 // ====================== GET ALL PRODUCTS ======================
-export const getAllProducts = async (_: Request, res: Response) => {
+export const getAllProducts = async (req: Request, res: Response) => {
   try {
-    const products = await Product.find().populate("seller", "name email").sort({ createdAt: -1 });
+    const userId = (req as any).userId;
+
+    const query = userId ? { seller: { $ne: userId } } : {};
+
+    const products = await Product.find(query)
+      .populate("seller", "name email")
+      .sort({ createdAt: -1 });
+
     res.status(200).json(products);
   } catch (error) {
     console.error("Get all products error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
 
 // ====================== GET PRODUCT BY ID ======================
 export const getProductById = async (req: Request, res: Response) => {

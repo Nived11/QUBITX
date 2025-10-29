@@ -1,4 +1,4 @@
-import iphone from "../../../../assets/iphone16pro.jpg";
+import iphone from "../../../../assets/loginbg.png";
 
 export const products = [
   {

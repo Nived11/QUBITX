@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
-import { products } from "../datas/DummyProducts";
 import FilterProduct from "./FilterProduct";
 import ProductCard from "./ProductCard";
-import { type Product } from "../types";
+import { useProducts } from "../hooks/useProducts";
+import ProductCardSkeleton from "./ProductCardSkeleton";
 
 const ProductList = () => {
-
+   const { products, loading, error } = useProducts();
 
   return (
     <div className="container mx-auto py-6 px-2 sm:px-4">
@@ -17,10 +17,12 @@ const ProductList = () => {
       </div>
 
       <div className="h-auto w-full py-4">
+        {error && <div className="text-center py-8 text-red-600">{error} </div>}
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-4 md:gap-3">
-          {products.map((product: Product) => (
-          <ProductCard  key={product.id} product={product} />
-        ))}
+          
+         {loading
+        ? Array.from({ length: 12 }).map((_, i) => <ProductCardSkeleton key={i} />)
+        : products.map((p) => <ProductCard key={p._id} product={p} />)}
         </div>
       </div>
 
