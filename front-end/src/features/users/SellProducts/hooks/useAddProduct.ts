@@ -1,6 +1,7 @@
 import { useState, useEffect, type ChangeEvent } from "react";
 import { toast } from "sonner";
 import api from "../../../../api/axios";
+import { extractErrorMessages } from "@/utils/helpers/extractErrorMessages";
 
 interface Specification {
   label: string;
@@ -44,6 +45,7 @@ export const useAddProduct = (onSuccess?: () => void, productId?: string) => {
   });
   
   const [loading, setLoading] = useState(false);
+  const [addLoading, setaddLoading] = useState(false);
   const [mainImagePreviews, setMainImagePreviews] = useState<string[]>([]);
   const [colorVariantPreviews, setColorVariantPreviews] = useState<string[][]>([]);
   const [existingMainImages, setExistingMainImages] = useState<string[]>([]);
@@ -98,8 +100,7 @@ export const useAddProduct = (onSuccess?: () => void, productId?: string) => {
         setColorVariantPreviews(colorPreviews);
       }
     } catch (error: any) {
-      console.error("Failed to fetch product:", error);
-      toast.error("Failed to load product details");
+     toast.error(extractErrorMessages(error) || "Failed to fetch product details");
     } finally {
       setLoading(false);
     }
@@ -278,7 +279,7 @@ export const useAddProduct = (onSuccess?: () => void, productId?: string) => {
   // Submit form
   const handleSubmit = async () => {
     try {
-      setLoading(true);
+      setaddLoading(true);
 
       // Validation
       if (!formData.name || !formData.actualPrice || !formData.category || 
@@ -349,13 +350,14 @@ export const useAddProduct = (onSuccess?: () => void, productId?: string) => {
       const errorMessage = error.response?.data?.message || `Failed to ${productId ? 'update' : 'add'} product`;
       toast.error(errorMessage);
     } finally {
-      setLoading(false);
+      setaddLoading(false);
     }
   };
 
   return {
     formData,
     loading,
+    addLoading,
     mainImagePreviews,
     colorVariantPreviews,
     handleChange,

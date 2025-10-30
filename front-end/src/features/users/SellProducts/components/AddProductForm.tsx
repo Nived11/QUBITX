@@ -8,6 +8,7 @@ const AddProductForm = ({ onClose, productId }: { onClose: () => void; productId
   const {
     formData,
     loading,
+    addLoading,
     mainImagePreviews,
     colorVariantPreviews,
     handleChange,
@@ -30,7 +31,7 @@ const AddProductForm = ({ onClose, productId }: { onClose: () => void; productId
 
   const availableSpecs = getSpecificationsByCategory(formData.category);
    const title = isEditMode ? "Edit Product" : "Add New Product";
-  const buttonText = isEditMode ? (loading ? "Updating..." : "Update Product") : (loading ? "Adding..." : "Add Product");
+  const buttonText = isEditMode ? (addLoading ? "Updating..." : "Update Product") : (addLoading ? "Adding..." : "Add Product");
 
   return (
     <div className="max-h-[100vh] bg-gray-50 p-2 sm:p-4 overflow-y-auto scrollbar-hide">
@@ -521,10 +522,10 @@ const AddProductForm = ({ onClose, productId }: { onClose: () => void; productId
               <button
                 type="button"
                 onClick={handleSubmit}
-                disabled={loading}
+                disabled={addLoading}
                 className="flex items-center justify-center gap-2 bg-gradient-to-br from-blue-600 to-blue-900 text-white px-8 sm:px-14 py-2.5 sm:py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all font-semibold text-sm sm:text-base disabled:opacity-60 disabled:cursor-not-allowed shadow-sm"
               >
-                {loading ? (
+                {addLoading ? (
                   <>
                     <Spinner />
                    <span>{isEditMode ? "Updating..." : "Adding..."}</span>
