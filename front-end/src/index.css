@@ -63,3 +63,14 @@
           animation-delay: 0.075s;
         }
 
+@keyframes smoothSwing {
+  0% { transform: rotate(4deg); }
+  50% { transform: rotate(-4deg); }
+  100% { transform: rotate(4deg); }
+}
+
+.animate-smoothSwing {
+  animation: smoothSwing 3s ease-in-out infinite;
+  transform-origin: top center;
+  will-change: transform;
+}

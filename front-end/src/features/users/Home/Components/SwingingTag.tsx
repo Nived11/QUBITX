@@ -1,5 +1,4 @@
-import { motion } from "framer-motion";
-
+// SwingingTag.tsx
 const SwingingTag = ({ discount }: { discount: number }) => {
   return (
     <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-20 flex flex-col items-center">
@@ -7,19 +6,10 @@ const SwingingTag = ({ discount }: { discount: number }) => {
       <div className="w-[1px] h-2 sm:h-3 bg-blue-300"></div>
 
       {/* Tag */}
-      <motion.div
-        animate={{
-          rotate: [5, -5, 5], // rotate between +5° and -5° smoothly
-        }}
-        transition={{
-          duration: 2.5,
-          ease: "easeInOut",
-          repeat: Infinity,
-          repeatType: "loop",
-        }}
+      <div
         className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 text-white
-          px-2 sm:px-3 py-[2px] sm:py-[4px] rounded-md shadow-md border border-blue-400/30
-          backdrop-blur-sm origin-top"
+        px-2 sm:px-3 py-[2px] sm:py-[4px] rounded-md shadow-md border border-blue-400/30
+        backdrop-blur-sm origin-top animate-smoothSwing"
       >
         {/* Hole */}
         <div className="absolute -top-[4px] left-1/2 -translate-x-1/2 w-[6px] h-[6px] bg-white rounded-full border-[1.5px] border-blue-800 shadow-inner"></div>
@@ -34,7 +24,7 @@ const SwingingTag = ({ discount }: { discount: number }) => {
 
         {/* Bottom notch */}
         <div className="absolute -bottom-[3px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[4px] border-r-[4px] border-t-[4px] border-transparent border-t-blue-900/90"></div>
-      </motion.div>
+      </div>
     </div>
   );
 };
