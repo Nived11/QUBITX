@@ -2,9 +2,21 @@ import type { Product } from "@/types/product";
 
 interface DetailsSectionProps {
   product: Product;
+  selectedColor: "main" | number;
+  onColorChange: (colorIndex: "main" | number) => void;
 }
 
-const DetailsSection = ({ product }: DetailsSectionProps) => {
+const DetailsSection = ({
+  product,
+  selectedColor,
+  onColorChange,
+}: DetailsSectionProps) => {
+  // Get current color name
+  const currentColorName =
+    selectedColor === "main"
+      ? product.color
+      : product.colorVariants?.[selectedColor]?.colorName || "";
+
   return (
     <div className="space-y-6 px-4 py-4">
       {/* Brand Tag */}
@@ -13,12 +25,12 @@ const DetailsSection = ({ product }: DetailsSectionProps) => {
       </span>
 
       {/* Product Name */}
-      <h1 className="text-[19px] font-[600] text-gray-900 mb-4 sm:text-[25px]">
+      <h1 className="text-[22px] font-[900] text-gray-900 sm:text-[28px] mb-2">
         {product.name}
       </h1>
 
       {/* Price Section */}
-      <div className="p-4 text-black">
+      <div className=" text-black">
         <div className="flex items-center mb-2 gap-4">
           <p className="text-sm mb-1 text-black font-semibold">Special Price</p>
           {product.discountPercentage > 0 && (
@@ -27,11 +39,73 @@ const DetailsSection = ({ product }: DetailsSectionProps) => {
             </span>
           )}
         </div>
-        <div className="flex items-baseline gap-4">
-          <span className="text-4xl font-bold">₹{product.discountedPrice}</span>
+        <div className="flex items-baseline gap-4 p-4 ">
+          <span className="text-4xl font-bold">
+            ₹{product.discountedPrice.toLocaleString("en-IN")}
+          </span>
           <div className="text-lg line-through text-red-500">
             ₹{product.actualPrice}
           </div>
+        </div>
+        <p className="px-4 text-green-600  font-bold">
+          Save ₹
+          {(product.actualPrice - product.discountedPrice).toLocaleString(
+            "en-IN"
+          )}
+        </p>
+      </div>
+
+      {/* Color Selection Section */}
+      <div className="pt-4 border-t border-gray-200">
+        <div className="mb-3 flex items-center gap-4">
+          <p className="text-sm font-semibold text-gray-700">Color:</p>
+          <p className="text-lg font-bold text-blue-800">{currentColorName}</p>
+        </div>
+
+        {/* Color Variants */}
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+          {/* Main Product Color */}
+          <button
+            onClick={() => onColorChange("main")}
+            className={`bg-white flex-shrink-0 border-2 rounded-md overflow-hidden transition ${
+              selectedColor === "main"
+                ? "border-gray-600 shadow-lg"
+                : "border-gray-300 hover:border-gray-600"
+            }`}
+          >
+            <div className="p-1">
+              <img
+                src={product.images[0]}
+                alt={product.color}
+                className="w-12 h-12 sm:w-14 sm:h-14 object-cover rounded"
+              />
+            </div>
+          </button>
+
+          {/* Color Variants */}
+          {product.colorVariants && product.colorVariants.length > 0 && (
+            <>
+              {product.colorVariants.map((variant, index) => (
+                <button
+                  key={index}
+                  onClick={() => onColorChange(index)}
+                  className={`bg-white flex-shrink-0 border-2 rounded-md overflow-hidden transition ${
+                    selectedColor === index
+                      ? "border-gray-600 shadow-lg"
+                      : "border-gray-300 hover:border-gray-600"
+                  }`}
+                >
+                  <div className="p-1">
+                    <img
+                      src={variant.images[0]}
+                      alt={variant.colorName}
+                      className="w-12 h-12 sm:w-14 sm:h-14 object-cover rounded"
+                    />
+                  </div>
+                </button>
+              ))}
+            </>
+          )}
         </div>
       </div>
 
@@ -42,29 +116,23 @@ const DetailsSection = ({ product }: DetailsSectionProps) => {
             Specifications
           </h3>
           <div className="space-y-3">
-            <div
-                className="flex border-b border-gray-200 pb-2 text-[15px]"
-              >
-                <span className="font-semibold text-gray-800 w-40">
-                  Color:
-                </span>
-                <span className="text-gray-700">{product.color}</span>
-              </div>
             {product.specifications.map((spec, index) => (
               <div
                 key={index}
-                className="flex border-b border-gray-200 pb-2 text-[15px]"
+                className="flex flex-col sm:flex-row border-b border-gray-200 pb-2 text-[15px] gap-1 sm:gap-0"
               >
-                <span className="font-semibold text-gray-800 w-40">
-                  {spec.label}:
+                <span className="font-semibold text-gray-800 sm:w-40 sm:flex-shrink-0">
+                  {spec.label}
                 </span>
-                <span className="text-gray-700">{spec.value}</span>
+                <span className="text-gray-700">
+                  <span className="hidden sm:inline mr-2">:</span>
+                  {spec.value}
+                </span>
               </div>
             ))}
           </div>
         </div>
       )}
-
       {/* Warranty Section */}
       {product.warranty && (
         <div className="pt-4">
@@ -151,7 +219,7 @@ const DetailsSection = ({ product }: DetailsSectionProps) => {
           <h3 className="text-xl font-bold text-gray-900 mb-3 border-b-2 border-blue-800 pb-2">
             Product Description
           </h3>
-          <p className="text-gray-800 leading-relaxed">
+          <p className="text-gray-800 leading-relaxed text-[15px] text-justify  md:px-2 ">
             {product.description}
           </p>
         </div>
@@ -163,7 +231,7 @@ const DetailsSection = ({ product }: DetailsSectionProps) => {
           <h3 className="text-lg font-bold text-blue-900 mb-3">
             Why Choose This Product?
           </h3>
-          <ul className="space-y-2 text-gray-800">
+          <ul className="space-y-2 text-gray-800 text-[15px] text-justify [hyphens:auto] md:px-2">
             {product.whychoose.map((reason, index) => (
               <li key={index} className="flex items-start gap-2">
                 <span className="text-blue-800 mt-1">•</span>

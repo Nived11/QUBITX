@@ -6,9 +6,11 @@ import ActionButtons from "./ActionButtons";
 
 interface ImageSectionProps {
   product: Product;
+  selectedColor: "main" | number;
+  onColorChange: (colorIndex: "main" | number) => void;
 }
 
-const ImageSection = ({ product }: ImageSectionProps) => {
+const ImageSection = ({ product, selectedColor }: ImageSectionProps) => {
   const {
     productImages,
     selectedImage,
@@ -18,7 +20,7 @@ const ImageSection = ({ product }: ImageSectionProps) => {
     handleNextImage,
     handleAddToCart,
     handleBuyNow,
-  } = useImageSection(product);
+  } = useImageSection(product, selectedColor);
 
   return (
     <div className="lg:sticky lg:top-[6rem] lg:h-[calc(90vh-2rem)] lg:self-start">
@@ -72,7 +74,7 @@ const ImageSection = ({ product }: ImageSectionProps) => {
         </div>
 
         {/* Action Buttons */}
-         <ActionButtons
+        <ActionButtons
           onAddToCart={handleAddToCart}
           onBuyNow={handleBuyNow}
         />

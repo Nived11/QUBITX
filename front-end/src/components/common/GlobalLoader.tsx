@@ -1,7 +1,8 @@
 import AppName from "./AppName";
+
 export default function GlobalLoader() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden">
+    <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative overflow-hidden fixed inset-0">
       {/* Animated background particles */}
       <div className="absolute inset-0">
         {[...Array(6)].map((_, i) => (

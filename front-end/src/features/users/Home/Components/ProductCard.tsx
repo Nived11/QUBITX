@@ -64,7 +64,7 @@ const ProductCard = ({ product }: { product: Product }) => {
           <div className="mt-auto">
             <div className="flex items-end gap-2 flex-wrap">
               <span className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900">
-                ₹{product.discountedPrice}
+                ₹{product.discountedPrice.toLocaleString("en-IN")}
               </span>
               {product.actualPrice > product.discountedPrice && (
                 <span className="text-xs sm:text-sm line-through text-gray-500 mb-0.5">
@@ -75,7 +75,7 @@ const ProductCard = ({ product }: { product: Product }) => {
 
             {/* Savings */}
             {product.actualPrice > product.discountedPrice && (
-              <p className="text-[10px] sm:text-xs text-green-600 font-medium mt-1">
+              <p className="text-[10px] sm:text-xs text-green-600 font-bold mt-1">
                 Save ₹
                 {(product.actualPrice - product.discountedPrice).toLocaleString(
                   "en-IN"

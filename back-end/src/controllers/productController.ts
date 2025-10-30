@@ -41,7 +41,7 @@ export const addProduct = async (req: Request, res: Response) => {
       return { colorName, images: colorImages };
     });
     const discountAmount = (actualPrice * discountPercentage) / 100;
-    const discountedPrice = actualPrice - discountAmount;
+    const discountedPrice = Math.round(actualPrice - discountAmount);
 
     const newProduct = new Product({
       seller: sellerId, // ✅ Save which seller added it
@@ -69,7 +69,6 @@ export const addProduct = async (req: Request, res: Response) => {
   }
 };
 
-// ====================== UPDATE PRODUCT ======================
 // ====================== UPDATE PRODUCT ======================
 export const updateProduct = async (req: Request, res: Response) => {
   try {
@@ -141,7 +140,7 @@ export const updateProduct = async (req: Request, res: Response) => {
     const actualPrice = updates.actualPrice ?? existing.actualPrice;
     const discountPercentage = updates.discountPercentage ?? existing.discountPercentage;
     const discountAmount = (actualPrice * discountPercentage) / 100;
-    updates.discountedPrice = actualPrice - discountAmount;
+    updates.discountedPrice = Math.round(actualPrice - discountAmount);
 
     // Update product
     const updatedProduct = await Product.findByIdAndUpdate(productId, updates, { new: true });
