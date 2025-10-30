@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../../../store";
 import { loginSuccess } from "../../../../slices/authSlice";
 import { setUser } from "../../../../slices/userSlice";
+import { extractErrorMessages } from "@/utils/helpers/extractErrorMessages";
 
 interface ProfileData {
   name: string;
@@ -38,6 +39,7 @@ export const useProfile = () => {
 
         // Update auth slice (name/email/userType)
         dispatch(loginSuccess({
+          _id: userData._id || userData.id,
           email: userData.email,
           name: userData.name,
           userType: userData.userType,
@@ -111,6 +113,7 @@ export const useProfile = () => {
 
       // Update auth slice
       dispatch(loginSuccess({
+        _id: updatedUser._id || updatedUser.id,
         email: updatedUser.email,
         name: updatedUser.name,
         userType: updatedUser.userType,
@@ -133,9 +136,7 @@ export const useProfile = () => {
       toast.success("Profile updated successfully");
       setIsEditing(false);
     } catch (error: any) {
-      console.error("Failed to update profile:", error);
-      const errorMessage = error.response?.data?.message || "Failed to update profile";
-      toast.error(errorMessage);
+      toast.error(extractErrorMessages(error) || "Failed to update profile");
     } finally {
       setLoading(false);
     }

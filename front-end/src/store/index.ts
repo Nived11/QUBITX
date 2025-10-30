@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "../slices/authSlice";
 import userReducer from "../slices/userSlice"; 
 import productReducer from "../slices/productSlice";
+import sellerProductReducer from "../slices/sellerProductSlice";
 
 import {
   persistStore,
@@ -18,7 +19,7 @@ import storage from "redux-persist/lib/storage"; // localStorage
 const persistConfig = {
   key: "auth",
   storage,
-  whitelist: ["user", "isAuthenticated"], // persist only auth state
+  whitelist: ["user", "isAuthenticated" ], // persist only auth state
 };
 
 const persistedReducer = persistReducer(persistConfig, authReducer);
@@ -28,6 +29,7 @@ export const store = configureStore({
     auth: persistedReducer,
     user: userReducer,    
     products: productReducer,
+    sellerProducts: sellerProductReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

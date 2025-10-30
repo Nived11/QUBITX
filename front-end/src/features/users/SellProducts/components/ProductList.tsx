@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
-import { useProduct } from "../hooks/useSellerProducts";
+import { useSellerProducts  } from "../hooks/useSellerProducts";
 import ProductListSkeleton from "./ProductListSkeleton";
 import Pagination from "@/components/common/Pagination";
 import DeleteConfirmModal from "@/components/common/DeleteConfirmModal";
@@ -11,13 +11,13 @@ const ProductList = ({
   onEditProduct: (productId: string) => void;
 }) => {
   const {
-    products,
-    loading,
-    fetchProducts,
-    deleteProductById,
-    currentPage,
+     products,
     totalPages,
-  } = useProduct();
+    currentPage,
+    loading,
+    fetchSellerProducts,
+    deleteSellerProductById,
+  } = useSellerProducts ();
 
   const [selectedProductId, setSelectedProductId] = useState<string | null>(
     null
@@ -26,7 +26,7 @@ const ProductList = ({
 
   useEffect(() => {
     if (products.length === 0) {
-      fetchProducts(currentPage);
+      fetchSellerProducts(currentPage);
     }
   }, [currentPage]);
 
@@ -37,7 +37,7 @@ const ProductList = ({
 
   const handleConfirmDelete = async () => {
     if (selectedProductId) {
-      await deleteProductById(selectedProductId);
+      await deleteSellerProductById(selectedProductId);
     }
   };
 
@@ -151,7 +151,7 @@ const ProductList = ({
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
-          onPageChange={(page) => fetchProducts(page)}
+          onPageChange={(page) => fetchSellerProducts(page)}
         />
       )}
 
