@@ -42,6 +42,14 @@ const DetailsSection = ({ product }: DetailsSectionProps) => {
             Specifications
           </h3>
           <div className="space-y-3">
+            <div
+                className="flex border-b border-gray-200 pb-2 text-[15px]"
+              >
+                <span className="font-semibold text-gray-800 w-40">
+                  Color:
+                </span>
+                <span className="text-gray-700">{product.color}</span>
+              </div>
             {product.specifications.map((spec, index) => (
               <div
                 key={index}

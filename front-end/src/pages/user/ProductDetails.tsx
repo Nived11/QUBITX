@@ -1,13 +1,12 @@
 import { useParams } from "react-router-dom";
-import { ImageSection , DetailsSection} from "../../features/users/ProductDetails";
+import { ImageSection , DetailsSection , ProductDetailsSkeleton} from "../../features/users/ProductDetails";
 import { useProductDetails } from "../../features/users/ProductDetails/hooks/useProductDetails";
 
 const ProductDetails = () => {
    const { id } = useParams<{ id: string }>();
   const { productDetails, loading, error } = useProductDetails(id);
 
-  if (loading)
-    return <div className="text-center text-gray-500 py-16">Loading product...</div>;
+if (loading) return <ProductDetailsSkeleton />;
 
   if (error)
     return <div className="text-center text-red-500 py-16">{error}</div>;

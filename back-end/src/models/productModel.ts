@@ -23,6 +23,7 @@ export interface IProduct extends Document {
   whychoose: string[];
   stock: number;
   specifications: ISpecification[];
+  color:string;
   images: string[];
   colorVariants: IColorVariant[];
 }
@@ -58,6 +59,7 @@ const productSchema = new Schema<IProduct>(
     whychoose: [{ type: String }],
     stock: { type: Number, required: true },
     specifications: [specificationSchema],
+    color: { type: String, required: true },
     images: {
       type: [String],
       validate: [(arr: string[]) => arr.length <= 5, "Max 5 images allowed"],

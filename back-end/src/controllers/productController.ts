@@ -14,6 +14,7 @@ export const addProduct = async (req: Request, res: Response) => {
       description,
       whychoose,
       stock,
+      color,
       specifications,
       colorVariants,
     } = req.body;
@@ -55,6 +56,7 @@ export const addProduct = async (req: Request, res: Response) => {
       whychoose: parsedwhychoose,
       stock,
       specifications: parsedSpecifications,
+      color,
       images: mainImages,
       colorVariants: colorVariantObjects,
     });
@@ -67,6 +69,7 @@ export const addProduct = async (req: Request, res: Response) => {
   }
 };
 
+// ====================== UPDATE PRODUCT ======================
 // ====================== UPDATE PRODUCT ======================
 export const updateProduct = async (req: Request, res: Response) => {
   try {
@@ -81,38 +84,60 @@ export const updateProduct = async (req: Request, res: Response) => {
       return res.status(403).json({ message: "Access denied: not your product" });
 
     // ✅ Parse JSON fields (for form-data requests)
-    const jsonFields = ["specifications", "whychoose", "colorVariants"];
+    const jsonFields = ["specifications", "whychoose", "colorVariants", "existingMainImages", "existingColorImages"];
     for (const field of jsonFields) {
       if (updates[field] && typeof updates[field] === "string") {
         try {
           updates[field] = JSON.parse(updates[field]);
         } catch {
           console.warn(`Invalid JSON for ${field}, skipping parse`);
-          updates[field] = [];
+          if (field === "specifications" || field === "whychoose") {
+            updates[field] = [];
+          }
         }
       }
     }
 
-    if (
-      Array.isArray(updates.colorVariants) &&
-      updates.colorVariants.length &&
-      typeof updates.colorVariants[0] === "string"
-    ) {
-      // If user accidentally sent ["Blue", "Red"], convert to proper structure
-      updates.colorVariants = updates.colorVariants.map((colorName: string) => ({
-        colorName,
-        images: [],
-      }));
-    }
-
     const files = req.files as Express.Multer.File[];
 
-    // Handle main images if provided
-    const mainImages =
-      files?.filter((f) => f.fieldname === "mainImages")?.map((f) => (f as any).path) || [];
-    if (mainImages.length) updates.$push = { images: { $each: mainImages } };
+    // Handle main images
+    let finalMainImages = updates.existingMainImages || existing.images || [];
+    const newMainImages = files?.filter((f) => f.fieldname === "mainImages")?.map((f) => (f as any).path) || [];
+    if (newMainImages.length) {
+      finalMainImages = [...finalMainImages, ...newMainImages];
+    }
+    updates.images = finalMainImages;
 
-    // ✅ NEW: Recalculate discounted price if price or discount changed
+    // ✅ Handle color variants with images
+    if (Array.isArray(updates.colorVariants) && updates.colorVariants.length) {
+      const parsedColorVariants = typeof updates.colorVariants[0] === "string" 
+        ? updates.colorVariants 
+        : updates.colorVariants.map((cv: any) => cv.colorName || cv);
+
+      // Build color variant objects with images
+      const colorVariantObjects = parsedColorVariants.map((colorName: string) => {
+        // Get existing images for this color
+        const existingImages = updates.existingColorImages?.[colorName] || [];
+        
+        // Get new uploaded images for this color
+        const newColorImages = files
+          ?.filter((f) => f.fieldname === `${colorName}Images`)
+          ?.map((f) => (f as any).path) || [];
+
+        return {
+          colorName,
+          images: [...existingImages, ...newColorImages]
+        };
+      });
+
+      updates.colorVariants = colorVariantObjects;
+    }
+
+    // Remove temporary fields
+    delete updates.existingMainImages;
+    delete updates.existingColorImages;
+
+    // ✅ Recalculate discounted price if price or discount changed
     const actualPrice = updates.actualPrice ?? existing.actualPrice;
     const discountPercentage = updates.discountPercentage ?? existing.discountPercentage;
     const discountAmount = (actualPrice * discountPercentage) / 100;
@@ -127,7 +152,6 @@ export const updateProduct = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error", error: (error as Error).message });
   }
 };
-
 
 // ====================== DELETE PRODUCT ======================
 export const deleteProduct = async (req: Request, res: Response) => {

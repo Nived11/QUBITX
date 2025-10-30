@@ -1,5 +1,4 @@
-// src/hooks/useProducts.ts
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import api from "@/api/axios";
 import { setLoading, setProducts, setError } from "@/slices/productSlice";
@@ -11,18 +10,15 @@ export const useProducts = () => {
   const { products, loading, error } = useSelector(
     (state: RootState) => state.products
   );
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
-
-  const hasFetchedOnce = useRef(false);
+  const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
 
   const fetchLatestProducts = async () => {
     dispatch(setLoading(true));
     dispatch(setError(null));
 
     try {
-      const res = await api.get("/products/all");
+      const res = await api.get("/products/all", { withCredentials: true });
       const data = res.data;
-
       const latest = data.slice(0, 12);
 
       dispatch(
@@ -40,20 +36,19 @@ export const useProducts = () => {
     }
   };
 
+  // ✅ Fetch on first load
   useEffect(() => {
-    // 🔹 Fetch only if not done once OR no cached products
-    if (!hasFetchedOnce.current || products.length === 0) {
+    if (products.length === 0) {
       fetchLatestProducts();
-      hasFetchedOnce.current = true;
     }
-  }, []); // ⛔ no dependencies (won’t refetch on remount)
+  }, []); // Only on mount
 
-  // 🔁 Optional: refetch only when login/logout happens (manual control)
+  // ✅ Refetch when user logs in / logs out / seller changes
   useEffect(() => {
-    if (hasFetchedOnce.current) {
+    if (isAuthenticated !== null) {
       fetchLatestProducts();
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, user?.userType]);
 
   return {
     products,

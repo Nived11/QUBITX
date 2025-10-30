@@ -21,6 +21,7 @@ export interface Product {
   warranty?: string;
   stock: number;
   description?: string;
+  color?: string;
   images: string[];
   whychoose?: string[];
   specifications?: Specification[];

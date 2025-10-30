@@ -24,6 +24,7 @@ interface ProductFormData {
   description: string;
   whychoose: string[];
   stock: string;
+  color: string;
   specifications: Specification[];
   mainImages: File[];
   colorVariants: ColorVariant[];
@@ -41,6 +42,7 @@ export const useAddProduct = (onSuccess?: () => void, productId?: string) => {
     description: "",
     whychoose: [""],
     stock: "",
+    color: "",
     specifications: [{ label: "", value: "" }],
     mainImages: [],
     colorVariants: [],
@@ -76,6 +78,7 @@ export const useAddProduct = (onSuccess?: () => void, productId?: string) => {
         description: product.description || "",
         whychoose: product.whychoose?.length > 0 ? product.whychoose : [""],
         stock: product.stock?.toString() || "",
+        color: product.color || "",
         specifications: product.specifications?.length > 0 ? product.specifications : [{ label: "", value: "" }],
         mainImages: [],
         colorVariants: product.colorVariants?.map((cv: any) => ({
@@ -285,7 +288,7 @@ export const useAddProduct = (onSuccess?: () => void, productId?: string) => {
 
       // Validation
       if (!formData.name || !formData.actualPrice || !formData.category || 
-          !formData.brand || !formData.description || !formData.stock) {
+          !formData.brand || !formData.description || !formData.stock|| !formData.color) {
         toast.error("Please fill all required fields");
         return;
       }
@@ -305,6 +308,7 @@ export const useAddProduct = (onSuccess?: () => void, productId?: string) => {
       data.append("warranty", formData.warranty);
       data.append("description", formData.description);
       data.append("stock", formData.stock);
+      data.append("color", formData.color);
 
       // Append arrays as JSON strings
       data.append("whychoose", JSON.stringify(formData.whychoose.filter(h => h.trim() !== "")));
