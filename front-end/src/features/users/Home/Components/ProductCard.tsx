@@ -17,7 +17,7 @@ interface Product {
 
 const ProductCard = ({ product }: { product: Product }) => {
   const image =
-    product.images?.[8] || "";
+    product.images?.[0] || "";
 
   return (
     <Link to={`/product/${product._id}`}>
