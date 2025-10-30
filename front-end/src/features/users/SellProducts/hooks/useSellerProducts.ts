@@ -37,6 +37,8 @@ export const useSellerProducts = () => {
       await api.delete(`/products/delete/${id}`, { withCredentials: true });
       dispatch(removeSellerProduct(id));
       toast.success("Product deleted successfully");
+       await fetchSellerProducts();
+      
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Failed to delete product");
     } finally {

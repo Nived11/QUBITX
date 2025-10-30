@@ -2,6 +2,7 @@ import { useState, useEffect, type ChangeEvent } from "react";
 import { toast } from "sonner";
 import api from "../../../../api/axios";
 import { extractErrorMessages } from "@/utils/helpers/extractErrorMessages";
+import { useSellerProducts } from "./useSellerProducts";
 
 interface Specification {
   label: string;
@@ -29,6 +30,7 @@ interface ProductFormData {
 }
 
 export const useAddProduct = (onSuccess?: () => void, productId?: string) => {
+  const { fetchSellerProducts } = useSellerProducts();
   const [formData, setFormData] = useState<ProductFormData>({
     name: "",
     actualPrice: "",
@@ -343,8 +345,8 @@ export const useAddProduct = (onSuccess?: () => void, productId?: string) => {
       });
 
       toast.success(res.data.message || `Product ${productId ? 'updated' : 'added'} successfully`);
-      
       if (onSuccess) onSuccess();
+        await fetchSellerProducts();
     } catch (error: any) {
       console.error(`Failed to ${productId ? 'update' : 'add'} product:`, error);
       const errorMessage = error.response?.data?.message || `Failed to ${productId ? 'update' : 'add'} product`;
