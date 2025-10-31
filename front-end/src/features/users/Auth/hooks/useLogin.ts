@@ -34,9 +34,8 @@ export const useLogin = () => {
 
     setLoading(true);
     try {
-      const res = await api.post("/auth/login", formData, {
-        withCredentials: true,
-      });
+      const res = await api.post("/auth/login", formData,);
+      
         if (res.data.accessToken && res.data.refreshToken) {
     localStorage.setItem("accessToken", res.data.accessToken);
     localStorage.setItem("refreshToken", res.data.refreshToken);

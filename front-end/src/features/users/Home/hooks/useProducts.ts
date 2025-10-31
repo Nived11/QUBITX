@@ -17,7 +17,7 @@ export const useProducts = () => {
     dispatch(setError(null));
 
     try {
-      const res = await api.get("/products/all", { withCredentials: true });
+      const res = await api.get("/products/all");
       const data = res.data;
       const latest = data.slice(0, 12);
 

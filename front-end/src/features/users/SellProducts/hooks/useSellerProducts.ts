@@ -18,9 +18,7 @@ export const useSellerProducts = () => {
   const fetchSellerProducts = async (page = 1) => {
     dispatch(setSellerLoading(true));
     try {
-      const res = await api.get(`/products/seller/my-products?page=${page}`, {
-        withCredentials: true,
-      });
+      const res = await api.get(`/products/seller/my-products?page=${page}`);
       dispatch(setSellerProducts(res.data));
     } catch (err: any) {
       const msg = err.response?.data?.message || "Failed to load products";
@@ -34,7 +32,7 @@ export const useSellerProducts = () => {
   const deleteSellerProductById = async (id: string) => {
     dispatch(setSellerLoading(true));
     try {
-      await api.delete(`/products/delete/${id}`, { withCredentials: true });
+      await api.delete(`/products/delete/${id}`);
       dispatch(removeSellerProduct(id));
       toast.success("Product deleted successfully");
        await fetchSellerProducts();

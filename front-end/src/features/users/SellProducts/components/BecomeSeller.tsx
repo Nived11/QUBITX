@@ -23,10 +23,7 @@ const BecomeSeller = () => {
 
     try {
       const { data } = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/user/become-seller`,
-        formData,
-        { withCredentials: true }
-      );
+        `${import.meta.env.VITE_API_URL}/api/user/become-seller`, formData,);
 
       setSuccessMsg(data.message);
       dispatch( setUser(data.user));

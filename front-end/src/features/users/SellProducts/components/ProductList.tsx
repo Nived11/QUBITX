@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
-import { useSellerProducts  } from "../hooks/useSellerProducts";
+import { useSellerProducts } from "../hooks/useSellerProducts";
 import ProductListSkeleton from "./ProductListSkeleton";
 import Pagination from "@/components/common/Pagination";
 import DeleteConfirmModal from "@/components/common/DeleteConfirmModal";
@@ -11,13 +11,13 @@ const ProductList = ({
   onEditProduct: (productId: string) => void;
 }) => {
   const {
-     products,
+    products,
     totalPages,
     currentPage,
     loading,
     fetchSellerProducts,
     deleteSellerProductById,
-  } = useSellerProducts ();
+  } = useSellerProducts();
 
   const [selectedProductId, setSelectedProductId] = useState<string | null>(
     null
@@ -99,14 +99,15 @@ const ProductList = ({
 
                       {/* Content Section */}
                       <div className="p-2 sm:p-3 flex flex-col flex-grow">
-                        <div className="flex justify-between items-start mb-1">
-                          <h3 className="text-[10px] sm:text-sm font-semibold text-gray-800 line-clamp-1">
+                        {/* Name + Stock Badge */}
+                        <div className="flex justify-between items-center gap-2 mb-1">
+                          <h3 className="text-[10px] sm:text-sm font-semibold text-gray-800 truncate flex-1">
                             {p.name}
                           </h3>
 
                           {/* ✅ Stock Badge */}
                           <span
-                            className={`text-[8px] sm:text-xs font-medium px-1.5 py-0.5 rounded ${stockStatus.color}`}
+                            className={`text-[8px] z-100 sm:text-xs font-medium px-1.5 py-0.5 rounded ${stockStatus.color}`}
                           >
                             {stockStatus.text}
                           </span>

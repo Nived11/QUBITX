@@ -34,7 +34,7 @@ export const useProfile = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await api.get("/user/me", { withCredentials: true });
+        const res = await api.get("/user/me");
         const userData = res.data;
 
         // Update auth slice (name/email/userType)
@@ -106,7 +106,6 @@ export const useProfile = () => {
       const res = await api.put(
         "/user/update",
         { name: formData.name, phone: formData.phone },
-        { withCredentials: true }
       );
 
       const updatedUser = res.data.user;

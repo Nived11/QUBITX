@@ -66,13 +66,15 @@ export const logoutUser = async (_: Request, res: Response) => {
 
 // ====================== REFRESH TOKEN ======================
 export const refreshAccessToken = async (req: Request, res: Response) => {
-  // Try to get refresh token from cookies first, then from headers
+  // Try multiple sources for refresh token
   const refreshToken =
     req.cookies.refreshToken ||
-    req.headers["authorization"]?.replace("Bearer ", "");
+    req.headers["authorization"]?.replace("Bearer ", "") ||
+    req.headers["x-refresh-token"];
 
-  if (!refreshToken)
+  if (!refreshToken) {
     return res.status(401).json({ message: "No refresh token found" });
+  }
 
   try {
     const decoded = jwt.verify(
@@ -83,22 +85,22 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
     const { accessToken, refreshToken: newRefresh } = generateTokens(decoded.id);
     const isProduction = process.env.NODE_ENV === "production";
 
-    // Always set cookies if possible
+    // Set cookies (may not work in cross-domain)
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: isProduction,
       sameSite: isProduction ? "none" : "lax",
-      maxAge: 15 * 60 * 1000,
+      maxAge: 15 * 60 * 1000, // 15 min
     });
 
     res.cookie("refreshToken", newRefresh, {
       httpOnly: true,
       secure: isProduction,
       sameSite: isProduction ? "none" : "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    // Also return them in body (so frontend can save to localStorage)
+    // IMPORTANT: Return tokens in response body for localStorage fallback
     res.status(200).json({
       message: "Access token refreshed",
       accessToken,
@@ -106,7 +108,7 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error("Refresh token error:", error);
-    res.status(403).json({ message: "Invalid refresh token" });
+    res.status(403).json({ message: "Invalid or expired refresh token" });
   }
 };
 

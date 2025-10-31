@@ -65,7 +65,7 @@ export const useAddProduct = (onSuccess?: () => void, productId?: string) => {
   const fetchProductDetails = async () => {
     try {
       setLoading(true);
-      const res = await api.get(`/products/${productId}`, { withCredentials: true });
+      const res = await api.get(`/products/${productId}`);
       const product = res.data;
 
       setFormData({
@@ -344,9 +344,7 @@ export const useAddProduct = (onSuccess?: () => void, productId?: string) => {
       const method = productId ? "put" : "post";
 
       const res = await api[method](endpoint, data, {
-        headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true,
-      });
+        headers: { "Content-Type": "multipart/form-data" },});
 
       toast.success(res.data.message || `Product ${productId ? 'updated' : 'added'} successfully`);
       if (onSuccess) onSuccess();
