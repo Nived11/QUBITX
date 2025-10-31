@@ -44,7 +44,7 @@ const SignupForm = () => {
       <div className="lg:h-screen sm:min-h-screen flex flex-col lg:flex-row bg-white overflow-hidden">
         {/* Left Section */}
         <AuthSidePanel
-          title="Join the Qubitx Community!"
+          title="Join the Qubitx Community !"
           subtitle="Create your account to start exploring, connecting, and growing with us."
         />
 

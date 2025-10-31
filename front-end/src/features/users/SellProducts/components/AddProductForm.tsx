@@ -555,7 +555,8 @@ const AddProductForm = ({ onClose, productId }: { onClose: () => void; productId
                   <button
                     type="button"
                     onClick={onClose}
-                    className="bg-gray-200 text-gray-700 px-8 sm:px-14 py-2.5 sm:py-3 rounded-lg hover:bg-gray-300 transition-colors font-semibold text-sm sm:text-base shadow-sm"
+                    disabled={addLoading}
+                    className="bg-gray-200 text-gray-700 px-8 sm:px-14 py-2.5 sm:py-3 rounded-lg hover:bg-gray-300 transition-colors font-semibold text-sm sm:text-base shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                     Cancel
                   </button>
