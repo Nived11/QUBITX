@@ -10,8 +10,14 @@ const ProtectedRoute = () => {
   const hasShownToast = useRef(false);
 
   useEffect(() => {
+    const manualLogout = sessionStorage.getItem("manualLogout");
+
     if (!isAuthenticated && !hasShownToast.current && location.pathname !== "/login") {
-      toast.warning("Please login first!");
+      if (manualLogout) {
+        sessionStorage.removeItem("manualLogout");
+      } else {
+        toast.warning("Please login first!");
+      }
       hasShownToast.current = true;
     }
   }, [isAuthenticated, location.pathname]);

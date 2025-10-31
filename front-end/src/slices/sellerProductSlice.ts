@@ -41,8 +41,16 @@ const sellerProductSlice = createSlice({
       state.currentPage = action.payload.currentPage;
     },
     removeSellerProduct: (state, action: PayloadAction<string>) => {
-      state.products = state.products.filter(p => p._id !== action.payload);
+      state.products = state.products.filter((p) => p._id !== action.payload);
     },
+    resetSellerProducts: (state) => {
+      state.products = [];
+      state.totalProducts = 0;
+      state.totalPages = 0;
+      state.currentPage = 1;
+      state.error = null;
+    },
+
     setSellerError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
@@ -54,6 +62,7 @@ export const {
   setSellerProducts,
   removeSellerProduct,
   setSellerError,
+  resetSellerProducts,
 } = sellerProductSlice.actions;
 
 export default sellerProductSlice.reducer;

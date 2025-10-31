@@ -24,11 +24,11 @@ const ProductList = ({
   );
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  useEffect(() => {
-    if (products.length === 0) {
+useEffect(() => {
+   if (products.length === 0 ) {
       fetchSellerProducts(currentPage);
     }
-  }, [currentPage]);
+  }, [ currentPage]);
 
   const handleDeleteClick = (productId: string) => {
     setSelectedProductId(productId);

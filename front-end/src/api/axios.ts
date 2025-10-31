@@ -1,6 +1,7 @@
 import axios from "axios";
 import { store } from "@/store";
 import { logout } from "@/slices/authSlice";
+import { resetSellerProducts } from "@/slices/sellerProductSlice";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -38,6 +39,7 @@ api.interceptors.response.use(
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         store.dispatch(logout());
+        store.dispatch(resetSellerProducts());
         window.location.href = "/login";
         return Promise.reject(error);
       }
@@ -69,6 +71,7 @@ api.interceptors.response.use(
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         store.dispatch(logout());
+        store.dispatch(resetSellerProducts());
         window.location.href = "/login";
         return Promise.reject(error);
       }
@@ -112,6 +115,7 @@ api.interceptors.response.use(
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         store.dispatch(logout());
+        store.dispatch(resetSellerProducts());
         window.location.href = "/login";
 
         return Promise.reject(refreshError);
@@ -123,6 +127,7 @@ api.interceptors.response.use(
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       store.dispatch(logout());
+      store.dispatch(resetSellerProducts());
       window.location.href = "/login";
     }
 
