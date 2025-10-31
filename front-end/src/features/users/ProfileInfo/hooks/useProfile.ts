@@ -114,8 +114,8 @@ export const useProfile = () => {
           }
         } else {
           console.error("Failed to load user info:", error);
-          const errorMessage = error.response?.data?.message || "Failed to load user info";
-          toast.error(errorMessage);
+          
+          toast.error(extractErrorMessages(error) || "Failed to load user info");
         }
         
         setInitialLoading(false);
