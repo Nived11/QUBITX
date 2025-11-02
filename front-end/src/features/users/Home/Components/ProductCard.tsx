@@ -27,16 +27,16 @@ const ProductCard = ({ product }: { product: Product }) => {
         )}
 
         {/* Image Container */}
-        <div className="h-36 sm:h-44 md:h-60 overflow-hidden flex items-center justify-center ">
+        <div className="h-36 sm:h-40 md:h-40 overflow-hidden flex items-center justify-center ">
           {image ? (
             <img
-  src={image}
-  alt={product.name}
-  className="object-contain h-full w-full transition-transform duration-500 ease-in-out group-hover:scale-110"
-  onError={(e) => {
-    (e.currentTarget as HTMLImageElement).src = `data:image/svg+xml;utf8,${encodeURIComponent(placeholderSVG)}`;
-  }}
-/>
+              src={image}
+              alt={product.name}
+              className="object-contain h-full w-full transition-transform duration-500 ease-in-out group-hover:scale-110"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = `data:image/svg+xml;utf8,${encodeURIComponent(placeholderSVG)}`;
+              }}
+            />
 
           ) : (
             <div
