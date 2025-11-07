@@ -7,6 +7,7 @@ import otpRoutes from "./routes/otp.routes";
 import userRoutes from "./routes/userRoutes";
 import productRoutes from "./routes/productRoutes";
 import wakeupRoutes from "./routes/wakeup.routes";
+import cartRoutes from "./routes/cartRoutes";
 
 env.config();
 
@@ -27,7 +28,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/otp", otpRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/cart", cartRoutes);
 
-// Test protected route
+
 
 export default app;

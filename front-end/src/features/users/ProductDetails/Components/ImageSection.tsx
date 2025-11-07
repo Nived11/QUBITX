@@ -20,6 +20,9 @@ const ImageSection = ({ product, selectedColor }: ImageSectionProps) => {
     handleNextImage,
     handleAddToCart,
     handleBuyNow,
+    isAddedToCart,
+    handleGoToCart,
+    loading,
   } = useImageSection(product, selectedColor);
 
   return (
@@ -75,9 +78,13 @@ const ImageSection = ({ product, selectedColor }: ImageSectionProps) => {
 
         {/* Action Buttons */}
         <ActionButtons
-          onAddToCart={handleAddToCart}
-          onBuyNow={handleBuyNow}
-        />
+  onAddToCart={handleAddToCart}
+  onBuyNow={handleBuyNow}
+  onGoToCart={handleGoToCart}
+  isAddedToCart={isAddedToCart}
+   isAdding={loading}
+/>
+
       </div>
     </div>
   );

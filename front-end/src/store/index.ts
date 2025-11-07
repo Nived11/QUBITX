@@ -3,6 +3,7 @@ import authReducer from "../slices/authSlice";
 import userReducer from "../slices/userSlice"; 
 import productReducer from "../slices/productSlice";
 import sellerProductReducer from "../slices/sellerProductSlice";
+import cartReducer from "../slices/cartSlice";
 
 import {
   persistStore,
@@ -16,20 +17,30 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // localStorage
 
-const persistConfig = {
+// ✅ Persist config for auth
+const authPersistConfig = {
   key: "auth",
   storage,
-  whitelist: ["user", "isAuthenticated" ], // persist only auth state
+  whitelist: ["user", "isAuthenticated"],
 };
 
-const persistedReducer = persistReducer(persistConfig, authReducer);
+// ✅ Persist config for cart
+const cartPersistConfig = {
+  key: "cart",
+  storage,
+  whitelist: ["cart"], // only save the cart object
+};
+
+const persistedAuthReducer = persistReducer(authPersistConfig, authReducer);
+const persistedCartReducer = persistReducer(cartPersistConfig, cartReducer);
 
 export const store = configureStore({
   reducer: {
-    auth: persistedReducer,
+     auth: persistedAuthReducer,
     user: userReducer,    
     products: productReducer,
     sellerProducts: sellerProductReducer,
+     cart: persistedCartReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

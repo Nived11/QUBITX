@@ -22,9 +22,12 @@ const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const { user, isAuthenticated } = useSelector(
-    (state: RootState) => state.auth
-  );
+const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
+const { cart } = useSelector((state: RootState) => state.cart);
+
+const cartCount = cart?.items?.length || 0;
+
+
 
   // detect click outside dropdown
   useEffect(() => {
@@ -38,7 +41,7 @@ const Header = () => {
   }, []);
 
   const handleLogout = async () => {
-    await handleLogoutUser(dispatch, navigate);
+    await handleLogoutUser(dispatch);
     setIsDropdownOpen(false);
   };
 
@@ -84,9 +87,11 @@ const Header = () => {
                   className="relative p-2 sm:p-2.5 md:p-3 rounded-full hover:bg-blue-100 transform transition hover:scale-105"
                 >
                   <FiShoppingCart className="text-gray-900 text-xl sm:text-xl md:text-xl" />
-                  <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-700 text-xs text-white">
-                    2
-                  </span>
+                  {cartCount > 0 && (
+        <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-700 text-xs text-white">
+          {cartCount}
+        </span>
+      )}
                 </button>
               </>
             )}
