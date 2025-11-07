@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {
   FiHome,
   FiShoppingBag,
@@ -17,7 +17,6 @@ interface SidebarContentProps {
 }
 
 const SidebarContent = ({ setIsMobileMenuOpen }: SidebarContentProps) => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { user } = useSelector(
@@ -25,7 +24,7 @@ const SidebarContent = ({ setIsMobileMenuOpen }: SidebarContentProps) => {
   );
 
   const handleLogout = async () => {
-    await handleLogoutUser(dispatch, navigate);
+    await handleLogoutUser(dispatch);
     setIsMobileMenuOpen?.(false);
   };
 
