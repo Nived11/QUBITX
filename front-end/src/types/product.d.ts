@@ -1,4 +1,3 @@
-// src/types/product.ts
 export interface Specification {
   label: string;
   value: string;

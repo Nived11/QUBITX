@@ -6,6 +6,7 @@ interface ActionButtonsProps {
   onGoToCart: () => void;
   isAddedToCart: boolean;
   isAdding: boolean;
+  isAuthenticated: boolean;
 }
 
 const ActionButtons: React.FC<ActionButtonsProps> = ({
@@ -14,11 +15,13 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
    onGoToCart,
   isAddedToCart,
   isAdding,
+  isAuthenticated,
 
 }) => {
 
-    const addOrGoAction = isAddedToCart ? onGoToCart : onAddToCart;
-  const addOrGoLabel = isAddedToCart ? "GO TO CART" : "ADD TO CART";
+  const shouldShowGoToCart = isAuthenticated && isAddedToCart;
+  const addOrGoAction = shouldShowGoToCart  ? onGoToCart : onAddToCart;
+  const addOrGoLabel = shouldShowGoToCart  ? "GO TO CART" : "ADD TO CART";
 
   return (
     <>
@@ -28,7 +31,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
           onClick={addOrGoAction}
           disabled={isAdding}
           className={`text-sm flex justify-center items-center gap-2 ${
-            isAddedToCart
+            shouldShowGoToCart
               ? "bg-gradient-to-b from-green-700 to-green-900"
               : "bg-gradient-to-r from-blue-800 to-blue-900"
           } text-white py-3 rounded-md font-semibold transition ${
@@ -38,7 +41,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
           {isAdding ? (
             <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
           ) : (
-            <span>{isAddedToCart ? "🛍️" : "🛒"}</span>
+            <span>{shouldShowGoToCart  ? "🛍️" : "🛒"}</span>
           )}
           {isAdding ? "ADDING..." : addOrGoLabel}
         </button>
@@ -59,7 +62,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
           onClick={addOrGoAction}
           disabled={isAdding}
           className={`text-xs flex justify-center items-center gap-2 ${
-            isAddedToCart
+            shouldShowGoToCart 
               ? "bg-gradient-to-b from-green-700 to-green-900"
               : "bg-gradient-to-r from-blue-800 to-blue-900"
           } text-white py-3 rounded-md font-semibold transition ${
@@ -69,7 +72,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
           {isAdding ? (
             <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
           ) : (
-            <span>{isAddedToCart ? "🛍️" : "🛒"}</span>
+            <span>{shouldShowGoToCart  ? "🛍️" : "🛒"}</span>
           )}
           {isAdding ? "ADDING..." : addOrGoLabel}
         </button>

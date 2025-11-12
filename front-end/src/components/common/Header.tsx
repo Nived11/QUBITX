@@ -15,6 +15,7 @@ import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { handleLogoutUser } from "@/utils/logout";
 import type { RootState } from "@/store";
+import { useFetchCart } from "@/features/users/Cart/hooks/useFetchCart";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ const Header = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
 const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
-const { cart } = useSelector((state: RootState) => state.cart);
+ const { cart } = useFetchCart();
 
 const cartCount = cart?.items?.length || 0;
 

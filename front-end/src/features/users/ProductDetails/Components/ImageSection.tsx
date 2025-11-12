@@ -3,6 +3,8 @@ import BackButton from "../../../../components/common/BackButton";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { useImageSection } from "../hooks/useImageSection";
 import ActionButtons from "./ActionButtons";
+import { useSelector } from "react-redux";
+import { type RootState } from "@/store";
 
 interface ImageSectionProps {
   product: Product;
@@ -24,6 +26,8 @@ const ImageSection = ({ product, selectedColor }: ImageSectionProps) => {
     handleGoToCart,
     loading,
   } = useImageSection(product, selectedColor);
+
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
   return (
     <div className="lg:sticky lg:top-[6rem] lg:h-[calc(90vh-2rem)] lg:self-start">
@@ -61,11 +65,10 @@ const ImageSection = ({ product, selectedColor }: ImageSectionProps) => {
             <button
               key={index}
               onClick={() => setSelectedImage(index)}
-              className={`flex-shrink-0 border-2 rounded-lg overflow-hidden transition ${
-                selectedImage === index
+              className={`flex-shrink-0 border-2 rounded-lg overflow-hidden transition ${selectedImage === index
                   ? "border-blue-800 shadow-md"
                   : "border-gray-300 hover:border-blue-600"
-              }`}
+                }`}
             >
               <img
                 src={img}
@@ -78,12 +81,13 @@ const ImageSection = ({ product, selectedColor }: ImageSectionProps) => {
 
         {/* Action Buttons */}
         <ActionButtons
-  onAddToCart={handleAddToCart}
-  onBuyNow={handleBuyNow}
-  onGoToCart={handleGoToCart}
-  isAddedToCart={isAddedToCart}
-   isAdding={loading}
-/>
+          onAddToCart={handleAddToCart}
+          onBuyNow={handleBuyNow}
+          onGoToCart={handleGoToCart}
+          isAddedToCart={isAddedToCart}
+          isAdding={loading}
+          isAuthenticated={isAuthenticated}
+        />
 
       </div>
     </div>

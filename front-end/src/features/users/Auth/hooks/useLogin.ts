@@ -5,7 +5,6 @@ import { loginSuccess } from "../../../../slices/authSlice";
 import api from "../../../../api/axios";
 import { toast } from "sonner";
 import { extractErrorMessages } from "../../../../utils/helpers/extractErrorMessages";
-import { useFetchCart } from "../../../users/Cart/hooks/useFetchCart";
 
 interface FormData {
   email: string;
@@ -43,9 +42,8 @@ export const useLogin = () => {
   }
       dispatch(loginSuccess(res.data.user));
       toast.success("Login successful");
-      await dispatch<any>(useFetchCart());
       navigate("/");
-    } catch (error: unknown) {
+    } catch (error) {
       toast.error(extractErrorMessages(error));
     } finally {
       setLoading(false);

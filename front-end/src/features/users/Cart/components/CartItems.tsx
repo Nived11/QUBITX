@@ -69,8 +69,8 @@ const CartItems = () => {
             </div>
             <div className="space-y-3 overflow-y-auto max-h-[60vh] lg:max-h-[70vh] h-auto sm:h-[70vh]   scrollbar-hide">
 
-              {cartItems.map((item) => (
-                <div className="bg-white rounded-lg shadow-md p-3 flex gap-2 md:gap-3">
+              {cartItems.map((item ) => (
+                <div key={item.product._id} className="bg-white rounded-lg shadow-md p-3 flex gap-2 md:gap-3">
                   {/* Product Image */}
                   <div className="flex-shrink-0 cursor-pointer"
                     onClick={() => navigate(`/product/${item.product._id}`)} key={item.product._id}>

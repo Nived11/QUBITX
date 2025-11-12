@@ -5,6 +5,7 @@ import {
   setCartLoading,
   setCartError,
   setCart,
+  clearCart,
 } from "@/slices/cartSlice";
 import type { AppDispatch, RootState } from "@/store";
 import { toast } from "sonner";
@@ -13,8 +14,14 @@ import { extractErrorMessages } from "@/utils/helpers/extractErrorMessages";
 export const useFetchCart = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { cart, loading, error } = useSelector((state: RootState) => state.cart);
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
   const fetchCart = async () => {
+    if (!isAuthenticated) {
+      dispatch(clearCart());
+      return;
+    }
+
     try {
       dispatch(setCartLoading(true));
       const { data } = await api.get("/cart/");
@@ -23,7 +30,6 @@ export const useFetchCart = () => {
       } else {
         dispatch(setCartError("No cart found"));
       }
-      
     } catch (err) {
       dispatch(setCartError(extractErrorMessages(err) || "Failed to fetch cart"));
     } finally {
@@ -31,7 +37,6 @@ export const useFetchCart = () => {
     }
   };
 
-  // ✅ REMOVE ITEM
   const removeCartItem = async (productId: string) => {
     try {
       dispatch(setCartLoading(true));
@@ -47,28 +52,31 @@ export const useFetchCart = () => {
     }
   };
 
-const updateCartItem = async (productId: string, quantity: number) => {
-  try {
-    if (!cart || !cart.items) return;
+  const updateCartItem = async (productId: string, quantity: number) => {
+    try {
+      if (!cart || !cart.items) return;
 
-    const currentCart = cart;
+      const currentCart = cart;
+      const updatedItems = currentCart.items.map((item) =>
+        item.product._id === productId ? { ...item, quantity } : item
+      );
 
-    const updatedItems = currentCart.items.map((item) =>
-      item.product._id === productId ? { ...item, quantity } : item
-    );
+      dispatch(setCart({ ...currentCart, items: updatedItems }));
+      await api.put("/cart/update", { productId, quantity });
+    } catch (err) {
+      toast.error(extractErrorMessages(err) || "Failed to update quantity");
+      fetchCart();
+    }
+  };
 
-    dispatch(setCart({ ...currentCart, items: updatedItems }));
-    await api.put("/cart/update", { productId, quantity });
-  } catch (err) {
-    toast.error(extractErrorMessages(err) || "Failed to update quantity");
-    fetchCart(); 
-  }
-};
-
+  // ✅ Fetch cart when authentication status changes
   useEffect(() => {
-    fetchCart();
-  }, []);
+    if (isAuthenticated) {
+      fetchCart();
+    } else {
+      dispatch(clearCart());
+    }
+  }, [isAuthenticated]);
 
-
-  return { cart, loading, error, fetchCart, removeCartItem,updateCartItem };
+  return { cart, loading, error, fetchCart, removeCartItem, updateCartItem };
 };

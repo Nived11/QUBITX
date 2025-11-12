@@ -5,6 +5,7 @@ import type { Product } from "@/types/product";
 import { useCartActions } from "../hooks/useCartActions"; 
 import { useSelector } from "react-redux";
 import {type  RootState } from "@/store";
+import { toast } from "sonner";
 
 
 export const useImageSection = (product: Product, selectedColor: "main" | number) => {
@@ -15,6 +16,7 @@ export const useImageSection = (product: Product, selectedColor: "main" | number
 
     const cart = useSelector((state: RootState) => state.cart.cart);
     const loading = useSelector((state: RootState) => state.cart.loading);
+    const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     if (cart?.items?.some((item) => item.product?._id === product._id)) {
@@ -73,6 +75,12 @@ export const useImageSection = (product: Product, selectedColor: "main" | number
 
   // Navigate to cart
 const handleAddToCart = async () => {
+  if (!isAuthenticated) {
+      toast.warning("Please login first to add items to cart");
+      navigate("/login");
+      return;
+    }
+
   const color =
     selectedColor === "main"
       ? product.color
@@ -95,8 +103,13 @@ const handleAddToCart = async () => {
     navigate("/cart");
   };
 
+
   const handleBuyNow = () => {
-    navigate("/checkout");
+    if (!isAuthenticated) {
+      toast.warning("Please login first to purchase");
+      navigate("/login");
+      return;
+    }
   };
 
   return {
@@ -111,5 +124,6 @@ const handleAddToCart = async () => {
     handleBuyNow,
     isAddedToCart,
     loading,
+
   };
 };

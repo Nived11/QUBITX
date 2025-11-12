@@ -1,5 +1,3 @@
-// src/constants/categorySpecifications.ts
-
 export interface CategorySpec {
   label: string;
   placeholder?: string;

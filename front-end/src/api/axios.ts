@@ -33,14 +33,12 @@ api.interceptors.response.use(
     // Handle 401 Unauthorized (token expired)
     if (error.response?.status === 401 && !originalRequest._retry) {
       
-      // Prevent refresh endpoint from triggering itself
-      if (originalRequest.url?.includes("/auth/refresh-token")) {
-        console.error("Refresh token is invalid or expired");
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        store.dispatch(logout());
-        store.dispatch(resetSellerProducts());
-        window.location.href = "/login";
+      // ✅ CRITICAL FIX: Don't intercept login/signup failures
+      if (
+        originalRequest.url?.includes("/auth/login") ||
+        originalRequest.url?.includes("/auth/signup") ||
+        originalRequest.url?.includes("/auth/refresh-token")
+      ) {
         return Promise.reject(error);
       }
 

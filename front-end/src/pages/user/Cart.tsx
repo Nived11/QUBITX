@@ -1,4 +1,3 @@
-
 import BackButton from "../../components/common/BackButton";
 import { useFetchCart } from "../../features/users/Cart/hooks/useFetchCart";
 import {CartItems} from "../../features/users/Cart";
@@ -12,7 +11,6 @@ const Cart = () => {
       <div className="container mx-auto px-4 md:px-4 ">
         <BackButton/>
         <CartItems/>
-
         
       </div>
     </div>
