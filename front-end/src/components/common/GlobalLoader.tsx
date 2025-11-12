@@ -23,9 +23,9 @@ export default function GlobalLoader() {
         <div className="relative w-32 h-32 mx-auto mb-8">
           {/* Main Q SVG */}
           <svg 
-            width="128" 
-            height="128" 
-            viewBox="0 0 128 128" 
+            width="130" 
+            height="130" 
+            viewBox="0 0 130 130" 
             className="absolute inset-0 transform scale-100"
           >
             {/* Q Path - reduced size */}
@@ -33,7 +33,7 @@ export default function GlobalLoader() {
               d="M64 24 A32 32 0 1 1 64 88 A32 32 0 1 1 64 24 M76 76 Q82 82, 90 90"
               fill="none"
               stroke="url(#blueGradient)"
-              strokeWidth="10"
+              strokeWidth="11"
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeDasharray="280"
@@ -45,10 +45,10 @@ export default function GlobalLoader() {
             {/* Gradient and effects */}
             <defs>
               <linearGradient id="blueGradient" x1="0%" y1="10%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#1e40af" />
-                <stop offset="30%" stopColor="#0d4bd1ff" />
-                <stop offset="60%" stopColor="#2375f8ff" />
-                <stop offset="100%" stopColor="#4282d1ff" />
+                <stop offset="0%" stopColor="#051c67ff" />
+                <stop offset="30%" stopColor="#0b3da7ff" />
+                <stop offset="60%" stopColor="#0157e2ff" />
+                <stop offset="100%" stopColor="#82b8f9ff" />
               </linearGradient>
               
               <filter id="dropShadow">
@@ -71,9 +71,10 @@ export default function GlobalLoader() {
         
         {/* Qubitx branding */}
         <div className="space-y-3">
-          <h2 className="text-3xl font-bold text-slate-700 tracking-wide">
-            <span className="text-blue-600">{AppName}</span>
+          <h2 >
+            <span className=" text-3xl sm:text-2xl md:text-4xl  font-bold text-blue-700">{AppName}</span>
           </h2>
+
           <div className="flex justify-center space-x-1">
             {[0, 1, 2].map((i) => (
               <div
