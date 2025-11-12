@@ -7,7 +7,7 @@ export const addProduct = async (req: Request, res: Response) => {
     const {
       name,
       actualPrice,
-      discountPercentage,
+      discountedPrice,
       category,
       brand,
       warranty,
@@ -19,7 +19,7 @@ export const addProduct = async (req: Request, res: Response) => {
       colorVariants,
     } = req.body;
 
-    const sellerId = (req as any).userId; // ✅ Added: Get seller ID from authenticated user
+    const sellerId = (req as any).userId;
     if (!sellerId) return res.status(401).json({ message: "Unauthorized" });
 
     // Parse JSON fields
@@ -40,15 +40,18 @@ export const addProduct = async (req: Request, res: Response) => {
         .map((f) => (f as any).path);
       return { colorName, images: colorImages };
     });
-    const discountAmount = (actualPrice * discountPercentage) / 100;
-    const discountedPrice = Math.round(actualPrice - discountAmount);
+
+    // ✅ Calculate discount percentage from actual and discounted prices
+    const discountPercentage = actualPrice > 0 
+      ? Math.round(((actualPrice - discountedPrice) / actualPrice) * 100)
+      : 0;
 
     const newProduct = new Product({
-      seller: sellerId, // ✅ Save which seller added it
+      seller: sellerId,
       name,
       actualPrice,
-      discountPercentage,
       discountedPrice,
+      discountPercentage, // ✅ Now calculated from prices
       category,
       brand,
       warranty,
@@ -82,7 +85,7 @@ export const updateProduct = async (req: Request, res: Response) => {
     if (existing.seller.toString() !== sellerId)
       return res.status(403).json({ message: "Access denied: not your product" });
 
-    // ✅ Parse JSON fields (for form-data requests)
+    // Parse JSON fields
     const jsonFields = ["specifications", "whychoose", "colorVariants", "existingMainImages", "existingColorImages"];
     for (const field of jsonFields) {
       if (updates[field] && typeof updates[field] === "string") {
@@ -107,18 +110,14 @@ export const updateProduct = async (req: Request, res: Response) => {
     }
     updates.images = finalMainImages;
 
-    // ✅ Handle color variants with images
+    // Handle color variants with images
     if (Array.isArray(updates.colorVariants) && updates.colorVariants.length) {
       const parsedColorVariants = typeof updates.colorVariants[0] === "string" 
         ? updates.colorVariants 
         : updates.colorVariants.map((cv: any) => cv.colorName || cv);
 
-      // Build color variant objects with images
       const colorVariantObjects = parsedColorVariants.map((colorName: string) => {
-        // Get existing images for this color
         const existingImages = updates.existingColorImages?.[colorName] || [];
-        
-        // Get new uploaded images for this color
         const newColorImages = files
           ?.filter((f) => f.fieldname === `${colorName}Images`)
           ?.map((f) => (f as any).path) || [];
@@ -136,11 +135,12 @@ export const updateProduct = async (req: Request, res: Response) => {
     delete updates.existingMainImages;
     delete updates.existingColorImages;
 
-    // ✅ Recalculate discounted price if price or discount changed
+    // ✅ Recalculate discount percentage if prices changed
     const actualPrice = updates.actualPrice ?? existing.actualPrice;
-    const discountPercentage = updates.discountPercentage ?? existing.discountPercentage;
-    const discountAmount = (actualPrice * discountPercentage) / 100;
-    updates.discountedPrice = Math.round(actualPrice - discountAmount);
+    const discountedPrice = updates.discountedPrice ?? existing.discountedPrice;
+    updates.discountPercentage = actualPrice > 0 
+      ? Math.round(((actualPrice - discountedPrice) / actualPrice) * 100)
+      : 0;
 
     // Update product
     const updatedProduct = await Product.findByIdAndUpdate(productId, updates, { new: true });
@@ -175,7 +175,6 @@ export const deleteProduct = async (req: Request, res: Response) => {
 export const getAllProducts = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).userId;
-
     const query = userId ? { seller: { $ne: userId } } : {};
 
     const products = await Product.find(query)
@@ -189,8 +188,6 @@ export const getAllProducts = async (req: Request, res: Response) => {
   }
 };
 
-
-
 // ====================== GET PRODUCT BY ID ======================
 export const getProductById = async (req: Request, res: Response) => {
   try {
@@ -203,29 +200,23 @@ export const getProductById = async (req: Request, res: Response) => {
   }
 };
 
-// ====================== GET SELLER'S PRODUCTS (backend-controlled pagination) ======================
+// ====================== GET SELLER'S PRODUCTS ======================
 export const getSellerProducts = async (req: Request, res: Response) => {
   try {
     const sellerId = (req as any).userId;
     if (!sellerId) return res.status(401).json({ message: "Unauthorized" });
 
-    // Only allow frontend to send page number (default = 1)
     const page = Number(req.query.page) || 1;
-
-    // Backend-controlled pagination constants
-    const LIMIT = 12; // ✅ Backend decides page size
+    const LIMIT = 12;
     const skip = (page - 1) * LIMIT;
 
-    // Count total seller products
     const totalProducts = await Product.countDocuments({ seller: sellerId });
 
-    // Fetch paginated, sorted products
     const products = await Product.find({ seller: sellerId })
-      .sort({ createdAt: -1 }) // ✅ latest first
+      .sort({ createdAt: -1 })
       .skip(skip)
       .limit(LIMIT);
 
-    // Return professional pagination response
     res.status(200).json({
       currentPage: page,
       totalPages: Math.ceil(totalProducts / LIMIT),
@@ -240,4 +231,3 @@ export const getSellerProducts = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-

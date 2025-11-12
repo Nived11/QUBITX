@@ -11,6 +11,7 @@ const AddProductForm = ({ onClose, productId }: { onClose: () => void; productId
     addLoading,
     mainImagePreviews,
     colorVariantPreviews,
+    calculatedDiscountPercentage, 
     handleChange,
     handleHighlightChange,
     addWhychoose,
@@ -73,9 +74,8 @@ const AddProductForm = ({ onClose, productId }: { onClose: () => void; productId
       {/* Form Content */}
       {
         loading ? (
-          < ProductFormSkeleton />
+          <ProductFormSkeleton />
         ) : (
-
           <div className="mt-4 sm:mt-6">
             <div className="space-y-4 sm:space-y-6">
               {/* Basic Information */}
@@ -129,7 +129,7 @@ const AddProductForm = ({ onClose, productId }: { onClose: () => void; productId
                       <option value="">Select Category</option>
                       <option value="Smartphones">Smartphones</option>
                       <option value="Headphones">Headphones</option>
-                      <option value="Laptops">Laptops </option>
+                      <option value="Laptops">Laptops</option>
                       <option value="SmartWatches">Smart Watches</option>
                       <option value="Speakers">Speakers</option>
                       <option value="Cameras">Cameras</option>
@@ -147,13 +147,13 @@ const AddProductForm = ({ onClose, productId }: { onClose: () => void; productId
                       Warranty
                     </label>
                     <input
-                      type="Number"
+                      type="number"
                       name="warranty"
                       value={formData.warranty}
                       onChange={handleChange}
+                      onWheel={(e) => e.currentTarget.blur()}
                       className="w-full border-2 border-gray-300 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:ring-1 focus:ring-blue-800 focus:border-blue-500 outline-none transition-all"
                       placeholder="e.g., 1 Year Manufacturer Warranty"
-                      required
                     />
                   </div>
 
@@ -166,28 +166,38 @@ const AddProductForm = ({ onClose, productId }: { onClose: () => void; productId
                       name="actualPrice"
                       value={formData.actualPrice}
                       onChange={handleChange}
+                      onWheel={(e) => e.currentTarget.blur()}
                       className="w-full border-2 border-gray-300 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:ring-1 focus:ring-blue-800 focus:border-blue-500 outline-none transition-all"
                       placeholder="e.g., 999.99"
                       min="0"
-                      step="0.01"
+                      step="1"
                       required
                     />
                   </div>
 
+                  {/* ✅ Changed to Discounted Price field */}
                   <div>
                     <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2">
-                      Discount Percentage
+                      Discounted Price <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="number"
-                      name="discountPercentage"
-                      value={formData.discountPercentage}
+                      name="discountedPrice"
+                      value={formData.discountedPrice}
                       onChange={handleChange}
+                      onWheel={(e) => e.currentTarget.blur()}
                       className="w-full border-2 border-gray-300 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:ring-1 focus:ring-blue-800 focus:border-blue-500 outline-none transition-all"
-                      placeholder="e.g., 15"
+                      placeholder="e.g., 849.99"
                       min="0"
-                      max="100"
+                      step="1"
+                      required
                     />
+                    {/* ✅ Display calculated discount percentage */}
+                    {formData.actualPrice && formData.discountedPrice && calculatedDiscountPercentage > 0 && (
+                      <p className="mt-2 text-xs sm:text-sm text-green-600 font-semibold">
+                        Discount: {calculatedDiscountPercentage}% off
+                      </p>
+                    )}
                   </div>
 
                   <div className="md:col-span-2">
@@ -199,6 +209,7 @@ const AddProductForm = ({ onClose, productId }: { onClose: () => void; productId
                       name="stock"
                       value={formData.stock}
                       onChange={handleChange}
+                      onWheel={(e) => e.currentTarget.blur()}
                       className="w-full border-2 border-gray-300 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:ring-1 focus:ring-blue-800 focus:border-blue-500 outline-none transition-all"
                       placeholder="e.g., 100"
                       min="0"
@@ -221,9 +232,10 @@ const AddProductForm = ({ onClose, productId }: { onClose: () => void; productId
                     required
                   />
                 </div>
+
                 <div className="md:col-span-2">
                   <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2">
-                    Product color <span className="text-red-500">*</span>
+                    Product Color <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
@@ -232,7 +244,6 @@ const AddProductForm = ({ onClose, productId }: { onClose: () => void; productId
                     onChange={handleChange}
                     className="w-full border-2 border-gray-300 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:ring-1 focus:ring-blue-800 focus:border-blue-500 outline-none transition-all"
                     placeholder="e.g., blue"
-
                     required
                   />
                 </div>
@@ -316,7 +327,6 @@ const AddProductForm = ({ onClose, productId }: { onClose: () => void; productId
                         }
                         className="flex-1 border-2 border-gray-300 rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base focus:ring-1 focus:ring-blue-800 focus:border-blue-500 outline-none transition-all"
                         placeholder="e.g., Superior battery life"
-                        required
                       />
                       {formData.whychoose.length > 1 && (
                         <button
@@ -352,7 +362,6 @@ const AddProductForm = ({ onClose, productId }: { onClose: () => void; productId
                         key={index}
                         className="flex flex-col sm:flex-row gap-2 sm:gap-3"
                       >
-                        {/* Select + Input share equal width using flex-1 */}
                         <div className="flex flex-col sm:flex-row w-full gap-2 sm:gap-3">
                           <select
                             value={spec.label}
@@ -428,7 +437,6 @@ const AddProductForm = ({ onClose, productId }: { onClose: () => void; productId
                 {formData.colorVariants.length > 0 ? (
                   <div className="space-y-4 sm:space-y-6">
                     {formData.colorVariants.map((variant, variantIndex) => {
-                      // Calculate total images for this color variant
                       const totalImages = colorVariantPreviews[variantIndex]?.length || 0;
                       const canAddMore = totalImages < 5;
 

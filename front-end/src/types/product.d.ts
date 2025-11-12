@@ -5,7 +5,13 @@ export interface Specification {
 
 export interface ColorVariant {
   colorName: string;
-  images: string[];
+  images: string[]; // Backend stored images (URLs)
+}
+
+// For form handling (frontend only)
+export interface ColorVariantInput {
+  colorName: string;
+  images: File[]; // New images being uploaded
 }
 
 export interface Product {
@@ -27,4 +33,21 @@ export interface Product {
   colorVariants?: ColorVariant[];
   createdAt?: string;
   updatedAt?: string;
+}
+
+// Form data for creating/editing products
+export interface ProductFormData {
+  name: string;
+  actualPrice: string;
+  discountedPrice: string;
+  category: string;
+  brand: string;
+  warranty: string;
+  description: string;
+  whychoose: string[];
+  stock: string;
+  color: string;
+  specifications: Specification[];
+  mainImages: File[];
+  colorVariants: ColorVariantInput[];
 }
