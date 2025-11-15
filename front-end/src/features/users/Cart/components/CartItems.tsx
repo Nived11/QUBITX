@@ -4,10 +4,9 @@ import CartSkeleton from "./CartSkeleton";
 import { FiArrowDown } from "react-icons/fi";
 
 const CartItems = () => {
-  const { cart, loading, error, removeCartItem, updateCartItem } = useFetchCart();
+  const { loading, error, removeCartItem, updateCartItem ,cartItems } = useFetchCart();
   const navigate = useNavigate();
 
-  const cartItems = cart?.items || [];
 
   const subtotal = cartItems.reduce((acc, item) => {
     const price = Number(item?.product?.actualPrice) || 0;
@@ -202,9 +201,19 @@ const CartItems = () => {
               </div>
 
               {/* Checkout Button */}
-              <button className="w-full bg-gradient-to-r from-blue-800 to-blue-900 text-white py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold hover:opacity-90 transition shadow-md mb-2 md:mb-3">
-                Proceed to Buy
-              </button>
+<button 
+  onClick={() => {
+    navigate("/checkout", {
+      state: {
+        isBuyNow: false,
+        cartItems: cartItems,
+      },
+    });
+  }}
+  className="w-full bg-gradient-to-r from-blue-800 to-blue-900 text-white py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold hover:opacity-90 transition shadow-md mb-2 md:mb-3"
+>
+  Checkout
+</button>
 
               {/* Additional Info */}
               <div className="mt-4 md:mt-6 space-y-2 md:space-y-3">

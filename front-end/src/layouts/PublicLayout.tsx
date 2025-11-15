@@ -1,5 +1,4 @@
 import { Outlet } from "react-router-dom";
-// import ThemeButton from "../components/common/ThemeButton"
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 

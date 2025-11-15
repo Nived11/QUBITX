@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 interface CartItem {
-  product: any; // You can replace with your Product type
+  product: any; 
   quantity: number;
   color: string;
   images: string[];
@@ -45,6 +45,8 @@ const cartSlice = createSlice({
     },
     clearCart: (state) => {
       state.cart = null;
+      state.loading = false;
+      state.error = null;
     },
   },
 });

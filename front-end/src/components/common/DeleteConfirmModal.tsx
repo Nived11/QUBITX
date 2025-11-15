@@ -28,7 +28,7 @@ const DeleteConfirmModal = ({
   onClose,
   onConfirm,
   title = "Delete Item",
-  message = "Are you sure you want to delete this item? This action cannot be undone.",
+  message = "Are you sure you want to delete?",
 }: DeleteConfirmModalProps) => {
   const [loading, setLoading] = useState(false);
 

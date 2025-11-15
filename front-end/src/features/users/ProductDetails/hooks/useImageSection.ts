@@ -104,13 +104,24 @@ const handleAddToCart = async () => {
   };
 
 
-  const handleBuyNow = () => {
-    if (!isAuthenticated) {
-      toast.warning("Please login first to purchase");
-      navigate("/login");
-      return;
-    }
-  };
+const handleBuyNow = () => {
+  if (!isAuthenticated) {
+    toast.warning("Please login first to purchase");
+    navigate("/login");
+    return;
+  }
+
+  // Navigate to checkout with product data
+  navigate("/checkout", {
+    state: {
+      isBuyNow: true,
+      product: product,
+      selectedColor: selectedColor === "main" 
+        ? product.color 
+        : product.colorVariants?.[selectedColor]?.colorName || product.color,
+    },
+  });
+};
 
   return {
     productImages,

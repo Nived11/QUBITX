@@ -162,7 +162,7 @@ useEffect(() => {
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleConfirmDelete}
         title="Delete Product"
-        message="Are you sure you want to delete this product? This action cannot be undone."
+        message="Are you sure you want to delete this product?"
       />
     </div>
   );

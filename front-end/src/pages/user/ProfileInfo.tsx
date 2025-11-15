@@ -1,4 +1,4 @@
-import {UserDetailsForm} from "../../features/users/ProfileInfo"
+import {UserDetailsForm} from "@/features/users/ProfileInfo"
 
 const ProfileInfo = () => {
   return (

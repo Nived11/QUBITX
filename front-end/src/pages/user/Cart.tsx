@@ -1,6 +1,6 @@
 import BackButton from "../../components/common/BackButton";
-import { useFetchCart } from "../../features/users/Cart/hooks/useFetchCart";
-import {CartItems} from "../../features/users/Cart";
+import { useFetchCart } from "@/features/users/Cart/hooks/useFetchCart";
+import {CartItems} from "@/features/users/Cart";
 
 const Cart = () => {
 

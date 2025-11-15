@@ -1,8 +1,4 @@
-import {
-  AddProductForm,
-  BecomeSeller,
-  ProductList,
-} from "../../features/users/SellProducts";
+import {AddProductForm, BecomeSeller, ProductList,} from "@/features/users/SellProducts";
 import { useSelector } from "react-redux";
 import { type RootState } from "@/store";
 import { useState } from "react";

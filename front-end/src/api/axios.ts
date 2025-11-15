@@ -30,10 +30,10 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // Handle 401 Unauthorized (token expired)
+// Handle 401 Unauthorized (token expired)
     if (error.response?.status === 401 && !originalRequest._retry) {
       
-      // ✅ CRITICAL FIX: Don't intercept login/signup failures
+// Don't intercept login/signup failures
       if (
         originalRequest.url?.includes("/auth/login") ||
         originalRequest.url?.includes("/auth/signup") ||
@@ -44,7 +44,7 @@ api.interceptors.response.use(
 
       originalRequest._retry = true;
 
-      // If refresh is already in progress, wait for it
+// If refresh is already in progress, wait for it
       if (isRefreshing && refreshPromise) {
         try {
           await refreshPromise;
@@ -58,12 +58,12 @@ api.interceptors.response.use(
         }
       }
 
-      // Start new refresh process
+// Start new refresh process
       isRefreshing = true;
       
       const localRefresh = localStorage.getItem("refreshToken");
 
-      // No refresh token - logout immediately
+// No refresh token - logout immediately
       if (!localRefresh) {
         isRefreshing = false;
         localStorage.removeItem("accessToken");
@@ -74,7 +74,7 @@ api.interceptors.response.use(
         return Promise.reject(error);
       }
 
-      // Create refresh promise
+// Create refresh promise
       refreshPromise = axios.post(
         `${import.meta.env.VITE_API_URL}/auth/refresh-token`,
         {},
@@ -88,17 +88,17 @@ api.interceptors.response.use(
         const refreshRes = await refreshPromise;
         
         if (refreshRes.data?.accessToken && refreshRes.data?.refreshToken) {
-          // Save new tokens
+// Save new tokens
           localStorage.setItem("accessToken", refreshRes.data.accessToken);
           localStorage.setItem("refreshToken", refreshRes.data.refreshToken);
 
-          // Update the original request with new token
+// Update the original request with new token
           originalRequest.headers.Authorization = `Bearer ${refreshRes.data.accessToken}`;
 
           isRefreshing = false;
           refreshPromise = null;
 
-          // Retry the original request
+// Retry the original request
           return api(originalRequest);
         } else {
           throw new Error("No tokens in response");
@@ -109,7 +109,7 @@ api.interceptors.response.use(
         isRefreshing = false;
         refreshPromise = null;
 
-        // Clear everything and logout
+// Clear everything and logout
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         store.dispatch(logout());
@@ -120,7 +120,7 @@ api.interceptors.response.use(
       }
     }
 
-    // Handle 403 Forbidden (invalid token)
+// Handle 403 Forbidden (invalid token)
     if (error.response?.status === 403) {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");

@@ -3,20 +3,20 @@ import PublicLayout from "../layouts/PublicLayout";
 import ProfileLayout from "../layouts/ProfileLayout";
 import ProtectedRoute from "./ProtectedRoute";
 import AuthProtectRoute from "./AuthprotectRoute";
-import { SignUp, Login, Home, ProductDetails, NotFound, Cart, ProfileInfo, Orders, UserAddress, SellProducts,} from "../pages/user";
+import { SignUp, Login, Home, ProductDetails, NotFound, Cart, ProfileInfo, Orders, UserAddress, SellProducts,Checkout} from "../pages/user";
 
 const PublicRoutes = () => {
   return (
     <>
-      {/* Public pages with layout */}
+
       <Route element={<PublicLayout />}>
         <Route path="*" element={<NotFound />} />
         <Route path="/" element={<Home />} />
         <Route path="/product/:id" element={<ProductDetails />} />
 
-        {/* Protected section */}
         <Route element={<ProtectedRoute />}>
           <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
           <Route path="/profile" element={<ProfileLayout />}>
             <Route index element={<ProfileInfo />} />
             <Route path="orders" element={<Orders />} />
@@ -26,7 +26,6 @@ const PublicRoutes = () => {
         </Route>
       </Route>
 
-      {/* Login is outside PublicLayout */}
       <Route element={<AuthProtectRoute />}>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />

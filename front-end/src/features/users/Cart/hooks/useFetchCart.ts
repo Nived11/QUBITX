@@ -70,13 +70,13 @@ export const useFetchCart = () => {
   };
 
   // ✅ Fetch cart when authentication status changes
-  useEffect(() => {
-    if (isAuthenticated) {
+ useEffect(() => {
+    if (isAuthenticated && (!cart || !cart.items || cart.items.length === 0)) {
       fetchCart();
-    } else {
+    } else if (!isAuthenticated) {
       dispatch(clearCart());
     }
   }, [isAuthenticated]);
 
-  return { cart, loading, error, fetchCart, removeCartItem, updateCartItem };
+  return { cart, loading, error, fetchCart, removeCartItem, updateCartItem, cartItems: cart?.items || [] };
 };
