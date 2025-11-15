@@ -1,45 +1,78 @@
-// src/controllers/orderController.ts
 import { Request, Response } from "express";
 import Order from "../models/orderModel";
 import Cart from "../models/cartModel";
 import Product from "../models/productModel";
+import { sendOrderPlacedEmail } from "../utils/sendOrderEmail";
+import User from "../models/userModel";
 
-// =================== CREATE ORDER ===================
+
+
 export const createOrder = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).userId;
-    const { addressId, paymentMethod, items, subtotal, discount, shipping, total, clearCart: shouldClearCart } = req.body;
+    const {
+      addressId,
+      paymentMethod,
+      items,
+      subtotal,
+      discount,
+      shipping,
+      total,
+      clearCart: shouldClearCart,
+    } = req.body;
 
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
-    
+
     if (!addressId || !items || items.length === 0) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    // Validate products exist and have sufficient stock
+    // Validate product & stock
     for (const item of items) {
       const product = await Product.findById(item.productId);
       if (!product) {
-        return res.status(404).json({ message: `Product ${item.productId} not found` });
+        return res
+          .status(404)
+          .json({ message: `Product ${item.productId} not found` });
       }
-      
+
       if (product.stock < item.quantity) {
-        return res.status(400).json({ 
-          message: `Insufficient stock for ${product.name}. Available: ${product.stock}` 
+        return res.status(400).json({
+          message: `Insufficient stock for ${product.name}. Available: ${product.stock}`,
         });
       }
     }
+
+    // ⭐ FIX: Build order items with correct variant images
+    const orderItems = await Promise.all(
+      items.map(async (item: any) => {
+        const product = await Product.findById(item.productId);
+
+        if (!product) throw new Error("Product not found");
+
+        // ✅ FIXED: Use colorName instead of color to match the schema
+        const variant = product?.colorVariants?.find(
+          (v: any) => v.colorName?.toLowerCase() === item.color?.toLowerCase()
+        );
+
+        return {
+          product: item.productId,
+          quantity: item.quantity,
+          color: item.color,
+          price: item.price,
+          // Use variant images if found, otherwise fallback to product images
+          images: variant?.images?.length
+            ? variant.images
+            : product.images,
+        };
+      })
+    );
 
     // Create order
     const newOrder = new Order({
       user: userId,
       address: addressId,
-      items: items.map((item: any) => ({
-        product: item.productId,
-        quantity: item.quantity,
-        color: item.color,
-        price: item.price,
-      })),
+      items: orderItems,
       subtotal,
       discount,
       shipping,
@@ -51,26 +84,36 @@ export const createOrder = async (req: Request, res: Response) => {
 
     await newOrder.save();
 
-    // ✅ Update product stock
+    const orderId = (newOrder._id as any).toString();
+    const user = await User.findById(userId);
+
+    if (user?.email) {
+      await sendOrderPlacedEmail(
+        user.email,
+        user.name || "Customer",
+        orderId,
+        total,
+        items.length
+      );
+    }
+
+
+    // Update stock
     for (const item of items) {
-      await Product.findByIdAndUpdate(
-        item.productId,
-        { $inc: { stock: -item.quantity } }
-      );
+      await Product.findByIdAndUpdate(item.productId, {
+        $inc: { stock: -item.quantity },
+      });
     }
 
-    // ✅ Clear cart if requested (not for Buy Now)
+    // Clear cart if needed
     if (shouldClearCart) {
-      await Cart.findOneAndUpdate(
-        { user: userId },
-        { items: [] }
-      );
+      await Cart.findOneAndUpdate({ user: userId }, { items: [] });
     }
 
-    // Populate order details
+    // Populate order response
     const populatedOrder = await Order.findById(newOrder._id)
-      .populate('address')
-      .populate('items.product');
+      .populate("address")
+      .populate("items.product");
 
     res.status(201).json({
       message: "Order placed successfully",
@@ -82,6 +125,7 @@ export const createOrder = async (req: Request, res: Response) => {
   }
 };
 
+
 // =================== GET USER ORDERS ===================
 export const getUserOrders = async (req: Request, res: Response) => {
   try {
@@ -89,8 +133,8 @@ export const getUserOrders = async (req: Request, res: Response) => {
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
     const orders = await Order.find({ user: userId })
-      .populate('address')
-      .populate('items.product')
+      .populate("address")
+      .populate("items.product")
       .sort({ createdAt: -1 });
 
     res.status(200).json({ orders });
@@ -109,8 +153,8 @@ export const getOrderById = async (req: Request, res: Response) => {
     if (!userId) return res.status(401).json({ message: "Unauthorized" });
 
     const order = await Order.findOne({ _id: orderId, user: userId })
-      .populate('address')
-      .populate('items.product');
+      .populate("address")
+      .populate("items.product");
 
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
@@ -137,21 +181,17 @@ export const cancelOrder = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    // Allow cancellation only if order is pending OR confirmed
-    const cancellableStatuses = ["pending", "confirmed"];
-
-    if (!cancellableStatuses.includes(order.orderStatus)) {
+    if (!["pending", "confirmed"].includes(order.orderStatus)) {
       return res.status(400).json({
         message: `Order cannot be cancelled at this stage (${order.orderStatus})`,
       });
     }
 
-    // Restore product stock
+    // Restore stock
     for (const item of order.items) {
-      await Product.findByIdAndUpdate(
-        item.product,
-        { $inc: { stock: item.quantity } }
-      );
+      await Product.findByIdAndUpdate(item.product, {
+        $inc: { stock: item.quantity },
+      });
     }
 
     order.orderStatus = "cancelled";

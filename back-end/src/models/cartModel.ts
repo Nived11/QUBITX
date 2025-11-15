@@ -26,7 +26,7 @@ const cartItemSchema = new Schema<ICartItem>(
       default: 1,
     },
     color: { type: String },
-    images: [String], // optional: could store small preview of the chosen variant
+    images: [{ type: String }]
   },
   { _id: false }
 );

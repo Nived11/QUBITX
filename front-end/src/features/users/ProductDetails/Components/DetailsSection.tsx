@@ -17,6 +17,14 @@ const DetailsSection = ({
       ? product.color
       : product.colorVariants?.[selectedColor]?.colorName || "";
 
+  // Get current stock based on selected color
+  const currentStock = 
+    selectedColor === "main"
+      ? product.stock
+      : product.colorVariants?.[selectedColor]?.stock ?? product.stock;
+
+  const isOutOfStock = currentStock === 0;
+
   return (
     <div className="space-y-6 px-4 py-4">
       {/* Brand Tag */}
@@ -33,10 +41,16 @@ const DetailsSection = ({
       <div className=" text-black">
         <div className="flex items-center mb-2 gap-4">
           <p className="text-sm mb-1 text-black font-semibold">Special Price</p>
-          {product.discountPercentage > 0 && (
-            <span className="animate-pulse bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
-              {product.discountPercentage}% OFF
+          {isOutOfStock ? (
+            <span className="animate-pulse bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+              OUT OF STOCK
             </span>
+          ) : (
+            product.discountPercentage > 0 && (
+              <span className="animate-pulse bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                {product.discountPercentage}% OFF
+              </span>
+            )
           )}
         </div>
         <div className="flex items-baseline gap-4 p-4 ">

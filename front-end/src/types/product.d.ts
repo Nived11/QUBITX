@@ -6,12 +6,14 @@ export interface Specification {
 export interface ColorVariant {
   colorName: string;
   images: string[]; // Backend stored images (URLs)
+  stock: number; // Stock for this color variant
 }
 
 // For form handling (frontend only)
 export interface ColorVariantInput {
   colorName: string;
   images: File[]; // New images being uploaded
+  stock: string; // Stock as string for form input
 }
 
 export interface Product {

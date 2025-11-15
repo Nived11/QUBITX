@@ -13,6 +13,8 @@ interface LocationState {
   isBuyNow?: boolean;
   product?: Product;
   selectedColor?: string;
+  selectedImages?: string[]; // ✅ Add this
+  quantity?: number;
   cartItems?: CartItem[];
 }
 
@@ -22,7 +24,7 @@ export const useCheckout = () => {
   const dispatch = useDispatch<AppDispatch>();
   const state = location.state as LocationState;
   
-  const { isBuyNow, product, selectedColor, cartItems } = state || {};
+  const { isBuyNow, product, selectedColor, selectedImages, quantity, cartItems } = state || {};
   
   const [currentStep, setCurrentStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState<"COD" | "RAZORPAY">("COD");
@@ -31,13 +33,12 @@ export const useCheckout = () => {
   
   const addressHook = useAddress();
 
-  // Prepare order items
   const orderItems: CartItem[] = isBuyNow && product
     ? [{
         product: product,
-        quantity: 1,
+        quantity: quantity || 1,
         color: selectedColor || product.color,
-        images: product.images || []
+        images: selectedImages || product.images
       } as CartItem]
     : cartItems || [];
 

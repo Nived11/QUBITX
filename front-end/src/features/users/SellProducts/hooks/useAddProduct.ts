@@ -173,7 +173,8 @@ export const useAddProduct = (onSuccess?: () => void, productId?: string) => {
   const addColorVariant = () => {
     setFormData((prev) => ({
       ...prev,
-      colorVariants: [...prev.colorVariants, { colorName: "", images: [] }],
+      colorVariants: [...prev.colorVariants, { colorName: "", images: [] , stock: "" }],
+      
     }));
     setColorVariantPreviews((prev) => [...prev, []]);
   };

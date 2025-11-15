@@ -3,6 +3,7 @@ import Cart from "../models/cartModel";
 import Product from "../models/productModel";
 
 // =================== ADD OR UPDATE CART ITEM ===================
+// =================== ADD OR UPDATE CART ITEM ===================
 export const addToCart = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).userId;
@@ -14,50 +15,55 @@ export const addToCart = async (req: Request, res: Response) => {
     const product = await Product.findById(productId);
     if (!product) return res.status(404).json({ message: "Product not found" });
 
-    if (product.stock < quantity)
-      return res.status(400).json({ message: "Insufficient stock" });
-
+    // -- Pick variant images or fallback --
     let selectedImages: string[] = [];
+
     if (color) {
       const variant = product.colorVariants.find(
         (v) => v.colorName.toLowerCase() === color.toLowerCase()
       );
-      selectedImages = variant ? variant.images : product.images;
+
+      if (variant) {
+        selectedImages = [...variant.images];   // <<--- Variant images
+      } else {
+        selectedImages = [...product.images];   // <<--- Main images
+      }
     } else {
-      selectedImages = product.images;
+      selectedImages = [...product.images];
     }
 
+    // Get or create cart
     let cart = await Cart.findOne({ user: userId });
-    if (!cart) {
-      cart = new Cart({ user: userId, items: [] });
-    }
+    if (!cart) cart = new Cart({ user: userId, items: [] });
 
     const existingItem = cart.items.find(
       (item) =>
         item.product.toString() === productId &&
-        item.color?.toLowerCase() === (color?.toLowerCase() || "")
+        item.color?.toLowerCase() === color?.toLowerCase()
     );
 
     if (existingItem) {
       existingItem.quantity += quantity;
+      existingItem.images = selectedImages; // <<--- update variant image
     } else {
       cart.items.push({
         product: productId,
         quantity,
         color: color || product.color,
-        images: selectedImages,
+        images: selectedImages, // <<-- store variant images
       });
     }
 
     await cart.save();
-    const populatedCart = await cart.populate("items.product"); // ✅ populate product details
+    const populatedCart = await cart.populate("items.product");
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Product added to cart",
       cart: populatedCart,
     });
-  } catch (error) {
-    console.error("Add to cart error:", error);
+
+  } catch (err) {
+    console.error("Add to cart error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };

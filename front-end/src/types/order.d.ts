@@ -8,6 +8,7 @@ export interface OrderItem {
   quantity: number;
   color?: string;
   price: number;
+  images?: string[];
 }
 
 export interface Order {

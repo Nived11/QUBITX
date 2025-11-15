@@ -6,8 +6,8 @@ interface EmptyOrdersProps {
 
  const EmptyOrders = ({ onStartShopping }: EmptyOrdersProps) => {
   return (
-    <div className="bg-white rounded-lg p-12 text-center text-gray-500 shadow-sm">
-      <Package className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+    <div className="  p-12 text-center text-gray-500">
+      <Package className="w-16 h-16 mx-auto mb-4 text-blue-700" />
       <p className="text-lg font-semibold">No orders yet</p>
       <p className="text-sm mt-2">Your order history will appear here</p>
       <button

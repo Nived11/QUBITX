@@ -74,7 +74,7 @@ const CartItems = () => {
                   <div className="flex-shrink-0 cursor-pointer"
                     onClick={() => navigate(`/product/${item.product._id}`)} key={item.product._id}>
                     <img
-                      src={item.images[0]}
+                      src={item.images?.[0] || item.product.images[0]}
                       alt={item.product.name}
                       className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-lg"
                     />

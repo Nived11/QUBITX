@@ -43,7 +43,7 @@ const OrderCard = ({ order, onCancelClick, cancellingOrderId }: OrderCardProps) 
         {/* First Item Preview */}
         <div className="flex gap-3 sm:gap-4 mb-4">
           <img
-            src={order.items[0].product.images[0]}
+            src={order.items[0].images?.[0] || order.items[0].product.images[0]}
             alt={order.items[0].product.name}
             className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-cover rounded-md flex-shrink-0 cursor-pointer"
             onClick={() => navigateToProduct(order.items[0].product._id)}
@@ -82,32 +82,33 @@ const OrderCard = ({ order, onCancelClick, cancellingOrderId }: OrderCardProps) 
 
         {/* Expanded Items */}
         {isExpanded && order.items.length > 1 && (
-          <div className="space-y-3 mb-4 p-3 bg-gray-50 rounded-lg">
-            {order.items.slice(1).map((item, index) => (
-              <div key={index} className="flex gap-3">
-                <img
-                  src={item.product.images[0]}
-                  alt={item.product.name}
-                  className="w-14 h-14 sm:w-16 sm:h-16 object-cover rounded-md flex-shrink-0 cursor-pointer"
-                  onClick={() => navigateToProduct(item.product._id)}
-                />
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-gray-500">{item.product.brand}</p>
-                  <p className="text-xs sm:text-sm text-gray-700 line-clamp-2 mb-1">
-                    {item.product.name}
-                  </p>
-                  {item.color && (
-                    <p className="text-xs text-gray-500">Color: {item.color}</p>
-                  )}
-                  <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
-                  <p className="text-sm font-semibold text-gray-900 mt-1">
-                    ₹{item.price.toLocaleString()}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+  <div className="space-y-3 mb-4 p-3 bg-gray-50 rounded-lg">
+    {order.items.slice(1).map((item, index) => (
+      <div key={index} className="flex gap-3">
+        <img
+          src={item.images?.[0] || item.product.images[0]}
+          alt={item.product.name}
+          className="w-14 h-14 sm:w-16 sm:h-16 object-cover rounded-md flex-shrink-0 cursor-pointer"
+          onClick={() => navigateToProduct(item.product._id)}
+        />
+        <div className="flex-1 min-w-0">
+          <p className="text-xs text-gray-500">{item.product.brand}</p>
+          <p className="text-xs sm:text-sm text-gray-700 line-clamp-2 mb-1">
+            {item.product.name}
+          </p>
+          {item.color && (
+            <p className="text-xs text-gray-500">Color: {item.color}</p>
+          )}
+          <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+          <p className="text-sm font-semibold text-gray-900 mt-1">
+            ₹{item.price.toLocaleString()}
+          </p>
+        </div>
+      </div>
+    ))}
+  </div>
+)}
+
 
         {/* Delivery Address */}
         <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">

@@ -25,6 +25,7 @@ const ImageSection = ({ product, selectedColor }: ImageSectionProps) => {
     isAddedToCart,
     handleGoToCart,
     loading,
+    isOutOfStock,
   } = useImageSection(product, selectedColor);
 
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
@@ -87,6 +88,7 @@ const ImageSection = ({ product, selectedColor }: ImageSectionProps) => {
           isAddedToCart={isAddedToCart}
           isAdding={loading}
           isAuthenticated={isAuthenticated}
+          isOutOfStock={isOutOfStock}
         />
 
       </div>
