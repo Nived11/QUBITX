@@ -8,6 +8,7 @@ export interface User {
   userType: string;
   companyName?: string;
   companyProof?: string;
+  sellerStatus?: string; 
 }
 
 interface UserState {

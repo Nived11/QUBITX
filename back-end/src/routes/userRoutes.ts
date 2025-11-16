@@ -1,7 +1,14 @@
 import express from "express";
 import { authenticateUser } from "../middlewares/authMiddleware";
 import upload from "../middlewares/multerMiddleware";
-import { getUserDetails, updateUser, deleteUser, becomeSeller } from "../controllers/userController";
+import { 
+  getUserDetails, 
+  updateUser, 
+  deleteUser, 
+  requestBecomeSeller,
+  updateSellerStatus,
+  getPendingSellerRequests
+} from "../controllers/userController";
 
 const router = express.Router();
 
@@ -14,7 +21,11 @@ router.put("/update", authenticateUser, updateUser);
 // Delete user account
 router.delete("/delete", authenticateUser, deleteUser);
 
-// Become a seller (upload proof)
-router.patch("/become-seller", authenticateUser, upload.single("companyProof"), becomeSeller);
+// Request to become a seller (with proof upload)
+router.post("/request-seller", authenticateUser, upload.single("companyProof"), requestBecomeSeller);
+
+// Admin routes
+router.patch("/admin/seller-status", authenticateUser, updateSellerStatus);
+router.get("/admin/pending-sellers", authenticateUser, getPendingSellerRequests);
 
 export default router;

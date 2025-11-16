@@ -68,7 +68,7 @@ export const useAddProduct = (onSuccess?: () => void, productId?: string) => {
         mainImages: [],
         colorVariants: product.colorVariants?.map((cv: any) => ({
           colorName: cv.colorName,
-          images: [] // Empty for new uploads
+          images: []  
         })) || [],
       });
 

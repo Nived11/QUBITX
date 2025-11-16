@@ -19,13 +19,14 @@ export const getUserDetails = async (req: Request, res: Response) => {
     // Return consistent user object
     res.status(200).json({
       _id: user._id,
-      id: user._id, // Include both for compatibility
+      id: user._id,
       name: user.name,
       email: user.email,
       phone: user.phone || "",
       userType: user.userType,
       companyName: user.companyName || "",
       companyProof: user.companyProof || "",
+      sellerStatus: user.sellerStatus || "none",
     });
   } catch (error) {
     console.error("Get user details error:", error);
@@ -68,6 +69,7 @@ export const updateUser = async (req: Request, res: Response) => {
         userType: updatedUser.userType,
         companyName: updatedUser.companyName,
         companyProof: updatedUser.companyProof,
+        sellerStatus: updatedUser.sellerStatus,
       }
     });
   } catch (error) {
@@ -95,8 +97,8 @@ export const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
-// ===================== BECOME SELLER =====================
-export const becomeSeller = async (req: Request, res: Response) => {
+// ===================== REQUEST TO BECOME SELLER =====================
+export const requestBecomeSeller = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).userId;
     const { companyName } = req.body;
@@ -115,18 +117,25 @@ export const becomeSeller = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Prevent re-upgrading an existing seller
+    // Check if user is already a seller
     if (user.userType === "seller") {
-      return res.status(400).json({ message: "User is already a seller" });
+      return res.status(400).json({ message: "You are already a seller" });
     }
 
-    user.userType = "seller";
+    // Check if there's already a pending request
+    if (user.sellerStatus === "pending") {
+      return res.status(400).json({ message: "Your seller request is already pending approval" });
+    }
+
+    // Update user with seller request details
     user.companyName = companyName;
     user.companyProof = companyProof;
+    user.sellerStatus = "pending";
+    user.updatedAt = new Date();
     await user.save();
 
     res.status(200).json({
-      message: "You are now a seller!",
+      message: "Seller request submitted successfully!.",
       user: {
         _id: user._id,
         id: user._id,
@@ -136,10 +145,91 @@ export const becomeSeller = async (req: Request, res: Response) => {
         phone: user.phone,
         companyName: user.companyName,
         companyProof: user.companyProof,
+        sellerStatus: user.sellerStatus,
       },
     });
   } catch (error) {
-    console.error("Become seller error:", error);
+    console.error("Request become seller error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// ===================== ADMIN: APPROVE/REJECT SELLER REQUEST =====================
+export const updateSellerStatus = async (req: Request, res: Response) => {
+  try {
+    const adminId = (req as any).userId;
+    const { userId, status } = req.body; // status: "approved" or "rejected"
+
+    // Check if requester is admin
+    const admin = await User.findById(adminId);
+    if (!admin || admin.userType !== "admin") {
+      return res.status(403).json({ message: "Access denied. Admin only." });
+    }
+
+    if (!userId || !status || !["approved", "rejected"].includes(status)) {
+      return res.status(400).json({ message: "Invalid request parameters" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.sellerStatus !== "pending") {
+      return res.status(400).json({ message: "No pending seller request for this user" });
+    }
+
+    // Update user status
+    if (status === "approved") {
+      user.userType = "seller";
+      user.sellerStatus = "approved";
+    } else {
+      user.sellerStatus = "rejected";
+      // Optionally clear company details on rejection
+      // user.companyName = "";
+      // user.companyProof = "";
+    }
+
+    user.updatedAt = new Date();
+    await user.save();
+
+    res.status(200).json({
+      message: `Seller request ${status} successfully`,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        userType: user.userType,
+        sellerStatus: user.sellerStatus,
+      },
+    });
+  } catch (error) {
+    console.error("Update seller status error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// ===================== ADMIN: GET ALL PENDING SELLER REQUESTS =====================
+export const getPendingSellerRequests = async (req: Request, res: Response) => {
+  try {
+    const adminId = (req as any).userId;
+
+    // Check if requester is admin
+    const admin = await User.findById(adminId);
+    if (!admin || admin.userType !== "admin") {
+      return res.status(403).json({ message: "Access denied. Admin only." });
+    }
+
+    const pendingRequests = await User.find({ 
+      sellerStatus: "pending" 
+    }).select("-password");
+
+    res.status(200).json({
+      message: "Pending seller requests retrieved",
+      requests: pendingRequests,
+    });
+  } catch (error) {
+    console.error("Get pending seller requests error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

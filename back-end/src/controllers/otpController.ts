@@ -9,8 +9,7 @@ import { sendOtpEmail } from "../utils/sendOtpMail";
 
 export const generateOtp = async (req: Request, res: Response) => {
   try {
-    const { name, email, phone, password, userType, companyName, purpose } = req.body;
-    const companyProof = req.file ? req.file.path : undefined;
+    const { name, email, phone, password, purpose } = req.body;
 
     if (!email || !purpose) {
       return res.status(400).json({ message: "Missing required fields" });
@@ -26,7 +25,7 @@ export const generateOtp = async (req: Request, res: Response) => {
 
       const otpDoc = new Otp({ email, otp, purpose, expiresAt });
       await otpDoc.save();
-      await sendOtpEmail(email, otp,"forgot-password");
+      await sendOtpEmail(email, otp, "forgot-password");
 
       return res.status(200).json({ message: "OTP sent to email", expiresAt, otp });
     }
@@ -42,13 +41,13 @@ export const generateOtp = async (req: Request, res: Response) => {
         existingOtp.otp = otp;
         existingOtp.expiresAt = new Date(Date.now() + 2 * 60 * 1000);
         await existingOtp.save();
-        await sendOtpEmail(email, otp ,"signup");
+        await sendOtpEmail(email, otp, "signup");
 
         return res.status(200).json({ message: "OTP resent to email", expiresAt: existingOtp.expiresAt, otp });
       }
 
       // First time signup OTP
-      if (!name || !password || !userType) {
+      if (!name || !password) {
         return res.status(400).json({ message: "Missing required fields for signup" });
       }
 
@@ -64,18 +63,16 @@ export const generateOtp = async (req: Request, res: Response) => {
         email,
         phone,
         password: hashedPassword,
-        userType,
-        companyName: companyName || undefined,
-        companyProof,
+        userType: "buyer", // Always set to buyer for signup
         otp,
         purpose,
         expiresAt,
       });
 
       await otpDoc.save();
-      await sendOtpEmail(email, otp,"signup");
+      await sendOtpEmail(email, otp, "signup");
 
-      return res.status(200).json({ message: "OTP sent to email", expiresAt,});
+      return res.status(200).json({ message: "OTP sent to email", expiresAt });
     }
 
     return res.status(400).json({ message: "Invalid purpose" });
@@ -84,7 +81,6 @@ export const generateOtp = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 
 /////////////////////////////////////// Verify OTP (signup / forgot-password)////////////////////////////////////////////////////
 
@@ -98,9 +94,8 @@ export const verifyOtp = async (req: Request, res: Response) => {
 
     // Find latest non-expired OTP for this email & purpose
     const otpDoc = await Otp.findOne({ email, purpose })
-  .sort({ createdAt: -1 })
-  .exec();
-
+      .sort({ createdAt: -1 })
+      .exec();
 
     if (!otpDoc) return res.status(400).json({ message: "Invalid or expired OTP" });
     if (otpDoc.otp !== otp) return res.status(400).json({ message: "Invalid OTP" });
@@ -118,16 +113,14 @@ export const verifyOtp = async (req: Request, res: Response) => {
         email: otpDoc.email,
         phone: otpDoc.phone,
         password: otpDoc.password,
-        userType: otpDoc.userType,
-        companyName: otpDoc.companyName,
-        companyProof: otpDoc.companyProof,
+        userType: "buyer", // Always create as buyer
+        sellerStatus: "none",
       });
       await Otp.deleteOne({ _id: otpDoc._id });
 
       return res.status(201).json({
         message: "User registered successfully",
         userId: newUser._id,
-        companyProofUrl: newUser.companyProof,
       });
     }
 

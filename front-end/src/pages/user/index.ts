@@ -6,6 +6,6 @@ export {default as ProductDetails} from "./ProductDetails";
 export {default as Cart} from "./Cart";
 export {default as ProfileInfo} from "./ProfileInfo";
 export {default as Orders} from "./Orders";
-export {default as UserAddress} from "./UserAddress";
+export {default as UserAddress} from "./Address";
 export {default as SellProducts} from "./SellProducts";
 export {default as Checkout} from "./Checkout"

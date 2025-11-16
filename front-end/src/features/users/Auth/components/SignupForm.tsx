@@ -1,13 +1,5 @@
 import { Eye, EyeOff } from "lucide-react";
-import {
-  FaUser,
-  FaEnvelope,
-  FaBuilding,
-  FaLock,
-  FaFileAlt,
-  FaShoppingBag,
-  FaStore,
-} from "react-icons/fa";
+import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
 import { Spinner } from "@/components/ui/spinner";
 import AuthSidePanel from "../components/AuthSidePanel";
 import { useSignup } from "../hooks/useSignup";
@@ -19,8 +11,6 @@ import "react-phone-input-2/lib/style.css";
 
 const SignupForm = () => {
   const {
-    accountType,
-    setAccountType,
     formData,
     handleChange,
     showPassword,
@@ -60,38 +50,7 @@ const SignupForm = () => {
               </p>
             </div>
 
-            <div className="space-y-3 lg:space-y-3.5 ">
-              {/* Account Type */}
-              <div>
-                <label className="block text-xs sm:text-sm font-medium text-blue-900 mb-2">
-                  Account Type
-                </label>
-                <div className="flex gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setAccountType("buyer")}
-                    className={`flex-1 py-2.5 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all text-sm sm:text-base ${
-                      accountType === "buyer"
-                        ? "bg-blue-800 text-white shadow-md"
-                        : "bg-gray-300 text-blue-900 hover:bg-gray-400 hover:text-white"
-                    }`}
-                  >
-                    <FaShoppingBag /> Buyer
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setAccountType("seller")}
-                    className={`flex-1 py-2.5 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all text-sm sm:text-base ${
-                      accountType === "seller"
-                        ? "bg-blue-800 text-white shadow-md"
-                        : "bg-gray-300 text-blue-900 hover:bg-gray-400 hover:text-white"
-                    }`}
-                  >
-                    <FaStore /> Seller
-                  </button>
-                </div>
-              </div>
-
+            <div className="space-y-3 lg:space-y-3.5">
               {/* Name */}
               <div className="mb-3">
                 <div className="relative">
@@ -231,66 +190,6 @@ const SignupForm = () => {
                   )}
                 </div>
               </div>
-
-              {/* Seller Fields */}
-              {accountType === "seller" && (
-                <>
-                  <div className="mb-3">
-                    <div className="relative">
-                      <FaBuilding className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-900" />
-                      <input
-                        type="text"
-                        name="companyName"
-                        value={formData.companyName}
-                        onChange={handleChange}
-                        placeholder="Company Name"
-                        className="w-full pl-10 pr-3 py-2.5 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm outline-none placeholder:text-gray-500"
-                      />
-                    </div>
-                    {errors.companyName && (
-                      <span className="text-red-600 text-xs mt-1 block">
-                        {errors.companyName}
-                      </span>
-                    )}
-                  </div>
-                  <div className="mb-3">
-                    <div className="relative">
-                      <FaFileAlt className="absolute left-3 top-3 text-blue-900" />
-                      <label
-                        htmlFor="proofDocument"
-                        className="w-full pl-10 pr-3 py-2 border border-gray-400 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm outline-none flex items-center justify-between cursor-pointer bg-white hover:bg-blue-50"
-                      >
-                        <span
-                          className={`${
-                            formData.proofDocument
-                              ? "text-gray-900"
-                              : "text-gray-500"
-                          }`}
-                        >
-                          {formData.proofDocument?.name ||
-                            "Upload proof document"}
-                        </span>
-                        <span className="text-blue-700 font-semibold text-sm">
-                          Browse
-                        </span>
-                      </label>
-                      <input
-                        type="file"
-                        id="proofDocument"
-                        name="proofDocument"
-                        accept="image/*,.pdf"
-                        onChange={handleChange}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      />
-                    </div>
-                    {errors.proofDocument && (
-                      <span className="text-red-600 text-xs mt-1 block">
-                        {errors.proofDocument}
-                      </span>
-                    )}
-                  </div>
-                </>
-              )}
 
               {/* Terms */}
               <div className="flex items-start gap-2 pt-2">

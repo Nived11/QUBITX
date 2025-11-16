@@ -4,8 +4,6 @@ export interface FormData {
   phone: string;
   password: string;
   confirmPassword: string;
-  companyName: string;
-  proofDocument: File | null;
   termsAccepted: boolean;
 }
 
@@ -15,15 +13,10 @@ export interface FormErrors {
   phone?: string;
   password?: string;
   confirmPassword?: string;
-  companyName?: string;
-  proofDocument?: string;
   termsAccepted?: string;
 }
 
-export const validateSignup = (
-  data: FormData,
-  accountType: "buyer" | "seller"
-): FormErrors => {
+export const validateSignup = (data: FormData): FormErrors => {
   const errors: FormErrors = {};
 
   // Name
@@ -61,18 +54,9 @@ export const validateSignup = (
     errors.termsAccepted = "You must accept terms and conditions";
   }
 
-  // Seller fields
-  if (accountType === "seller") {
-    if (!data.companyName || data.companyName.trim().length < 3) {
-      errors.companyName = "Company name must be at least 3 characters";
-    }
-    if (!data.proofDocument) {
-      errors.proofDocument = "Please upload proof document";
-    }
-  }
-
   return errors;
 };
+
 export interface PasswordErrors {
   password?: string;
   confirmPassword?: string;
@@ -84,7 +68,6 @@ export const validatePassword = (
 ): PasswordErrors => {
   const errors: PasswordErrors = {};
 
-  // Password validation (same regex as signup)
   const passwordRegex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+=[\]{};':"\\|,.<>/?~-]).{8,}$/;
 
@@ -93,7 +76,6 @@ export const validatePassword = (
       "Password must be 8+ chars with uppercase, lowercase, number & symbol";
   }
 
-  // Confirm password
   if (password !== confirmPassword) {
     errors.confirmPassword = "Passwords do not match";
   }

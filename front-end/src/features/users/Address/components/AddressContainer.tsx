@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
-import { AddressForm, AddressList , AddressSkeleton} from "@/features/users/Address";
-import { useAddress } from "@/features/users/Address/hooks/useAddress";
+import AddressForm from "./AddressForm";
+import AddressList from "./AddressList";
+import AddressSkeleton from "./AddressSkeleton";
+import { useAddress } from "../hooks/useAddress";
 import type { Address, AddressFormData } from "@/types/address";
 import DeleteConfirmModal from "@/components/common/DeleteConfirmModal";
 
-const UserAddress = () => {
+const AddressContainer = () => {
   const {
     addresses,
     loading,
@@ -18,28 +20,27 @@ const UserAddress = () => {
 
   const [showForm, setShowForm] = useState(false);
   const [editingAddress, setEditingAddress] = useState<Address | null>(null);
-
-   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedDeleteId, setSelectedDeleteId] = useState<string | null>(null);
 
-const handleSaveAddress = async (addressData: AddressFormData) => {
-  try {
-    if (editingAddress) {
-      const result = await updateAddress(editingAddress._id, addressData);
-      if (result) {
-        setEditingAddress(null);
-        setShowForm(false);
+  const handleSaveAddress = async (addressData: AddressFormData) => {
+    try {
+      if (editingAddress) {
+        const result = await updateAddress(editingAddress._id, addressData);
+        if (result) {
+          setEditingAddress(null);
+          setShowForm(false);
+        }
+      } else {
+        const result = await addAddress(addressData);
+        if (result) {
+          setShowForm(false);
+        }
       }
-    } else {
-      const result = await addAddress(addressData);
-      if (result) {
-        setShowForm(false);
-      }
+    } catch (error) {
+      console.error("Address save failed:", error);
     }
-  } catch (error) {
-    console.error("Address save failed:", error);
-  }
-};
+  };
 
   const handleEdit = (address: Address) => {
     setEditingAddress(address);
@@ -51,12 +52,12 @@ const handleSaveAddress = async (addressData: AddressFormData) => {
     setEditingAddress(null);
   };
 
-    const handleDeleteClick = (id: string) => {
+  const handleDeleteClick = (id: string) => {
     setSelectedDeleteId(id);
     setIsDeleteModalOpen(true);
   };
 
-    const handleConfirmDelete = async () => {
+  const handleConfirmDelete = async () => {
     if (selectedDeleteId) {
       await deleteAddress(selectedDeleteId);
       setIsDeleteModalOpen(false);
@@ -64,9 +65,9 @@ const handleSaveAddress = async (addressData: AddressFormData) => {
     }
   };
 
- if (loading) {
-  return <AddressSkeleton />;
-}
+  if (loading) {
+    return <AddressSkeleton />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -83,7 +84,7 @@ const handleSaveAddress = async (addressData: AddressFormData) => {
           </div>
           <button
             onClick={() => setShowForm(true)}
-            className="bg-gradient-to-br from-blue-600 to-blue-900 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:from-blue-700 hover:to-blue-950 transition shadow-sm font-medium text-sm sm:text-"
+            className="bg-gradient-to-br from-blue-600 to-blue-900 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:from-blue-700 hover:to-blue-950 transition shadow-sm font-medium text-sm sm:text-base"
           >
             <Plus size={20} />
             <span className="hidden sm:inline">Add Address</span>
@@ -95,9 +96,9 @@ const handleSaveAddress = async (addressData: AddressFormData) => {
           addresses={addresses}
           onSetDefault={setDefault}
           onEdit={handleEdit}
-          onDelete={handleDeleteClick} 
+          onDelete={handleDeleteClick}
           actionLoading={actionLoading}
-          selectionMode={false} 
+          selectionMode={false}
         />
 
         {showForm && (
@@ -115,11 +116,11 @@ const handleSaveAddress = async (addressData: AddressFormData) => {
           onClose={() => setIsDeleteModalOpen(false)}
           onConfirm={handleConfirmDelete}
           title="Delete Address"
-          message="Are you sure you want to delete this address? "
+          message="Are you sure you want to delete this address?"
         />
       </div>
     </div>
   );
 };
 
-export default UserAddress;
+export default AddressContainer;

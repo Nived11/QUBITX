@@ -11,8 +11,6 @@ interface FormData {
   phone: string;
   password: string;
   confirmPassword: string;
-  companyName: string;
-  proofDocument: File | null;
   termsAccepted: boolean;
 }
 
@@ -22,13 +20,10 @@ const initialFormData: FormData = {
   phone: "",
   password: "",
   confirmPassword: "",
-  companyName: "",
-  proofDocument: null,
   termsAccepted: false,
 };
 
 export const useSignup = () => {
-  const [accountType, setAccountType] = useState<"buyer" | "seller">("buyer");
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -41,23 +36,19 @@ export const useSignup = () => {
   const [otpExpiresAt, setOtpExpiresAt] = useState<string | null>(null);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked, files } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]:
-        type === "checkbox"
-          ? checked
-          : type === "file"
-          ? files?.[0] ?? null
-          : value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
+
   const handlePhoneChange = (phone: string) => {
     setFormData((prev) => ({ ...prev, phone }));
   };
 
   const handleSubmit = async () => {
-    const validationErrors = validateSignup(formData, accountType);
+    const validationErrors = validateSignup(formData);
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       toast.error("Please fix the errors in the form");
@@ -74,14 +65,6 @@ export const useSignup = () => {
       payload.append("email", formData.email);
       payload.append("phone", formData.phone);
       payload.append("password", formData.password);
-      payload.append("userType", accountType);
-      if (accountType === "seller") {
-        payload.append("companyName", formData.companyName);
-        if (formData.proofDocument) {
-          payload.append("companyProof", formData.proofDocument);
-        }
-      }
-
       payload.append("purpose", "signup");
 
       const response = await api.post("/otp/generate-otp", payload, {
@@ -91,7 +74,6 @@ export const useSignup = () => {
       toast.success("OTP sent to email. Please verify.");
 
       setOtpEmail(formData.email);
-      // Store the expiresAt from backend response
       if (response.data.expiresAt) {
         setOtpExpiresAt(response.data.expiresAt);
       }
@@ -107,25 +89,20 @@ export const useSignup = () => {
   };
 
   const handleOtpVerified = () => {
-    // Clear all form data
     setFormData(initialFormData);
     setOtpEmail(null);
     setOtpExpiresAt(null);
-    setAccountType("buyer");
     setTimeout(() => {
       navigate("/login");
     }, 500);
   };
 
-  // Handle OTP modal close without verification
   const handleOtpClose = () => {
     setOtpEmail(null);
     setOtpExpiresAt(null);
   };
 
   return {
-    accountType,
-    setAccountType,
     formData,
     handleChange,
     showPassword,
