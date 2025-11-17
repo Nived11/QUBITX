@@ -10,7 +10,7 @@ interface PaymentStepProps {
   const { paymentMethod, setPaymentMethod, subtotal, discount, shipping, grandTotal } = checkout;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4  lg:max-w-[80%] lg:mx-auto w-full  bg-white px-4 py-4 sm:px-8 md:p-6 lg:p-8 rounded-lg">
       <h2 className="text-xl font-bold text-gray-800">Payment Method</h2>
       
       <div className="space-y-3">

@@ -71,8 +71,8 @@ const AddressForm = ({ onSave, onCancel, initialData, isEditing = false , loadin
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2">
-      <div className="relative bg-white rounded-lg p-4 sm:p-6 w-full max-w-3xl max-h-[95vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-2 "style={{ zIndex: 99999 }}>
+      <div className="relative bg-white rounded-lg p-4 sm:p-6 w-full max-w-3xl max-h-[95vh] overflow-y-auto mt-8 sm:mt-0">
         <button
           onClick={onCancel}
           className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 transition-colors"

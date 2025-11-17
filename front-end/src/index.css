@@ -40,7 +40,7 @@
           }
         }
 
-        @keyframes arrowSlide {
+@keyframes arrowSlide {
           0%, 100% {
             transform: translateX(0);
           }
@@ -72,3 +72,11 @@
   transform-origin: top center;
   will-change: transform;
 }
+
+.scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }

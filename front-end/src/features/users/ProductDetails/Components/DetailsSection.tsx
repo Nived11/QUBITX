@@ -18,7 +18,7 @@ const DetailsSection = ({
       : product.colorVariants?.[selectedColor]?.colorName || "";
 
   // Get current stock based on selected color
-  const currentStock = 
+  const currentStock =
     selectedColor === "main"
       ? product.stock
       : product.colorVariants?.[selectedColor]?.stock ?? product.stock;
@@ -40,17 +40,21 @@ const DetailsSection = ({
       {/* Price Section */}
       <div className=" text-black">
         <div className="flex items-center mb-2 gap-4">
-          <p className="text-sm mb-1 text-black font-semibold">Special Price</p>
+
           {isOutOfStock ? (
             <span className="animate-pulse bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
               OUT OF STOCK
             </span>
           ) : (
-            product.discountPercentage > 0 && (
-              <span className="animate-pulse bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                {product.discountPercentage}% OFF
-              </span>
-            )
+            <>
+              <p className="text-sm mb-1 text-black font-semibold">Special Price</p>
+
+              {product.discountPercentage > 0 && (
+                <span className="animate-pulse bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                  {product.discountPercentage}% OFF
+                </span>
+              )}
+            </>
           )}
         </div>
         <div className="flex items-baseline gap-4 p-4 ">
@@ -81,11 +85,10 @@ const DetailsSection = ({
           {/* Main Product Color */}
           <button
             onClick={() => onColorChange("main")}
-            className={`bg-white flex-shrink-0 border-2 rounded-md overflow-hidden transition ${
-              selectedColor === "main"
+            className={`bg-white flex-shrink-0 border-2 rounded-md overflow-hidden transition ${selectedColor === "main"
                 ? "border-gray-600 shadow-lg"
                 : "border-gray-300 hover:border-gray-600"
-            }`}
+              }`}
           >
             <div className="p-1">
               <img
@@ -103,11 +106,10 @@ const DetailsSection = ({
                 <button
                   key={index}
                   onClick={() => onColorChange(index)}
-                  className={`bg-white flex-shrink-0 border-2 rounded-md overflow-hidden transition ${
-                    selectedColor === index
+                  className={`bg-white flex-shrink-0 border-2 rounded-md overflow-hidden transition ${selectedColor === index
                       ? "border-gray-600 shadow-lg"
                       : "border-gray-300 hover:border-gray-600"
-                  }`}
+                    }`}
                 >
                   <div className="p-1">
                     <img

@@ -10,7 +10,7 @@ interface OrderSummaryStepProps {
   const { addressHook, orderItems, subtotal, discount, shipping, grandTotal, setCurrentStep } = checkout;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4  lg:max-w-[80%] lg:mx-auto w-full bg-white px-4 py-4 sm:px-8 md:p-6 lg:p-8 rounded-lg">
       <h2 className="text-xl font-bold text-gray-800">Order Summary</h2>
       
       {/* Delivery Address */}

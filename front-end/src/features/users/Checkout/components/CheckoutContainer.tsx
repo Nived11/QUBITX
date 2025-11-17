@@ -18,20 +18,24 @@ const CheckoutContainer = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4 max-w-4xl">
+    <div className="min-h-screen bg-gray-50 py-4 pb-32 lg:pb-8">
+      <div className="container mx-auto px-4">
+        <div className="flex"></div>
         <BackButton />
 
         <StepIndicator currentStep={checkout.currentStep} />
 
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className=" relative" style={{ zIndex: 1 }}>
           {checkout.currentStep === 1 && <AddressStep checkout={checkout} />}
-          {checkout.currentStep === 2 && <OrderSummaryStep checkout={checkout} />}
+          <div className="">
+           {checkout.currentStep === 2 && <OrderSummaryStep checkout={checkout} />}
+          </div>
           {checkout.currentStep === 3 && <PaymentStep checkout={checkout} />}
-
-          <CheckoutActions checkout={checkout} />
         </div>
+
+        <CheckoutActions checkout={checkout} />
       </div>
+
     </div>
   );
 };
