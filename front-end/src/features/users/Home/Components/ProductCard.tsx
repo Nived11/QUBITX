@@ -1,19 +1,8 @@
 import { Link } from "react-router-dom";
 import SwingingTag from "./SwingingTag";
 import placeholderSVG from "@/components/common/PlaceHolderSVG";
+import type { Product } from "@/types/product";
 
-interface Product {
-  _id: string;
-  name: string;
-  brand: string;
-  category: string;
-  actualPrice: number;
-  discountPercentage: number;
-  discountedPrice: number;
-  images: string[];
-  stock?: number;
-  warranty?: string;
-}
 
 const ProductCard = ({ product }: { product: Product }) => {
   const image =
@@ -21,7 +10,7 @@ const ProductCard = ({ product }: { product: Product }) => {
 
   return (
     <Link to={`/product/${product._id}`}>
-      <div className="bg-white rounded-lg shadow-md cursor-pointer hover:shadow-xl transition-all duration-300 flex flex-col h-full group relative overflow-hidden">
+      <div className=" bg-white rounded-lg shadow-md cursor-pointer hover:shadow-xl transition-all duration-300 flex flex-col h-full group relative overflow-hidden">
         {product.discountPercentage > 0 && (
           <SwingingTag discount={product.discountPercentage} />
         )}
@@ -32,7 +21,7 @@ const ProductCard = ({ product }: { product: Product }) => {
             <img
               src={image}
               alt={product.name}
-              className="object-contain h-full w-full transition-transform duration-500 ease-in-out group-hover:scale-110"
+              className="object-contain h-full w-full p-2 transition-transform duration-500 ease-in-out group-hover:scale-110"
               onError={(e) => {
                 (e.currentTarget as HTMLImageElement).src = `data:image/svg+xml;utf8,${encodeURIComponent(placeholderSVG)}`;
               }}
@@ -47,7 +36,7 @@ const ProductCard = ({ product }: { product: Product }) => {
         </div>
 
         {/* Product Details */}
-        <div className="p-3 sm:p-4 flex flex-col flex-grow">
+        <div className="p-3 sm:p-4 flex flex-col">
           {/* Brand & Category */}
           <div className="flex items-center justify-end gap-2 mb-1">
             <span className="bg-blue-50 text-blue-700 text-[9px] sm:text-xs font-semibold px-2 py-0.5 rounded-full">

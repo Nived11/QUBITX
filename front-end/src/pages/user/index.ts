@@ -9,3 +9,4 @@ export {default as Orders} from "./Orders";
 export {default as UserAddress} from "./Address";
 export {default as SellProducts} from "./SellProducts";
 export {default as Checkout} from "./Checkout"
+export {default as CategoryPage} from "./CategoryPage"

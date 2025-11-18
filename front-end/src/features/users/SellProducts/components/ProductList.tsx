@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useSellerProducts } from "../hooks/useSellerProducts";
 import ProductListSkeleton from "./ProductListSkeleton";
 import Pagination from "@/components/common/Pagination";
@@ -19,16 +20,18 @@ const ProductList = ({
     deleteSellerProductById,
   } = useSellerProducts();
 
+  const navigate = useNavigate();
+
   const [selectedProductId, setSelectedProductId] = useState<string | null>(
     null
   );
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-useEffect(() => {
-   if (products.length === 0 ) {
+  useEffect(() => {
+    if (products.length === 0) {
       fetchSellerProducts(currentPage);
     }
-  }, [ currentPage]);
+  }, [currentPage]);
 
   const handleDeleteClick = (productId: string) => {
     setSelectedProductId(productId);
@@ -75,11 +78,16 @@ useEffect(() => {
                   return (
                     <div
                       key={p._id}
-                      className="bg-white rounded-md sm:rounded-lg shadow-md sm:shadow-lg hover:shadow-xl transition-shadow flex flex-col relative"
+                      onClick={() => navigate(`/product/${p._id}?mode=readonly`)}
+                      className="cursor-pointer bg-white rounded-md sm:rounded-lg shadow-md sm:shadow-lg hover:shadow-xl transition-shadow flex flex-col relative"
                     >
+
                       {/* Delete Button */}
                       <button
-                        onClick={() => handleDeleteClick(p._id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteClick(p._id);
+                        }}
                         className="absolute top-2 right-2 z-10 bg-white rounded-full p-1.5 shadow-md hover:shadow-lg text-red-600 hover:text-red-800 transition-all"
                       >
                         <Trash2 size={16} />
@@ -132,7 +140,7 @@ useEffect(() => {
                         </div>
 
                         <button
-                          onClick={() => onEditProduct(p._id)}
+                          onClick={(e) => { e.stopPropagation(); onEditProduct(p._id) }}
                           className="w-full bg-gray-900 hover:bg-gray-800 text-white text-[10px] sm:text-sm font-medium py-1.5 sm:py-2 rounded transition-colors"
                         >
                           Edit Product

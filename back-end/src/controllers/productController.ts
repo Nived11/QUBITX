@@ -231,3 +231,46 @@ export const getSellerProducts = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// ====================== GET PRODUCTS BY CATEGORY (pagination + filters) ======================
+export const getProductsByCategory = async (req: Request, res: Response) => {
+  try {
+    const { category } = req.params;
+    const { minPrice, maxPrice, page = 1 } = req.query;
+    const userId = (req as any).userId;
+
+    const LIMIT = 12;
+    const skip = (Number(page) - 1) * LIMIT;
+
+    const filter: any = {
+      category: { $regex: new RegExp("^" + category + "$", "i") },
+    };
+
+    // remove seller’s own products
+    if (userId) {
+      filter.seller = { $ne: userId };
+    }
+
+    // price filters
+    if (minPrice) filter.discountedPrice = { ...filter.discountedPrice, $gte: Number(minPrice) };
+    if (maxPrice) filter.discountedPrice = { ...filter.discountedPrice, $lte: Number(maxPrice) };
+
+    const totalProducts = await Product.countDocuments(filter);
+
+    const products = await Product.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(LIMIT);
+
+    res.status(200).json({
+      products,
+      currentPage: Number(page),
+      totalPages: Math.ceil(totalProducts / LIMIT),
+      hasMore: Number(page) * LIMIT < totalProducts
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

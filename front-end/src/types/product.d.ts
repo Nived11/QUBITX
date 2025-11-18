@@ -39,6 +39,7 @@ export interface Product {
 
 // Form data for creating/editing products
 export interface ProductFormData {
+  
   name: string;
   actualPrice: string;
   discountedPrice: string;

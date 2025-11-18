@@ -10,9 +10,10 @@ interface ImageSectionProps {
   product: Product;
   selectedColor: "main" | number;
   onColorChange: (colorIndex: "main" | number) => void;
+  readonly?: boolean;
 }
 
-const ImageSection = ({ product, selectedColor }: ImageSectionProps) => {
+const ImageSection = ({ product, selectedColor, readonly }: ImageSectionProps) => {
   const {
     productImages,
     selectedImage,
@@ -40,7 +41,7 @@ const ImageSection = ({ product, selectedColor }: ImageSectionProps) => {
           <img
             src={productImages[selectedImage]}
             alt={product.name}
-            className="w-full sm:h-[400px] object-contain bg-white"
+            className="w-full h-[380px] sm:h-[400px] md:h-[400px] object-contain bg-white"
           />
 
           {/* Previous Button */}
@@ -67,8 +68,8 @@ const ImageSection = ({ product, selectedColor }: ImageSectionProps) => {
               key={index}
               onClick={() => setSelectedImage(index)}
               className={`flex-shrink-0 border-2 rounded-lg overflow-hidden transition ${selectedImage === index
-                  ? "border-blue-800 shadow-md"
-                  : "border-gray-300 hover:border-blue-600"
+                ? "border-blue-800 shadow-md"
+                : "border-gray-300 hover:border-blue-600"
                 }`}
             >
               <img
@@ -81,15 +82,17 @@ const ImageSection = ({ product, selectedColor }: ImageSectionProps) => {
         </div>
 
         {/* Action Buttons */}
-        <ActionButtons
-          onAddToCart={handleAddToCart}
-          onBuyNow={handleBuyNow}
-          onGoToCart={handleGoToCart}
-          isAddedToCart={isAddedToCart}
-          isAdding={loading}
-          isAuthenticated={isAuthenticated}
-          isOutOfStock={isOutOfStock}
-        />
+        {!readonly && (
+          <ActionButtons
+            onAddToCart={handleAddToCart}
+            onBuyNow={handleBuyNow}
+            onGoToCart={handleGoToCart}
+            isAddedToCart={isAddedToCart}
+            isAdding={loading}
+            isAuthenticated={isAuthenticated}
+            isOutOfStock={isOutOfStock}
+          />
+        )}
 
       </div>
     </div>

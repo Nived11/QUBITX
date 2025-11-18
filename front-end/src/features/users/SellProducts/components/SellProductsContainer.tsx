@@ -21,7 +21,7 @@ const SellProductsContainer = () => {
       }
       setSyncingUser(false);
     };
-    
+
     fetchUserData();
   }, [dispatch, user?._id]);
 

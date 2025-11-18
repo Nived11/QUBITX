@@ -10,6 +10,7 @@ import smarthome from "../../../../assets/categoriesimages/smarthome.png";
 import cpu from "../../../../assets/categoriesimages/cpu.png";
 import earbuds from "../../../../assets/categoriesimages/earbuds.webp";
 import printers from "../../../../assets/categoriesimages/printers.png";
+import { useNavigate } from "react-router-dom";
 
 const categories = [
     { name: "Smartphones", image: smartphone },
@@ -27,11 +28,13 @@ const categories = [
   ];
 
 const Categories = () => {
+    const navigate = useNavigate();
   return (
     <div className=" px-2 py-4  flex items-center gap-5 sm:gap-4 md:gap-6 lg:gap-10 xl:gap-12 overflow-x-auto scrollbar-hide">
   {categories.map((cat, idx) => (
     <div
       key={idx}
+       onClick={() => navigate(`/category/${cat.name}`)}
       className="flex flex-col items-center text-center flex-shrink-0 w-16 sm:w-18 md:w-20 lg:w-20"
     >
       <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-18 lg:h-18 flex items-center justify-center bg-gray-300/30 rounded-full  p-2 cursor-pointer ">

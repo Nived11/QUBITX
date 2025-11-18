@@ -1,5 +1,4 @@
-import { Link } from "react-router-dom";
-import FilterProduct from "./FilterProduct";
+// import { Link } from "react-router-dom";
 import ProductCard from "./ProductCard";
 import { useProducts } from "../hooks/useProducts";
 import ProductCardSkeleton from "./ProductCardSkeleton";
@@ -12,7 +11,6 @@ const ProductList = () => {
       <div className="flex justify-between items-center mb-8 px-2 sm:px-0">
         <h1 className="text-lg sm:text-2xl font-bold text-blue-800">Latest Products</h1>
         
-        <FilterProduct/>
 
       </div>
 
@@ -26,7 +24,7 @@ const ProductList = () => {
         </div>
       </div>
 
-      <div className="flex justify-end mt-5 bg-gradient-to-r from-[#102362] to-blue-800 rounded-bl-full rounded-br-full relative overflow-hidden mx-2 sm:mx-0 py-1">
+      {/* <div className="flex justify-end mt-5 bg-gradient-to-r from-[#102362] to-blue-800 rounded-bl-full rounded-br-full relative overflow-hidden mx-2 sm:mx-0 py-1">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-20 animate-shimmer"></div>
         
         <Link
@@ -39,7 +37,7 @@ const ProductList = () => {
             <span className="inline-block transform transition-transform group-hover:translate-x-1 animation-delay-75">&gt;</span>
           </span>
         </Link>
-      </div>   
+      </div>    */}
     </div>
   );
 };

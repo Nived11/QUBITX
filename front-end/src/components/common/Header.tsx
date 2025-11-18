@@ -7,7 +7,7 @@ import {
   FiMapPin,
   FiPackage,
   FiShoppingBag,
-  FiHeart,
+  // FiHeart,
 } from "react-icons/fi";
 
 import { useNavigate } from "react-router-dom";
@@ -23,10 +23,10 @@ const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
- const { cart } = useFetchCart();
+  const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { cart } = useFetchCart();
 
-const cartCount = cart?.items?.length || 0;
+  const cartCount = cart?.items?.length || 0;
 
 
 
@@ -46,8 +46,7 @@ const cartCount = cart?.items?.length || 0;
     setIsDropdownOpen(false);
   };
 
-  const userInitial =
-    user?.email || user?.name ? (user?.name?.[0] || "").toUpperCase() : "";
+  const userInitial = user?.email || user?.name ? (user?.name?.[0] || "").toUpperCase() : "";
 
   return (
     <header className="w-full bg-white shadow-md sticky top-0 z-50">
@@ -74,7 +73,7 @@ const cartCount = cart?.items?.length || 0;
           <div className="flex items-center gap-5 sm:gap-4 md:gap-6 order-2 sm:order-3">
             {isAuthenticated && (
               <>
-                <button
+                {/* <button
                   onClick={() => navigate("/wishlist")}
                   className="relative p-2 sm:p-2.5 md:p-3 rounded-full hover:bg-red-100 transform transition hover:scale-105"
                 >
@@ -82,17 +81,17 @@ const cartCount = cart?.items?.length || 0;
                   <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs text-white">
                     3
                   </span>
-                </button>
+                </button> */}
                 <button
                   onClick={() => navigate("/cart")}
                   className="relative p-2 sm:p-2.5 md:p-3 rounded-full hover:bg-blue-100 transform transition hover:scale-105"
                 >
                   <FiShoppingCart className="text-gray-900 text-xl sm:text-xl md:text-xl" />
                   {cartCount > 0 && (
-        <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-700 text-xs text-white">
-          {cartCount}
-        </span>
-      )}
+                    <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-700 text-xs text-white">
+                      {cartCount}
+                    </span>
+                  )}
                 </button>
               </>
             )}
@@ -140,7 +139,7 @@ const cartCount = cart?.items?.length || 0;
                         </span>
                       </button>
                       <button
-                         onClick={() => { navigate("/profile/orders"); setIsDropdownOpen(false); }}
+                        onClick={() => { navigate("/profile/orders"); setIsDropdownOpen(false); }}
                         className="group relative w-full px-4 py-2 mb-1  border border-l-[4px] border-r-[4px] text-left overflow-hidden"
                       >
                         <span className="absolute inset-0 bg-gradient-to-r from-blue-300 to-blue-800 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></span>
@@ -150,7 +149,7 @@ const cartCount = cart?.items?.length || 0;
                         </span>
                       </button>
                       <button
-                       onClick={() => { navigate("/profile/user-address"); setIsDropdownOpen(false); }}
+                        onClick={() => { navigate("/profile/user-address"); setIsDropdownOpen(false); }}
                         className="group relative w-full px-4 py-2 mb-1  border border-l-[4px] border-r-[4px] text-left overflow-hidden"
                       >
                         <span className="absolute inset-0 bg-gradient-to-r from-blue-300 to-blue-800 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></span>
@@ -160,16 +159,16 @@ const cartCount = cart?.items?.length || 0;
                         </span>
                       </button>
 
-                        <button
-                           onClick={() => { navigate("/profile/sell-products"); setIsDropdownOpen(false); }}
-                          className="group relative w-full px-4 py-2 mb-1  border border-l-[4px] border-r-[4px] text-left overflow-hidden"
-                        >
-                          <span className="absolute inset-0 bg-gradient-to-r from-blue-300 to-blue-800 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></span>
-                          <span className="relative z-10 flex items-center gap-2 group-hover:text-white transition-colors duration-400">
-                            <FiPackage className="text-xl" />
-                            <span>Sell Items</span>
-                          </span>
-                        </button>
+                      <button
+                        onClick={() => { navigate("/profile/sell-products"); setIsDropdownOpen(false); }}
+                        className="group relative w-full px-4 py-2 mb-1  border border-l-[4px] border-r-[4px] text-left overflow-hidden"
+                      >
+                        <span className="absolute inset-0 bg-gradient-to-r from-blue-300 to-blue-800 transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out"></span>
+                        <span className="relative z-10 flex items-center gap-2 group-hover:text-white transition-colors duration-400">
+                          <FiPackage className="text-xl" />
+                          <span>Sell Items</span>
+                        </span>
+                      </button>
                       <button
                         onClick={handleLogout}
                         className="group relative w-full px-4 py-2 rounded-br-[30px] border border-l-[4px] border-r-[4px] text-left overflow-hidden"
