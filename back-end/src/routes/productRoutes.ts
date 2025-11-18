@@ -6,7 +6,8 @@ import {
   getAllProducts,
   getProductById,
   getSellerProducts,
-  getProductsByCategory
+  getProductsByCategory,
+  searchProducts
 } from "../controllers/productController";
 import upload from "../middlewares/multerMiddleware";
 import { authenticateUser } from "../middlewares/authMiddleware";
@@ -19,6 +20,8 @@ router.put("/update/:id", authenticateUser, upload.any(), updateProduct);
 router.delete("/delete/:id", authenticateUser, deleteProduct);
 router.get("/seller/my-products", authenticateUser, getSellerProducts);
 router.get("/all", optionalAuthenticateUser, getAllProducts);
-router.get("/:id", optionalAuthenticateUser, getProductById);
+router.get("/search", optionalAuthenticateUser, searchProducts);
 router.get("/category/:category", optionalAuthenticateUser, getProductsByCategory);
+router.get("/:id", optionalAuthenticateUser, getProductById);
+
 export default router;

@@ -2,7 +2,6 @@ import AppName from "./AppName";
 import {
   FiUser,
   FiShoppingCart,
-  FiSearch,
   FiLogOut,
   FiMapPin,
   FiPackage,
@@ -16,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { handleLogoutUser } from "@/utils/logout";
 import type { RootState } from "@/store";
 import { useFetchCart } from "@/features/users/Cart/hooks/useFetchCart";
+import SearchBar from "./SearchBar";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -59,15 +59,7 @@ const Header = () => {
             {AppName}
           </div>
           <div className="relative w-full sm:w-auto sm:flex-1 sm:max-w-md order-3 sm:order-2">
-            <FiSearch
-              size={16}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-blue-900"
-            />
-            <input
-              type="text"
-              placeholder="Search..."
-              className="placeholder:text-gray-900 w-full rounded-full border-2 border-blue-800 text-gray-900 py-2 pl-10 pr-4 focus:outline-none focus:ring-1 focus:ring-blue-300 text-sm sm:text-base md:text-base md:py-1.5"
-            />
+            <SearchBar/>
           </div>
 
           <div className="flex items-center gap-5 sm:gap-4 md:gap-6 order-2 sm:order-3">

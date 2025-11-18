@@ -274,3 +274,34 @@ export const getProductsByCategory = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// ====================== SEARCH PRODUCTS ======================
+export const searchProducts = async (req: Request, res: Response) => {
+  try {
+    const { query } = req.query; // search text
+    const userId = (req as any).userId;
+
+    if (!query) return res.status(400).json({ message: "Query is required" });
+
+    // Build filter
+    const filter: any = {
+      name: { $regex: query as string, $options: "i" } // case-insensitive search
+    };
+
+    // Optional: remove seller's own products
+    if (userId) {
+      filter.seller = { $ne: userId };
+    }
+
+    // Limit results to 10 for autocomplete
+    const products = await Product.find(filter)
+      .limit(10)
+      .select("name discountedPrice actualPrice images category") // only needed fields
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(products);
+  } catch (error) {
+    console.error("Search products error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
