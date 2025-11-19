@@ -2,9 +2,10 @@ import { useFetchCart } from "../hooks/useFetchCart";
 import { useNavigate } from "react-router-dom";
 import CartSkeleton from "./CartSkeleton";
 import { FiArrowDown } from "react-icons/fi";
+import { toast } from "sonner";
 
 const CartItems = () => {
-  const { loading, error, removeCartItem, updateCartItem ,cartItems } = useFetchCart();
+  const { loading, error, removeCartItem, updateCartItem, cartItems } = useFetchCart();
   const navigate = useNavigate();
 
 
@@ -68,7 +69,7 @@ const CartItems = () => {
             </div>
             <div className="space-y-3 overflow-y-auto max-h-[60vh] lg:max-h-[70vh] h-auto sm:h-[70vh]   scrollbar-hide">
 
-              {cartItems.map((item ) => (
+              {cartItems.map((item) => (
                 <div key={item.product._id} className="bg-white rounded-lg shadow-md p-3 flex gap-2 md:gap-3">
                   {/* Product Image */}
                   <div className="flex-shrink-0 cursor-pointer"
@@ -136,9 +137,16 @@ const CartItems = () => {
                           className="w-10 sm:w-12 text-center py-1 border-x border-gray-300 font-semibold focus:outline-none text-sm"
                         />
                         <button
-                          onClick={() => updateCartItem(item.product._id, item.quantity + 1)}
+                          onClick={() => {
+                            if (item.quantity >= item.product.stock) {
+                              toast.error("Quantity limit reached");
+                              return;
+                            }
+                            updateCartItem(item.product._id, item.quantity + 1);
+                          }}
                           className="px-2 py-1 hover:bg-gray-100 transition"
                         >
+
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
                           </svg>
@@ -201,19 +209,19 @@ const CartItems = () => {
               </div>
 
               {/* Checkout Button */}
-<button 
-  onClick={() => {
-    navigate("/checkout", {
-      state: {
-        isBuyNow: false,
-        cartItems: cartItems,
-      },
-    });
-  }}
-  className="w-full bg-gradient-to-r from-blue-800 to-blue-900 text-white py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold hover:opacity-90 transition shadow-md mb-2 md:mb-3"
->
-  Checkout
-</button>
+              <button
+                onClick={() => {
+                  navigate("/checkout", {
+                    state: {
+                      isBuyNow: false,
+                      cartItems: cartItems,
+                    },
+                  });
+                }}
+                className="w-full bg-gradient-to-r from-blue-800 to-blue-900 text-white py-2.5 md:py-3 rounded-lg text-sm md:text-base font-semibold hover:opacity-90 transition shadow-md mb-2 md:mb-3"
+              >
+                Checkout
+              </button>
 
               {/* Additional Info */}
               <div className="mt-4 md:mt-6 space-y-2 md:space-y-3">

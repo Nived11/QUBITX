@@ -33,12 +33,12 @@ export const createOrder = async (req: Request, res: Response) => {
       if (!product) {
         return res
           .status(404)
-          .json({ message: `Product ${item.productId} not found` });
+          .json({ message: `Product not found` });
       }
 
       if (product.stock < item.quantity) {
         return res.status(400).json({
-          message: `Insufficient stock for ${product.name}. Available: ${product.stock}`,
+          message: `Insufficient stock `,
         });
       }
     }
