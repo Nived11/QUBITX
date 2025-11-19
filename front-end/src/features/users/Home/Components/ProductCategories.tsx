@@ -1,12 +1,17 @@
 import { Link } from "react-router-dom";
 import ProductCard from "./ProductCard";
-import { useProducts } from "../hooks/useProducts";
 import ProductCardSkeleton from "./ProductCardSkeleton";
+import type { Product } from "@/types/product";
 
-const ProductCategories = () => {
-  const { products, loading, error } = useProducts();
+interface ProductCategoriesProps {
+  products: Product[];
+  loading: boolean;
+  error: string | null;
+}
 
-  const laptops = products.filter((p) => p.category === "Laptops").slice(0, 4);
+const ProductCategories = ({ products, loading, error }: ProductCategoriesProps) => {
+  
+   const laptops = products.filter((p) => p.category === "Laptops").slice(0, 4);
   const mobiles = products.filter((p) => p.category === "Smartphones").slice(0, 4);
   const headphones = products.filter((p) => p.category === "Headphones").slice(0, 4);
 

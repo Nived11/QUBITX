@@ -36,7 +36,7 @@ const SearchBar = () => {
       const timeout = setTimeout(() => {
         setPlaceholder((prev) => prev + currentText[charIndex]);
         setCharIndex(charIndex + 1);
-      }, 70);
+      }, 80);
       return () => clearTimeout(timeout);
     } else {
       const timeout = setTimeout(() => {

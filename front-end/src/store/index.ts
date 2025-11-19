@@ -6,6 +6,7 @@ import sellerProductReducer from "../slices/sellerProductSlice";
 import cartReducer from "../slices/cartSlice";
 import addressReducer from "../slices/addressSlice";
 import orderReducer from "../slices/orderSlice";
+import bannerReducer from "../slices/bannerSlice";
 
 import {
   persistStore,
@@ -51,6 +52,7 @@ export const store = configureStore({
     cart: persistedCartReducer,
     address: persistedAddressReducer,
     orders: orderReducer,   // NOT persisted
+    banners: bannerReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

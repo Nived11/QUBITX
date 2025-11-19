@@ -1,50 +1,53 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import api from '@/api/axios';
-import { toast } from 'sonner';
-import type { Order } from '@/types/order';
-import type { RootState, AppDispatch } from '@/store';
-import { 
-  setOrders, 
-  setOrdersLoading, 
-  setOrdersError, 
-  updateOrderStatus 
-} from '@/slices/orderSlice';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import api from "@/api/axios";
+import { toast } from "sonner";
+import type { RootState, AppDispatch } from "@/store";
+import type { Order } from "@/types/order";
+import {
+  setOrders,
+  setOrdersLoading,
+  setOrdersError,
+  updateOrderStatus,
+  setLoadedOnce,
+} from "@/slices/orderSlice";
 
 export const useOrders = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  
-  const { orders, loading } = useSelector((state: RootState) => state.orders);
-  
+
+  const { orders, loading, loadedOnce } = useSelector(
+    (state: RootState) => state.orders
+  );
+
   const [expandedOrders, setExpandedOrders] = useState<string[]>([]);
   const [cancellingOrder, setCancellingOrder] = useState<string | null>(null);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [orderToCancel, setOrderToCancel] = useState<string | null>(null);
-  const [isInitialLoad, setIsInitialLoad] = useState(true); // ✅ Track initial load locally
 
   // Fetch Orders
-  const fetchOrders = async () => {
+  const fetchOrders = async (force = false) => {
+    if (loadedOnce && !force) return;
+
     try {
       dispatch(setOrdersLoading(true));
       dispatch(setOrdersError(null));
 
-      const response = await api.get('/orders');
-      const data = response.data.orders || response.data.data || [];
+      const res = await api.get("/orders");
+      const data = res.data.orders || res.data.data || [];
 
       dispatch(setOrders(data));
     } catch (error: any) {
-      console.error('Failed to fetch orders:', error);
+      console.error("Failed to fetch orders:", error);
 
-      const errorMsg = error.response?.data?.message || 'Failed to fetch orders';
-      dispatch(setOrdersError(errorMsg));
-      
-      if (error.response?.status !== 401 && error.response?.status !== 403) {
-        toast.error(errorMsg);
-      }
+      const msg = error.response?.data?.message || "Failed to fetch orders";
+      dispatch(setOrdersError(msg));
+
+      if (![401, 403].includes(error.response?.status)) toast.error(msg);
     } finally {
-      setIsInitialLoad(false); // ✅ Mark initial load as complete
+      // ⭐ mark loaded only after UI saw the skeleton
+      dispatch(setLoadedOnce());
     }
   };
 
@@ -67,76 +70,70 @@ export const useOrders = () => {
     try {
       setCancellingOrder(orderToCancel);
 
-      const response = await api.patch(`/orders/${orderToCancel}/cancel`);
+      const res = await api.patch(`/orders/${orderToCancel}/cancel`);
 
-      dispatch(updateOrderStatus({ 
-        orderId: orderToCancel, 
-        status: 'cancelled' 
-      }));
+      dispatch(
+        updateOrderStatus({
+          orderId: orderToCancel,
+          status: "cancelled",
+        })
+      );
 
-      toast.success(response.data.message || 'Order cancelled successfully');
+      toast.success(res.data.message || "Order cancelled successfully");
 
       closeCancelModal();
 
-      await fetchOrders();
+      await fetchOrders(true); // force refetch
     } catch (error: any) {
-      console.error('Failed to cancel order:', error);
-      
-      if (error.response?.status !== 401 && error.response?.status !== 403) {
-        toast.error(error.response?.data?.message || 'Failed to cancel order');
+      console.error("Cancel order error:", error);
+      if (![401, 403].includes(error.response?.status)) {
+        toast.error(error.response?.data?.message || "Failed to cancel order");
       }
     } finally {
       setCancellingOrder(null);
     }
   };
 
-  // Helpers
   const toggleOrderExpansion = (orderId: string) => {
-    setExpandedOrders(prev =>
+    setExpandedOrders((prev) =>
       prev.includes(orderId)
-        ? prev.filter(id => id !== orderId)
+        ? prev.filter((id) => id !== orderId)
         : [...prev, orderId]
     );
   };
 
-  const getStatusStep = (status: Order['orderStatus']) => {
-    const steps = ['pending', 'confirmed', 'shipped', 'delivered'];
+  const getStatusStep = (status: Order["orderStatus"]) => {
+    const steps = ["pending", "confirmed", "shipped", "delivered"];
     return steps.indexOf(status) + 1;
   };
 
-  const canCancelOrder = (status: Order['orderStatus']) => {
-    return status === 'pending' || status === 'confirmed';
-  };
+  const canCancelOrder = (status: Order["orderStatus"]) =>
+    status === "pending" || status === "confirmed";
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
-  const navigateToProduct = (productId: string) => {
-    navigate(`/product/${productId}`);
-  };
+  const navigateToProduct = (productId: string) => navigate(`/product/${productId}`);
 
-  const navigateToHome = () => {
-    navigate('/');
-  };
-  
-  // Load Orders on Mount
+  const navigateToHome = () => navigate("/");
+
   useEffect(() => {
-    fetchOrders();
+    fetchOrders(); // first load only
   }, []);
 
   return {
     orders,
-    loading: isInitialLoad || loading, // ✅ Show loading during initial load OR when fetching
+    loading,
+    loadedOnce,
     expandedOrders,
     cancellingOrder,
     showCancelModal,
-    fetchOrders,
     openCancelModal,
     closeCancelModal,
     handleCancelOrder,

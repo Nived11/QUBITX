@@ -5,12 +5,14 @@ interface OrderState {
   orders: Order[];
   loading: boolean;
   error: string | null;
+  loadedOnce: boolean; 
 }
 
 const initialState: OrderState = {
   orders: [],
   loading: false,
   error: null,
+  loadedOnce: false,
 };
 
 const orderSlice = createSlice({
@@ -32,6 +34,10 @@ const orderSlice = createSlice({
       state.error = null;
     },
 
+    setLoadedOnce: (state) => {
+      state.loadedOnce = true;
+    },
+
     updateOrderStatus: (
       state,
       action: PayloadAction<{ orderId: string; status: Order["orderStatus"] }>
@@ -46,6 +52,7 @@ const orderSlice = createSlice({
       state.orders = [];
       state.loading = false;
       state.error = null;
+      state.loadedOnce = false;
     },
   },
 });
@@ -56,6 +63,7 @@ export const {
   setOrders,
   updateOrderStatus,
   clearOrders,
+  setLoadedOnce,
 } = orderSlice.actions;
 
 export default orderSlice.reducer;

@@ -1,5 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Product } from "@/types/product"; 
+
 interface ProductState {
   productCache: Record<string, Product>;
   products: Product[];
@@ -9,6 +10,7 @@ interface ProductState {
   currentPage: number;
   loading: boolean;
   error: string | null;
+  lastFetchedUserType: string | null; 
 }
 
 const initialState: ProductState = {
@@ -20,6 +22,7 @@ const initialState: ProductState = {
   currentPage: 1,
   loading: false,
   error: null,
+  lastFetchedUserType: null, 
 };
 
 const productSlice = createSlice({
@@ -37,6 +40,7 @@ const productSlice = createSlice({
         totalProducts: number;
         totalPages: number;
         currentPage: number;
+        userType: string | null;  
       }>
     ) => {
       state.products = action.payload.products;
@@ -47,6 +51,8 @@ const productSlice = createSlice({
       action.payload.products.forEach((product) => {
         state.productCache[product._id] = product;
       });
+
+      state.lastFetchedUserType = action.payload.userType;
     },
 
     setProductDetails: (state, action: PayloadAction<Product | null>) => {

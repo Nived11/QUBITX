@@ -10,6 +10,7 @@ import wakeupRoutes from "./routes/wakeup.routes";
 import cartRoutes from "./routes/cartRoutes";
 import addressRoutes from "./routes/addressRoutes";
 import orderRoutes from "./routes/orderRoutes";
+import bannerRoutes from "./routes/bannerRoutes";
 
 env.config();
 
@@ -33,6 +34,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/addresses", addressRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/banners", bannerRoutes);
 
 
 
