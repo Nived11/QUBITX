@@ -1,32 +1,15 @@
-// SwingingTag.tsx
-const SwingingTag = ({ discount }: { discount: number }) => {
+export const RibbonTag = ({ discount }: { discount: number }) => {
   return (
-    <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-20 flex flex-col items-center">
-      {/* String */}
-      <div className="w-[1px] h-2 sm:h-3 bg-blue-300"></div>
-
-      {/* Tag */}
-      <div
-        className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 text-white
-        px-2 sm:px-3 py-[2px] sm:py-[4px] rounded-md shadow-md border border-blue-400/30
-        backdrop-blur-sm origin-top animate-smoothSwing"
-      >
-        {/* Hole */}
-        <div className="absolute -top-[4px] left-1/2 -translate-x-1/2 w-[6px] h-[6px] bg-white rounded-full border-[1.5px] border-blue-800 shadow-inner"></div>
-
-        {/* Gloss overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-white/25 via-white/10 to-transparent rounded-md pointer-events-none"></div>
-
-        {/* Discount text */}
-        <span className="text-[8px] sm:text-[10px] md:text-xs font-semibold tracking-wide drop-shadow-[0_1px_1px_rgba(0,0,0,0.3)]">
+    <div className="absolute top-2 left-0 z-20 sm:top-1">
+      <div className="relative bg-gradient-to-r from-blue-800 via-blue-700 to-blue-800 text-white shadow-lg">
+        <span className="text-[10px]  font-bold tracking-wide py-2 px-4 sm:py-2 sm:px-4 block drop-shadow-md uppercase">
           {discount}% OFF
         </span>
-
-        {/* Bottom notch */}
-        <div className="absolute -bottom-[3px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[4px] border-r-[4px] border-t-[4px] border-transparent border-t-blue-900/90"></div>
+        <div className="absolute right-0 top-0 w-0 h-0 border-t-[18px] sm:border-t-[22px] border-t-blue-800 border-r-[10px] sm:border-r-[12px] border-r-transparent translate-x-full"></div>
+        <div className="absolute right-0 bottom-0 w-0 h-0 border-b-[18px] sm:border-b-[22px] border-b-blue-800 border-r-[10px] sm:border-r-[12px] border-r-transparent translate-x-full"></div>
       </div>
     </div>
   );
 };
 
-export default SwingingTag;
+export default RibbonTag;
