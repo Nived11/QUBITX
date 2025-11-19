@@ -17,7 +17,7 @@ export const useProducts = () => {
     dispatch(setError(null));
     try {
       const res = await api.get("/products/all");
-      const latest = Array.isArray(res.data) ? res.data.slice(0, 12) : [];
+      const latest = Array.isArray(res.data) ? res.data : [];
 
       dispatch(
         setProducts({
