@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import api from "@/api/axios";
 import { toast } from "sonner";
 import type { RootState, AppDispatch } from "@/store";
@@ -25,31 +26,37 @@ export const useOrders = () => {
   const [cancellingOrder, setCancellingOrder] = useState<string | null>(null);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [orderToCancel, setOrderToCancel] = useState<string | null>(null);
+  const [forceLoading, setForceLoading] = useState(false);
+
+
+  const location = useLocation();
+const orderSuccess = location.state?.orderSuccess;
 
   // Fetch Orders
-  const fetchOrders = async (force = false) => {
-    if (loadedOnce && !force) return;
+ const fetchOrders = async (force = false) => {
+  if (loadedOnce && !force) return;
 
-    try {
-      dispatch(setOrdersLoading(true));
-      dispatch(setOrdersError(null));
+  if (force) setForceLoading(true);
 
-      const res = await api.get("/orders");
-      const data = res.data.orders || res.data.data || [];
+  try {
+    dispatch(setOrdersLoading(true));
+    dispatch(setOrdersError(null));
 
-      dispatch(setOrders(data));
-    } catch (error: any) {
-      console.error("Failed to fetch orders:", error);
+    const res = await api.get("/orders");
+    const data = res.data.orders || res.data.data || [];
 
-      const msg = error.response?.data?.message || "Failed to fetch orders";
-      dispatch(setOrdersError(msg));
+    dispatch(setOrders(data));
+  } catch (error: any) {
+    console.error("Failed to fetch orders:", error);
+    const msg = error.response?.data?.message || "Failed to fetch orders";
+    dispatch(setOrdersError(msg));
+    if (![401, 403].includes(error.response?.status)) toast.error(msg);
+  } finally {
+    dispatch(setLoadedOnce());
+    if (force) setForceLoading(false);
+  }
+};
 
-      if (![401, 403].includes(error.response?.status)) toast.error(msg);
-    } finally {
-      // ⭐ mark loaded only after UI saw the skeleton
-      dispatch(setLoadedOnce());
-    }
-  };
 
   // Cancel Order
   const openCancelModal = (orderId: string) => {
@@ -83,7 +90,7 @@ export const useOrders = () => {
 
       closeCancelModal();
 
-      await fetchOrders(true); // force refetch
+      await fetchOrders(true); 
     } catch (error: any) {
       console.error("Cancel order error:", error);
       if (![401, 403].includes(error.response?.status)) {
@@ -123,14 +130,22 @@ export const useOrders = () => {
 
   const navigateToHome = () => navigate("/");
 
-  useEffect(() => {
-    fetchOrders(); // first load only
-  }, []);
+useEffect(() => {
+  if (orderSuccess) {
+    fetchOrders(true);
+    navigate(location.pathname, { replace: true, state: {} });
+  } else {
+    fetchOrders();
+  }
+}, [orderSuccess]);
+
+
 
   return {
     orders,
     loading,
     loadedOnce,
+    forceLoading,
     expandedOrders,
     cancellingOrder,
     showCancelModal,

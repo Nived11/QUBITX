@@ -9,6 +9,7 @@ const OrdersContainer = () => {
     orders, 
     loading, 
     loadedOnce,
+    forceLoading,
     navigateToHome,
     showCancelModal,
     closeCancelModal,
@@ -17,7 +18,7 @@ const OrdersContainer = () => {
     openCancelModal  
   } = useOrders();
 
-  if (  loading || !loadedOnce) {
+  if (  loading || forceLoading || !loadedOnce ) {
     return <OrdersSkeleton />;
   }
 
