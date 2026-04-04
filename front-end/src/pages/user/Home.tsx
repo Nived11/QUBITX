@@ -10,10 +10,8 @@ export default function Home() {
       <div className="w-full px-2 py-1 md:py-6 lg:py-8">
         <Banners />
 
-        {/* pass productsHook to ProductList */}
         <ProductList {...productsHook} />
 
-        {/* pass productsHook to ProductCategories */}
         <ProductCategories {...productsHook} />
       </div>
     </>

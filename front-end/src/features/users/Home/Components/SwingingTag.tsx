@@ -1,6 +1,6 @@
 export const RibbonTag = ({ discount }: { discount: number }) => {
   return (
-    <div className="absolute top-1 left-0 z-20 sm:top-1">
+    <div className="absolute top-0 left-0 z-20 sm:top-0">
       <div className="relative bg-gradient-to-r from-blue-800 via-blue-700 to-blue-800 text-white shadow-lg">
         
         <span className="text-[10px] sm:text-[10px] font-bold tracking-wide py-1.5 px-3 sm:py-2 sm:px-4 block drop-shadow-md uppercase">

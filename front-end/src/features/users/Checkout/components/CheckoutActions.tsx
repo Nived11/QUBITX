@@ -86,7 +86,7 @@ const CheckoutActions = ({ checkout }: CheckoutActionsProps) => {
             <button
               onClick={handlePlaceOrder}
               disabled={addressHook.actionLoading || isPlacingOrder}
-              className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 rounded-lg font-semibold hover:opacity-90  disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="flex-1 bg-gradient-to-r from-blue-700 to-blue-900 text-white py-2 rounded-lg font-semibold hover:opacity-90  disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {isPlacingOrder ? (
                 <>
